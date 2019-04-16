@@ -306,11 +306,11 @@ Unless otherwise noted, the timing diagrams refer to the connection diagram show
    :caption: Use of timing diagrams.
 
         { "signal": [
-                { "name": "CLK_I",  "wave": "P|P." },
+                { "name": "CLK_I",  "wave": "P|P.", "label": ".{WSS}(.5).." },
 		{ "name": "ADR_O()", "wave": "x|=.", "data": "VALID" }
           ],
 	  "config": { "hscale": 2 },
-	  "head": { "tock": 0 }
+	  "head": { "tick": 0 }
 	}
 
 Some signals may or may not be present on a specific interface.
