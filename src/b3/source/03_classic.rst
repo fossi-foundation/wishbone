@@ -149,7 +149,7 @@ OBSERVATION 3.30
 
 Most of the examples in this specification describe the use of [ACK_I]
 to terminate a local bus cycle. However, the SLAVE can optionally
-terminate the cycle with an error [ERR_O], or re- quest that the cycle
+terminate the cycle with an error [ERR_O], or request that the cycle
 be retried [RTY_O].
 
 All MASTER interfaces include the [ACK_I] terminator signal. Asserting
@@ -159,7 +159,7 @@ Asserting the [ERR_I] signal during a bus cycle will terminate the
 cycle. It also serves to notify the MASTER that an error occurred
 during the cycle. This signal is generally used if an error was
 detected by SLAVE logic circuitry. For example, if the SLAVE is a
-parity-protected mem- ory, then the [ERR_I] signal can be asserted if
+parity-protected memory, then the [ERR_I] signal can be asserted if
 a parity fault is detected. This specification does not dictate what
 the eMASTER will do in response to [ERR_I].
 
@@ -167,27 +167,26 @@ Asserting the optional [RTY_I] signal during a bus cycle will
 terminate the cycle. It also serves to notify the MASTER that the
 current cycle should be aborted, and retried at a later time. This
 signal is generally used for shared memory and bus bridges. In these
-cases SLAVE circuitry as- serts [RTY_I] if the local resource is
+cases SLAVE circuitry asserts [RTY_I] if the local resource is
 busy. This specification does not dictate when or how the MASTER will
 respond to [RTY_I].
 
 RULE 3.40
   As a minimum, the MASTER interface MUST include the following signals:
   [ACK_I], [CLK_I], [CYC_O], [RST_I], and [STB_O]. As a minimum, the
-  SLAVE interface MUST include the fol- lowing signals: [ACK_O],
-  [CLK_I], [CYC_I], [STB_I], and [RST_I]. All other signals are op-
-  tional.
+  SLAVE interface MUST include the following signals: [ACK_O],
+  [CLK_I], [CYC_I], [STB_I], and [RST_I]. All other signals are optional.
 
 PERMISSION 3.20
   MASTER and SLAVE interfaces MAY be designed to support the [ERR_I] and
-  [ERR_O] sig- nals. In these cases, the SLAVE asserts [ERR_O] to
+  [ERR_O] signals. In these cases, the SLAVE asserts [ERR_O] to
   indicate that an error has occurred during the bus cycle. This
   specification does not dictate what the MASTER does in response to
   [ERR_I].
 
 PERMISSION 3.25
   MASTER and SLAVE interfaces MAY be designed to support the [RTY_I] and
-  [RTY_O] sig- nals. In these cases, the SLAVE asserts [RTY_O] to
+  [RTY_O] signals. In these cases, the SLAVE asserts [RTY_O] to
   indicate that the interface is busy, and that the bus cycle should be
   retried at a later time. This specification does not dictate what the
   MASTER will do in response to [RTY_I].
@@ -222,7 +221,7 @@ RULE 3.50
 
 PERMISSION 3.30
   The assertion of [ACK_O], [ERR_O], and [RTY_O] MAY be asynchronous to
-  the [CLK_I] sig- nal (i.e. there is a combinatorial logic path between
+  the [CLK_I] signal (i.e. there is a combinatorial logic path between
   [STB_I] and [ACK_O]).
 
 OBSERVATION 3.40
@@ -247,7 +246,7 @@ OBSERVATION 3.50
 
 PERMISSION 3.35
   Under certain circumstances SLAVE interfaces MAY be designed to hold
-  [ACK_O] in the as- serted state. This situation occurs on
+  [ACK_O] in the asserted state. This situation occurs on
   point-to-point interfaces where there is a single SLAVE on the
   interface, and that SLAVE always operates without wait states.
 
@@ -284,7 +283,7 @@ Use of TAG TYPES
 ````````````````
 
 The WISHBONE interface can be modified with user defined signals. This
-is done with a tech- nique known as tagging. Tags are a well known
+is done with a technique known as tagging. Tags are a well known
 concept in the microcomputer bus industry.  They allow user defined
 information to be associated with an address, a data word or a bus
 cycle.  All tag signals must conform to set of guidelines known as TAG
@@ -333,45 +332,555 @@ PERMISSION 3.45
   the actual tag MAY be a non-arrayed signal.
 
 RECOMMENDATION 3.15
-  If a MASTER interface supports more than one defined bus cycle over a
-  common set of signal lines, then include a cycle tag to identify each
-  type of bus cycle. This allows INTERCON and SLAVE interface circuits
-  to discriminate between these bus cycles (if needed). Define the sig-
-  nals as TAG TYPE: [TGC_O()], using signal names of [SGL_O], [BLK_O]
-  and [RMW_O] when identifying SINGLE, BLOCK and RMW cycles
-  respectively.
+  If a MASTER interface supports more than one defined bus cycle over
+  a common set of signal lines, then include a cycle tag to identify
+  each type of bus cycle. This allows INTERCON and SLAVE interface
+  circuits to discriminate between these bus cycles (if
+  needed). Define the signals as TAG TYPE: [TGC_O()], using signal
+  names of [SGL_O], [BLK_O] and [RMW_O] when identifying SINGLE, BLOCK
+  and RMW cycles respectively.
 
 SINGLE READ / WRITE Cycles
 --------------------------
 
-.. todo::
+The SINGLE READ / WRITE cycles perform one data transfer at a
+time. These are the basic cycles used to perform data transfers on the
+WISHBONE interconnect.  Note that the [CYC_O] signal isn’t shown here
+to keep the timing diagrams as simple as possible. It is assumed
+that [CYC_O] is continuously asserted.
 
-   Missing section
+RULE 3.75
+  All MASTER and SLAVE interfaces that support SINGLE READ or SINGLE
+  WRITE cycles MUST conform to the timing requirements given in sections
+  3.2.1 and 3.2.2.
+
+PERMISSION 3.50
+  MASTER and SLAVE interfaces MAY be designed so that they do not
+  support the SINGLE READ or SINGLE WRITE cycles.
+
+SINGLE READ Cycle
+`````````````````
+
+Figure 3-3 shows a SINGLE READ cycle. The bus protocol works as follows:
+
+CLOCK EDGE 0:
+  MASTER presents a valid address on [ADR_O()] and [TGA_O()].
+
+  MASTER negates [WE_O] to indicate a READ cycle.
+
+  MASTER presents bank select [SEL_O()] to indicate where it expects data.
+
+  MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.
+
+  MASTER asserts [STB_O] to indicate the start of the phase.
+
+SETUP, EDGE 1:
+  SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  SLAVE asserts [ACK_I] in response to [STB_O] to indicate valid data.
+
+  MASTER monitors [ACK_I], and prepares to latch data on [DAT_I()] and
+  [TGD_I()].
+
+  Note: SLAVE may insert wait states (-WSS-) before asserting [ACK_I],
+  thereby allowing it to throttle the cycle speed. Any number of wait
+  states may be added.
+
+CLOCK EDGE 1:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.
+
+  SLAVE negates [ACK_I] in response to negated [STB_O].
+
+
+SINGLE WRITE Cycle
+``````````````````
+
+Figure 3-4 shows a SINGLE WRITE cycle. The bus protocol works as follows:
+
+CLOCK EDGE 0:
+  MASTER presents a valid address on [ADR_O()] and [TGA_O()].
+
+  MASTER presents valid data on [DAT_O()] and [TGD_O()].
+
+  MASTER asserts [WE_O] to indicate a WRITE cycle.
+
+  MASTER presents bank select [SEL_O()] to indicate where it sends data.
+
+  MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.
+
+  MASTER asserts [STB_O] to indicate the start of the phase.
+
+SETUP, EDGE 1:
+  SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  SLAVE asserts [ACK_I] in response to [STB_O] to indicate latched data.
+
+  MASTER monitors [ACK_I], and prepares to terminate the cycle.
+
+  Note: SLAVE may insert wait states (-WSS-) before asserting [ACK_I],
+  thereby allowing it to throttle the cycle speed. Any number of wait
+  states may be added.
+
+CLOCK EDGE 1:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.
+
+  SLAVE negates [ACK_I[ in response to negated [STB_O].
 
 BLOCK READ / WRITE Cycles
 -------------------------
 
-.. todo::
+The BLOCK transfer cycles perform multiple data transfers. They are
+very similar to single READ and WRITE cycles, but have a few special
+modifications to support multiple transfers.
 
-   Missing section
+During BLOCK cycles, the interface basically performs SINGLE
+READ/WRITE cycles as described above. However, the BLOCK cycles are
+modified somewhat so that these individual cycles (called phases)
+are combined together to form a single BLOCK cycle. This function is
+most useful when multiple MASTERs are used on the interconnect. For
+example, if the SLAVE is a shared (dual port) memory, then an arbiter
+for that memory can determine when one MASTER is done with it so that
+another can gain access to the memory.
+
+As shown in Figure 3-5, the [CYC_O] signal is asserted for the
+duration of a BLOCK cycle.  This signal can be used to request
+permission to access a shared resource from a local arbiter. To hold
+the access until the end of the cycle the [LOCK_O] signal must be
+asserted, as is shown.  During each of the data transfer phases
+(within the block transfer), the normal handshaking protocol between
+[STB_O] and [ACK_I] is maintained.
+
+RULE 3.80
+  All MASTER and SLAVE interfaces that support BLOCK cycles MUST conform
+  to the timing requirements given in sections 3.3.1 and 3.3.2.
+
+PERMISSION 3.55
+  MASTER and SLAVE interfaces MAY be designed so that they do not
+  support the BLOCK cycles.
+
+
+BLOCK READ Cycle
+````````````````
+
+Figure 3-6 shows a BLOCK READ cycle. The BLOCK cycle is capable of a
+data transfer on every clock cycle. However, this example also shows
+how the MASTER and the SLAVE interfaces can both throttle the bus
+transfer rate by inserting wait states. A total of five transfers
+(phases) are shown. After the second transfer the MASTER inserts a
+wait state. After the fourth transfer the SLAVE inserts a wait
+state. The cycle is terminated after the fifth transfer. The protocol
+for this transfer works as follows:
+
+CLOCK EDGE 0:
+  MASTER presents a valid address on [ADR_O()] and [TGA_O()].
+
+  MASTER negates [WE_O] to indicate a READ cycle.
+
+  MASTER presents bank select [SEL_O()] to indicate where it expects data.
+
+  MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.
+
+  MASTER asserts [STB_O] to indicate the start of the first phase.
+
+  Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+  before, clock edge 1.
+
+SETUP, EDGE 1:
+  SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+  [TGD_I()].
+
+CLOCK EDGE 1:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER presents new [ADR_O()] and [TGA_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it expects
+  data.
+
+SETUP, EDGE 2:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and [TGD_I()].
+
+CLOCK EDGE 2:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER negates [STB_O] to introduce a wait state (-WSM-).
+
+SETUP, EDGE 3:
+  SLAVE negates [ACK_I] in response to [STB_O].
+
+  Note: any number of wait states can be inserted by the MASTER.
+
+CLOCK EDGE 3:
+  MASTER presents new [ADR_O()] and [TGA_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it expects
+  data.
+
+  MASTER asserts [STB_O].
+
+SETUP, EDGE 4:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+  [TGD_I()].
+
+CLOCK EDGE 4:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it expects
+  data.
+
+SETUP, EDGE 5:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+  [TGD_I()].
+
+CLOCK EDGE 5:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  SLAVE negates [ACK_I] to introduce a wait state.
+
+  Note: any number of wait states can be inserted by the SLAVE at this
+  point.
+
+SETUP, EDGE 6:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+  [TGD_I()].
+
+CLOCK EDGE 6:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER terminates cycle by negating [STB_O] and [CYC_O].
+
+BLOCK WRITE Cycle
+`````````````````
+
+Figure 3-7 shows a BLOCK WRITE cycle. The BLOCK cycle is capable of a
+data transfer on every clock cycle. However, this example also shows
+how the MASTER and the SLAVE interfaces can both throttle the bus
+transfer rate by inserting wait states. A total of five transfers are
+shown. After the second transfer the MASTER inserts a wait
+state. After the fourth transfer the SLAVE inserts a wait state. The
+cycle is terminated after the fifth transfer. The protocol for this
+transfer works as follows:
+
+CLOCK EDGE 0:
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER asserts [WE_O] to indicate a WRITE cycle.
+
+  MASTER presents bank select [SEL_O()] to indicate where it sends data.
+
+  MASTER asserts [CYC_O] and [TGC_O()] to indicate cycle start.
+
+  MASTER asserts [STB_O].
+
+  Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+  before, clock edge 1.
+
+SETUP, EDGE 1:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate current data phase.
+
+CLOCK EDGE 1:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it sends
+  data.
+
+SETUP, EDGE 2:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate current data phase.
+
+CLOCK EDGE 2:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER negates [STB_O] to introduce a wait state (-WSM-).
+
+SETUP, EDGE 3:
+  SLAVE negates [ACK_I] in response to [STB_O].
+
+  Note: any number of wait states can be inserted by the MASTER at this
+  point.
+
+CLOCK EDGE 3:
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER presents bank select [SEL_O()] to indicate where it sends data.
+
+  MASTER asserts [STB_O].
+
+SETUP, EDGE 4:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate data phase.
+
+CLOCK EDGE 4:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it sends
+  data.
+
+SETUP, EDGE 5:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate data phase.
+
+CLOCK EDGE 5:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  SLAVE negates [ACK_I] to introduce a wait state.
+
+  Note: any number of wait states can be inserted by the SLAVE at this point.
+
+SETUP, EDGE 6:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate data phase.
+
+CLOCK EDGE 6:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER terminates cycle by negating [STB_O] and [CYC_O].
 
 RMW Cycle
 ---------
 
-.. todo::
+The RMW (read-modify-write) cycle is used for indivisible semaphore
+operations. During the first half of the cycle a single read data
+transfer is performed. During the second half of the cycle a write
+data transfer is performed. The [CYC_O] signal remains asserted during
+both halves of the cycle.
 
-   Missing section
+RULE 3.85
+  All MASTER and SLAVE interfaces that support RMW cycles MUST conform
+  to the timing requirements given in section 3.4.
+
+PERMISSION 3.60
+  MASTER and SLAVE interfaces MAY be designed so that they do not
+  support the RMW cycles.
+
+Figure 3-8 shows a read-modify-write (RMW) cycle. The RMW cycle is
+capable of a data transfer on every clock cycle. However, this
+example also shows how the MASTER and the SLAVE interfaces can both
+throttle the bus transfer rate by inserting wait states. Two transfers
+are shown. After the first (read) transfer, the MASTER inserts a wait
+state. During the second transfer the SLAVE inserts a wait
+state. The protocol for this transfer works as follows:
+
+CLOCK EDGE 0:
+  MASTER presents [ADR_O()] and [TGA_O()].
+
+  MASTER negates [WE_O] to indicate a READ cycle.
+
+  MASTER presents bank select [SEL_O()] to indicate where it expects
+  data.
+
+  MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of cycle.
+
+  MASTER asserts [STB_O].
+
+  Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+  before, clock edge 1. The use of [TAGN_O] is optional.
+
+SETUP, EDGE 1:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE presents valid data on [DAT_I()] and [TGD_I()].
+
+  MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+  [TGD_I()].
+
+CLOCK EDGE 1:
+  MASTER latches data on [DAT_I()] and [TGD_I()].
+
+  MASTER negates [STB_O] to introduce a wait state (-WSM-).
+
+SETUP, EDGE 2:
+  SLAVE negates [ACK_I] in response to [STB_O].
+
+  MASTER asserts [WE_O] to indicate a WRITE cycle.
+
+  Note: any number of wait states can be inserted by the MASTER at this
+  point.
+
+CLOCK EDGE 2:
+  MASTER presents WRITE data on [DAT_O()] and [TGD_O()].
+
+  MASTER presents new bank select [SEL_O()] to indicate where it sends
+  data.
+
+  MASTER asserts [STB_O].
+
+SETUP, EDGE 3:
+  SLAVE decodes inputs, and responds by asserting [ACK_I].
+
+  SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].
+
+  MASTER monitors [ACK_I], and prepares to terminate data phase.
+
+  Note: any number of wait states can be inserted by the SLAVE at this
+  point.
+
+CLOCK EDGE 3:
+  SLAVE latches data on [DAT_O()] and [TGD_O()].
+
+  MASTER negates [STB_O] and [CYC_O] indicating the end of the cycle.
+
+  SLAVE negates [ACK_I] in response to negated [STB_O].
 
 Data Organization
 -----------------
 
-.. todo::
+Data organization refers to the ordering of data during
+transfers. There are two general types of ordering. These are called
+BIG ENDIAN and LITTLE ENDIAN. BIG ENDIAN refers to data ordering where
+the most significant portion of an operand is stored at the lower
+address. LITTLE ENDIAN refers to data ordering where the most
+significant portion of an operand is stored at the higher address. The
+WISHBONE architecture supports both methods of data ordering.
 
-   Missing section
+Nomenclature
+````````````
+
+A BYTE(N), WORD(N), DWORD(N) and QWORD(N) nomenclature is used to
+define data ordering. These terms are defined in Table 3-1. Figure
+3-9 shows the operand locations for input and output data ports.
+
++--------------+-------------+-------------------------------------------------+
+| Nomenclature | Granularity | Description                                     |
++--------------+-------------+-------------------------------------------------+
+| BYTE(N)      | 8-bit       | An 8-bit BYTE transfer at address 'N'.          |
++--------------+-------------+-------------------------------------------------+
+| WORD(N)      | 16-bit      | A 16-bit WORD transfer at address 'N'.          |
++--------------+-------------+-------------------------------------------------+
+| DWORD(N)     | 32-bit      | A 32-bit Double WORD transfer at address 'N'.   |
++--------------+-------------+-------------------------------------------------+
+| QWORD(N)     | 64-bit      | A 64-bit Quadruple WORD transfer at address 'N'.|
++--------------+-------------+-------------------------------------------------+
+
+The table also defines the granularity of the interface. This
+indicates the minimum unit of data transfer that is supported by the
+interface. For example, the smallest operand that can be passed
+through a port with 16-bit granularity is a 16-bit WORD. In this case,
+an 8-bit operand cannot be transferred.
+
+Figure 3-10 shows an example of how the 64-bit value of
+0x0123456789ABCDEF is transferred through BYTE, WORD, DWORD and QWORD
+ports using BIG ENDIAN data organization.  Through the 64-bit QWORD
+port the number is directly transferred with the most significant bit
+at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
+DAT_O(0). However, when the same operand is transferred through a
+32-bit DWORD port, it is split into two bus cycles. The two bus
+cycles are each 32-bits in length, with the most significant DWORD
+transferred at the lower address, and the least significant DWORD
+transferred at the upper address. A similar situation applies to the
+WORD and BYTE cases.
+
+Figure 3-11 shows an example of how the 64-bit value of
+0x0123456789ABC is transferred through BYTE, WORD, DWORD and QWORD
+ports using LITTLE ENDIAN data organization. Through the 64-bit QWORD
+port the number is directly transferred with the most significant bit
+at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
+DAT_O(0).  However, when the same operand is transferred through a
+32-bit DWORD port, it is split into two bus cycles. The two bus cycles
+are each 32-bits in length, with the least significant DWORD
+transferred at the lower address, and the most significant DWORD
+transferred at the upper address. A similar situation applies to the
+WORD and BYTE cases.
+
+RULE 3.90
+  Data organization MUST conform to the ordering indicated in Figure 3-9.
+
+Transfer Sequencing
+```````````````````
+
+The sequence in which data is transferred through a port is not
+regulated by this specification.  For example, a 64-bit operand
+through a 32-bit port will take two bus cycles. However, the
+specification does not require that the lower or upper DWORD be
+transferred first.
+
+RECOMMENDATION 3.20
+  Design interfaces so that data is transferred sequentially from lower
+  addresses to higher addresses.
+
+OBSERVATION 3.60
+  The sequence in which an operand is transferred through a data port is
+  not highly regulated by the specification. That is because different
+  IP cores may produce the data in different ways. The sequence is
+  therefore application-specific.
+
+Data Organization for 64-bit Ports
+``````````````````````````````````
+
+RULE 3.95
+  Data organization on 64-bit ports MUST conform to Figure 3-12.
+
+Data Organization for 32-bit Ports
+``````````````````````````````````
+
+RULE 3.100
+  Data organization on 32-bit ports MUST conform to Figure 3-13.
+
+Data Organization for 16-bit Ports
+``````````````````````````````````
+
+RULE 3.105
+  Data organization on 16-bit ports MUST conform to Figure 3-14.
+
+Data Organization for 8-bit Ports
+`````````````````````````````````
+
+RULE 3.1010
+  Data organization on 8-bit ports MUST conform to Figure 3-15.
 
 References
 ----------
 
-.. todo::
-
-   Missing section
+Cohen, Danny. On Holy Wars and a Plea for Peace. IEEE Computer
+Magazine, October 1981.  Pages 49-54. [Description of BIG ENDIAN and
+LITTLE ENDIAN.]
