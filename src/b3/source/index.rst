@@ -76,4 +76,3 @@ This specification is managed at the following repository: https://github.com/fo
    04_registered
    05_timing
    06_patents
-   0a_tutorial
