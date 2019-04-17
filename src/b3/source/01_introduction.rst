@@ -255,37 +255,51 @@ They are:
 Any text not labeled with one of these keywords describes the operation in a narrative style.
 The keywords are defined as follows:
 
-RULE
-    Rules form the basic framework of the specification.
-    They are sometimes expressed in text form and sometimes in the form of figures, tables or drawings.
-    All rules MUST be followed to ensure compatibility between interfaces.
-    Rules are characterized by an imperative style.
-    The uppercase words MUST and MUST NOT are reserved exclusively for stating rules in this document, and are not used for any other purpose.
+**RULE**
+    Rules form the basic framework of the specification.  They are
+    sometimes expressed in text form and sometimes in the form of
+    figures, tables or drawings.  All rules MUST be followed to ensure
+    compatibility between interfaces.  Rules are characterized by an
+    imperative style.  The uppercase words MUST and MUST NOT are
+    reserved exclusively for stating rules in this document, and are
+    not used for any other purpose.
 
-RECOMMENDATION
-    Whenever a recommendation appears, designers would be wise to take the advice given.
-    Doing otherwise might result in some awkward problems or poor performance.
-    While this specification has been designed to support high performance systems, it is possible to create an interconnection that complies with all the rules, but has very poor performance.
-    In many cases a designer needs a certain level of experience with the system architecture in order to design interfaces that deliver top performance.
-    Recommendations found in this document are based on this kind of experience and are provided as guidance for the user.
+**RECOMMENDATION**
+    Whenever a recommendation appears, designers would be wise to take
+    the advice given.  Doing otherwise might result in some awkward
+    problems or poor performance.  While this specification has been
+    designed to support high performance systems, it is possible to
+    create an interconnection that complies with all the rules, but
+    has very poor performance.  In many cases a designer needs a
+    certain level of experience with the system architecture in order
+    to design interfaces that deliver top performance.
+    Recommendations found in this document are based on this kind of
+    experience and are provided as guidance for the user.
 
-SUGGESTION
-    A suggestion contains advice which is helpful but not vital.
-    The reader is encouraged to consider the advice before discarding it.
-    Some design decisions are difficult until experience has been gained.
-    Suggestions help a designer who has not yet gained this experience.
-    Some suggestions have to do with designing compatible interconnections, or with making system integration easier.
+**SUGGESTION**
+    A suggestion contains advice which is helpful but not vital.  The
+    reader is encouraged to consider the advice before discarding it.
+    Some design decisions are difficult until experience has been
+    gained.  Suggestions help a designer who has not yet gained this
+    experience.  Some suggestions have to do with designing compatible
+    interconnections, or with making system integration easier.
 
-PERMISSION
-    In some cases a rule does not specifically prohibit a certain design approach, but the reader might be left wondering whether that approach might violate the spirit of the rule, or whether it might lead to some subtle problem.
-    Permissions reassure the reader that a certain approach is acceptable and will not cause problems.
-    The upper-case word MAY is reserved exclusively for stating a permission and is not used for any other purpose.
+**PERMISSION**
+    In some cases a rule does not specifically prohibit a certain
+    design approach, but the reader might be left wondering whether
+    that approach might violate the spirit of the rule, or whether it
+    might lead to some subtle problem.  Permissions reassure the
+    reader that a certain approach is acceptable and will not cause
+    problems.  The upper-case word MAY is reserved exclusively for
+    stating a permission and is not used for any other purpose.
 
-OBSERVATION
-    Observations do not offer any specific advice.
-    They usually clarify what has just been discussed.
-    They spell out the implications of certain rules and bring attention to things that might otherwise be overlooked.
-    They also give the rationale behind certain rules, so that the reader understands why the rule must be followed.
+**OBSERVATION**
+    Observations do not offer any specific advice.  They usually
+    clarify what has just been discussed.  They spell out the
+    implications of certain rules and bring attention to things that
+    might otherwise be overlooked.  They also give the rationale
+    behind certain rules, so that the reader understands why the rule
+    must be followed.
 
 Use of Timing Diagrams
 ----------------------

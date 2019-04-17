@@ -18,87 +18,90 @@ core technical reference manual, it can be embedded in source code or
 it can take other forms as well.
 
 General Requirements for the WISHBONE DATASHEET
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```````````````````````````````````````````````
 
-RULE 2.00
-  Each WISHBONE compatible IP core MUST include a WISHBONE DATASHEET as part of the IP core documentation.
+**RULE 2.00**
+  Each WISHBONE compatible IP core MUST include a WISHBONE DATASHEET
+  as part of the IP core documentation.
 
-RULE 2.15
-  The WISHBONE DATASHEET for MASTER and SLAVE interfaces MUST include the following information:
+**RULE 2.15**
+  The WISHBONE DATASHEET for MASTER and SLAVE interfaces MUST include
+  the following information:
 
-1. The revision level of the WISHBONE specification to which is was designed.
+  1. The revision level of the WISHBONE specification to which is was
+     designed.
 
-2. The type of interface: MASTER or SLAVE.
+  2. The type of interface: MASTER or SLAVE.
 
-3. The signal names that are defined for the WISHBONE SoC
-   interface. If a signal name is different than that defined in this
-   specification, then it MUST be cross-referenced to the corresponding
-   signal name which is used in this specification.
+  3. The signal names that are defined for the WISHBONE SoC
+     interface. If a signal name is different than that defined in this
+     specification, then it MUST be cross-referenced to the corresponding
+     signal name which is used in this specification.
 
-4. If a MASTER supports the optional [ERR_I] signal, then the WISHBONE
-   DATASHEET MUST describe how it reacts in response to the signal. If
-   a SLAVE supports the optional [ERR_O] signal, then the WISHBONE
-   DATASHEET MUST describe the conditions under which the signal is
-   generated.
+  4. If a MASTER supports the optional [ERR_I] signal, then the WISHBONE
+     DATASHEET MUST describe how it reacts in response to the signal. If
+     a SLAVE supports the optional [ERR_O] signal, then the WISHBONE
+     DATASHEET MUST describe the conditions under which the signal is
+     generated.
 
-5. If a MASTER supports the optional [RTY_I] signal, then the
-   WISHBONE DATASHEET MUST describe how it reacts in response to the
-   signal. If a SLAVE supports the optional [RTY_O] signal, then the
-   WISHBONE DATASHEET MUST describe the conditions under which the
-   signal is generated.
+  5. If a MASTER supports the optional [RTY_I] signal, then the
+     WISHBONE DATASHEET MUST describe how it reacts in response to the
+     signal. If a SLAVE supports the optional [RTY_O] signal, then the
+     WISHBONE DATASHEET MUST describe the conditions under which the
+     signal is generated.
 
-6. All interfaces that support tag signals MUST describe the name,
-   TAG TYPE and operation of the tag in the WISHBONE DATASHEET.
+  6. All interfaces that support tag signals MUST describe the name,
+     TAG TYPE and operation of the tag in the WISHBONE DATASHEET.
 
-7. The WISHBONE DATASHEET MUST indicate the port size.  MUST be
-   indicated as: 8-bit, 16-bit, 32-bit or 64-bit.
+  7. The WISHBONE DATASHEET MUST indicate the port size.  MUST be
+     indicated as: 8-bit, 16-bit, 32-bit or 64-bit.
 
-8. The WISHBONE DATASHEET MUST indicate the port granularity. The
-   granularity MUST be indicated as: 8-bit, 16-bit, 32-bit or 64-bit.
+  8. The WISHBONE DATASHEET MUST indicate the port granularity. The
+     granularity MUST be indicated as: 8-bit, 16-bit, 32-bit or 64-bit.
 
-9. The WISHBONE DATASHEET MUST indicate the maximum operand size. The
-   maximum operand size MUST be indicated as: 8-bit, 16-bit, 32-bit or
-   64-bit. If the maximum operand size is unknown, then the maximum
-   operand size shall be the same as the granularity.
+  9. The WISHBONE DATASHEET MUST indicate the maximum operand size. The
+     maximum operand size MUST be indicated as: 8-bit, 16-bit, 32-bit or
+     64-bit. If the maximum operand size is unknown, then the maximum
+     operand size shall be the same as the granularity.
 
-10. The WISHBONE DATASHEET MUST indicate the data transfer
-    ordering. The ordering MUST be indicated as BIG ENDIAN or LITTLE
-    ENDIAN. When the port size equals the granularity, then the interface
-    shall be specified as BIG/LITTLE ENDIAN. [When the port size equals
-    the granularity, then BIG ENDIAN and LITTLE ENDIAN transfers are
-    identical].
+  10. The WISHBONE DATASHEET MUST indicate the data transfer
+      ordering. The ordering MUST be indicated as BIG ENDIAN or LITTLE
+      ENDIAN. When the port size equals the granularity, then the interface
+      shall be specified as BIG/LITTLE ENDIAN. [When the port size equals
+      the granularity, then BIG ENDIAN and LITTLE ENDIAN transfers are
+      identical].
 
-11. The WISHBONE DATASHEET MUST indicate the sequence of data
-    transfer through the port. If the sequence of data transfer is not
-    known, then the datasheet MUST indicate it as UNDEFINED.
+  11. The WISHBONE DATASHEET MUST indicate the sequence of data
+      transfer through the port. If the sequence of data transfer is not
+      known, then the datasheet MUST indicate it as UNDEFINED.
 
-12. The WISHBONE DATASHEET MUST indicate if there are any constraints
-    on the [CLK_I] signal. These constraints include (but are not limited
-    to) clock frequency, application specific timing constraints, the use
-    of gated clocks or the use of variable clock generators.
+  12. The WISHBONE DATASHEET MUST indicate if there are any constraints
+      on the [CLK_I] signal. These constraints include (but are not limited
+      to) clock frequency, application specific timing constraints, the use
+      of gated clocks or the use of variable clock generators.
 
 Signal Naming
-^^^^^^^^^^^^^
+`````````````
 
-RULE 2.20
+**RULE 2.20**
   Signal names MUST adhere to the rules of the native tool in which
   the IP core is designed.
 
-PERMISSION 2.00
+**PERMISSION 2.00**
   Any signal name MAY be used to describe the WISHBONE signals.
 
-OBSERVATION 2.00
+**OBSERVATION 2.00**
   Most hardware description languages (such as VHDL or Verilog®) have
   naming conventions.  For example, the VHDL hardware description
   language defines the alphanumeric symbols which may be
   used. Furthermore, it states that UPPERCASE and LOWERCASE characters
   may be used in a signal name.
 
-RECOMENDATION 2.00
+**RECOMENDATION 2.00**
   It is recommended that the interface uses the signal names defined
   in this document.
 
-OBSERVATION 2.05
+**OBSERVATION 2.05**
   Core integration is simplified if the signal names match those given
   in this specification. However, in some cases (such as IP cores with
   multiple WISHBONE interconnects) they cannot be used. The use of
@@ -106,10 +109,10 @@ OBSERVATION 2.05
   problems since all hardware description tools allow signals to be
   renamed.
 
-PERMISSION 2.05
+**PERMISSION 2.05**
   Non-WISHBONE signals MAY be used with IP core interfaces.
 
-OBSERVATION 2.15
+**OBSERVATION 2.15**
   Most IP cores will include non-WISHBONE signals. These are outside
   the scope of this specification, and no attempt is made to govern
   them. For example, a disk controller IP core could have a WISHBONE
@@ -118,12 +121,12 @@ OBSERVATION 2.15
   the disk interface signals.
 
 Logic Levels
-^^^^^^^^^^^^
+````````````
 
-RULE 2.30
+**RULE 2.30**
   All WISHBONE interface signals MUST use active high logic.
 
-OBSERVATION 2.10
+**OBSERVATION 2.10**
   In general, the use of active low signals does not present a
   problem. However, RULE 2.30 is included because some tools
   (especially schematic entry tools) do not have a standard way of
@@ -142,7 +145,7 @@ interconnect. Some of these signals are optional, and may or may not
 be present on a specific interface.
 
 SYSCON Module Signals
-^^^^^^^^^^^^^^^^^^^^^
+`````````````````````
 
 **CLK_O**
 
@@ -213,7 +216,7 @@ pre-defined by this specification. The name and operation of a data
 tag must be defined in the WISHBONE DATASHEET.
 
 MASTER Signals
-^^^^^^^^^^^^^^
+``````````````
 
 **ACK_I**
 
@@ -314,7 +317,7 @@ cycle is a READ or WRITE cycle. The signal is negated during READ
 cycles, and is asserted during WRITE cycles.
 
 SLAVE Signals
-^^^^^^^^^^^^^
+`````````````
 
 **ACK_O**
 
