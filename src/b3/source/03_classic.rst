@@ -169,11 +169,11 @@ to control the rate at which data is transferred.
         { "signal": [
                   { "name": "CLK_I", "wave": "P..." },
 		  { "name": "STB_O", "wave": "0...1..0",
-                                     "node": "....a..c", "period": 0.5 },
-		  { "name": "ACK_I", "wave": "0....1.0",
-                                     "node": ".....bd.", "period": 0.5 }
+                                     "node": "....A..C", "period": 0.5 },
+		  { "name": "ACK_I", "wave": "0....10.",
+                                     "node": ".....BD.", "period": 0.5 }
           ],
-          edge: [ 'a~>b', 'd~>c' ],
+          "edge": [ "A~>B", "D~>C" ],
 	  "config": { "hscale": 2 },
 	  "head": { "tick": 0 }
 	}
