@@ -95,7 +95,7 @@ Any signal name MAY be used to describe the WISHBONE signals.
 
 OBSERVATION 2.00
 
-Most hardware description languages (such as VHDL or Verilog(R)) have
+Most hardware description languages (such as VHDL or Verilog®) have
 naming conventions.  For example, the VHDL hardware description
 language defines the alphanumeric symbols which may be
 used. Furthermore, it states that UPPERCASE and LOWERCASE characters

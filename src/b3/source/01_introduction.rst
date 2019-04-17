@@ -14,7 +14,7 @@ This specification can be used for soft core, firm core or hard core IP. Since f
 This specification does not require the use of specific development tools or target hardware.
 Furthermore, it is fully compliant with virtually all logic synthesis tools.
 However, the examples presented in the specification do use the VHDL hardware description language.
-These are presented only as a convenience to the reader, and should be readily understood by users of other hardware description languages (such as Verilog).
+These are presented only as a convenience to the reader, and should be readily understood by users of other hardware description languages (such as Verilog®).
 Schematic based tools can also be used.
 The WISHBONE interconnect is intended as a general purpose interface.
 As such, it defines the standard data exchange between IP core modules.
@@ -158,7 +158,7 @@ The main objectives of this specification are
   For example, it may be used with 'soft core', 'firm core' or 'hard core' delivery methods.
 
 * to be independent of the underlying hardware description.
-  For example, soft cores may be written and synthesized in VHDL, Verilog or some other hardware description language.
+  For example, soft cores may be written and synthesized in VHDL, Verilog® or some other hardware description language.
   Schematic entry may also be used.
 
 * to require a minimum standard for documentation.
@@ -566,7 +566,7 @@ Hard Core
 
 Hardware Description Language (HDL)
   1. Acronym for: Hardware Description Language. Examples include VHDL
-     and Verilog(R).
+     and Verilog®.
   2. A general-purpose language used for the design of digital electronic
      systems.
 
@@ -635,7 +635,7 @@ Parametric Core Generator
   generator. These are programs that create lowpass, bandpass and
   highpass DSP filters. The parameters for the filter are provided by
   the user, which causes the program to produce the digital filter as a
-  VHDL or Verilog(R) hardware description.  Parametric core generators can
+  VHDL or Verilog® hardware description.  Parametric core generators can
   also be used create WISHBONE interconnections.
 
 Partial Address Decoding
@@ -800,10 +800,10 @@ Variable Timing Specification
   generator. Also see: gated clock generator and variable clock
   generator.
 
-Verilog(R)
+Verilog®
   A textual based hardware description language (HDL) intended for use
-  in circuit design. The Verilog(R) language is both a synthesis and a
-  simulation tool. Verilog(R) was originally a proprie- tary language
+  in circuit design. The Verilog® language is both a synthesis and a
+  simulation tool. Verilog® was originally a proprietary language
   first conceived in 1983 at Gateway Design Automation (Acton, MA), and
   was later refined by Cadence Corporation. It has since been greatly
   expanded and refined, and much of it has been placed into the public
@@ -815,7 +815,7 @@ VHDL
   Speed Integrated Circuit]. A textual based computer language intended
   for use in circuit design. The VHDL lan- guage is both a synthesis and
   a simulation tool. Early forms of the language emerged from US
-  Dept. of Defense ARPA projects in the 1960’s, and have since been
+  Dept. of Defense ARPA projects in the 1960's, and have since been
   greatly expanded and re- fined. Complete descriptions of the language
   can be found in the IEEE 1076, IEEE 1073.3, IEEE 1164 specifications.
 
