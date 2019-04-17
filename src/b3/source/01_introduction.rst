@@ -365,10 +365,16 @@ This helps to discriminate signal names from the words in the sentence.
 WISHBONE Logo
 -------------
 
-.. todo::
+The WISHBONE logo can be affixed to SoC documents that are compatible with this standard.
+`logo`_ shows the logo.
 
-   Missing section
+.. _logo:
+.. figure:: _static/wishbone_stamp.pdf
 
+   WISHBONE Logo.
+
+PERMISSION 1.00
+  Documents describing a WISHBONE compatible SoC component that are 100% compliant with this specification MAY use the WISHBONE logo.
 
 Glossary of Terms
 -----------------
