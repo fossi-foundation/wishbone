@@ -154,13 +154,29 @@ Handshaking Protocol
 ````````````````````
 
 All bus cycles use a handshaking protocol between the MASTER and SLAVE
-interfaces. As shown in Figure 3-2, the MASTER asserts [STB_O] when it
-is ready to transfer data. [STB_O] remains asserted until the SLAVE
-asserts one of the cycle terminating signals [ACK_I], [ERR_I] or
-[RTY_I]. At every rising edge of [CLK_I] the terminating signal is
-sampled. If it is asserted, then [STB_O] is negated. This gives both
-MASTER and SLAVE interfaces the possibility to control the rate at
-which data is transferred.
+interfaces. As shown in Figure :ref:`hanshaking <handshake>`, the
+MASTER asserts [STB_O] when it is ready to transfer data. [STB_O]
+remains asserted until the SLAVE asserts one of the cycle terminating
+signals [ACK_I], [ERR_I] or [RTY_I]. At every rising edge of [CLK_I]
+the terminating signal is sampled. If it is asserted, then [STB_O] is
+negated. This gives both MASTER and SLAVE interfaces the possibility
+to control the rate at which data is transferred.
+
+.. _handshake:
+.. wavedrom::
+   :caption: Local bus handshaking protocol.
+
+        { "signal": [
+                  { "name": "CLK_I", "wave": "P..." },
+		  { "name": "STB_O", "wave": "0...1..0",
+                                     "node": "....a..c", "period": 0.5 },
+		  { "name": "ACK_I", "wave": "0....1.0",
+                                     "node": ".....bd.", "period": 0.5 }
+          ],
+          edge: [ 'a~>b', 'd~>c' ],
+	  "config": { "hscale": 2 },
+	  "head": { "tick": 0 }
+	}
 
 **PERMISSION 3.10**
   If the SLAVE guarantees it can keep pace with all MASTER interfaces
