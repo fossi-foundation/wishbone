@@ -622,11 +622,11 @@ RULE 4.40
 
 PERMISSION 4.45
   When the MASTER signals an incrementing burst, the SLAVE MAY assert
-  the termination sig- nal for the next cycle as soon as the current
+  the termination signal for the next cycle as soon as the current
   cycle terminates.
 
 Figure 4-8 shows a 4-beat wrapped INCREMENTING BURST read cycle. A
-total of four trans- fers are shown. The protocol for this cycle works
+total of four transfers are shown. The protocol for this cycle works
 as follows:
 
 CLOCK EDGE 0:
