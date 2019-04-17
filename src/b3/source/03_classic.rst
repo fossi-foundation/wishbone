@@ -1,25 +1,31 @@
 WISHBONE Classic Bus Cycle
 ==========================
 
-WISHBONE Classic bus cycles are described in terms of their general operation, reset operation, handshaking protocol and the data organization during transfers.
-Additional requirements for bus cycles (especially those relating to the common clock) can be found in the timing specifications in Chapter 5.
+WISHBONE Classic bus cycles are described in terms of their general
+operation, reset operation, handshaking protocol and the data
+organization during transfers.  Additional requirements for bus cycles
+(especially those relating to the common clock) can be found in the
+timing specifications in Chapter 5.
 
 General Operation
 -----------------
 
-MASTER and SLAVE interfaces are interconnected with a set of signals that permit them to exchange data.
-For descriptive purposes these signals are cumulatively known as a bus, and are contained within a functional module called the INTERCON.
-Address, data and other information is impressed upon this bus in the form of bus cycles.
+MASTER and SLAVE interfaces are interconnected with a set of signals
+that permit them to exchange data.  For descriptive purposes these
+signals are cumulatively known as a bus, and are contained within a
+functional module called the INTERCON.  Address, data and other
+information is impressed upon this bus in the form of bus cycles.
 
 Reset Operation
 ```````````````
 
-All hardware interfaces are initialized to a pre-defined state.
-This is accomplished with the reset signal [RST_O] that can be asserted at any time.
-It is also used for test simulation purposes by initializing all self-starting state machines and counters which may be used in the design.
-The reset signal [RST_O] is driven by the SYSCON module.
-It is connected to the [RST_I] signal on all MASTER and SLAVE interfaces.
-:numref:`resetcycle` shows the reset cycle.
+All hardware interfaces are initialized to a pre-defined state.  This
+is accomplished with the reset signal [RST_O] that can be asserted at
+any time.  It is also used for test simulation purposes by
+initializing all self-starting state machines and counters which may
+be used in the design.  The reset signal [RST_O] is driven by the
+SYSCON module.  It is connected to the [RST_I] signal on all MASTER
+and SLAVE interfaces.  :numref:`resetcycle` shows the reset cycle.
 
 .. _resetcycle:
 .. wavedrom::
@@ -38,81 +44,111 @@ It is connected to the [RST_I] signal on all MASTER and SLAVE interfaces.
 	}
 
 
-RULE 3.00
-    All WISHBONE interfaces MUST initialize themselves at the rising [CLK_I] edge following the assertion of [RST_I].
-    They MUST stay in the initialized state until the rising [CLK_I] edge that follows the negation of [RST_I].
+**RULE 3.00**
+    All WISHBONE interfaces MUST initialize themselves at the rising
+    [CLK_I] edge following the assertion of [RST_I].  They MUST stay
+    in the initialized state until the rising [CLK_I] edge that
+    follows the negation of [RST_I].
 
-RULE 3.05
-    [RST_I] MUST be asserted for at least one complete clock cycle on all WISHBONE interfaces.
+**RULE 3.05**
+    [RST_I] MUST be asserted for at least one complete clock cycle on
+    all WISHBONE interfaces.
 
-PERMISSION 3.00
-    [RST_I] MAY be asserted for more than one clock cycle, and MAY be asserted indefinitely.
+**PERMISSION 3.00**
+    [RST_I] MAY be asserted for more than one clock cycle, and MAY be
+    asserted indefinitely.
 
-RULE 3.10
+**RULE 3.10**
     All WISHBONE interfaces MUST be capable of reacting to [RST_I] at any time.
 
-RULE 3.15
-    All self-starting state machines and counters in WISHBONE interfaces MUST initialize themselves at the rising [CLK_I] edge following the assertion of [RST_I].
-    They MUST stay in the initialized state until the rising [CLK_I] edge that follows the negation of [RST_I].
+**RULE 3.15**
+    All self-starting state machines and counters in WISHBONE
+    interfaces MUST initialize themselves at the rising [CLK_I] edge
+    following the assertion of [RST_I].  They MUST stay in the
+    initialized state until the rising [CLK_I] edge that follows the
+    negation of [RST_I].
 
-OBSERVATION 3.00
-    In general, self-starting state machines do not need to be initialized.
-    However, this may cause problems because some simulators may not be sophisticated enough to find an initial starting point for the state machine.
-    Furthermore, self-starting state machines can go through an indeterminate number of initialization cycles before finding their starting state, thereby making it difficult to predict their behavior at start-up time.
-    The initialization rule prevents both problems by forcing all state machines to a pre-defined state in response to the assertion of [RST_I].
+**OBSERVATION 3.00**
+    In general, self-starting state machines do not need to be
+    initialized.  However, this may cause problems because some
+    simulators may not be sophisticated enough to find an initial
+    starting point for the state machine.  Furthermore, self-starting
+    state machines can go through an indeterminate number of
+    initialization cycles before finding their starting state, thereby
+    making it difficult to predict their behavior at start-up time.
+    The initialization rule prevents both problems by forcing all
+    state machines to a pre-defined state in response to the assertion
+    of [RST_I].
 
 
-RULE 3.20
-    The following MASTER signals MUST be negated at the rising [CLK_I] edge following the assertion of [RST_I], and MUST stay in the negated state until the rising [CLK_I] edge that follows the negation of [RST_I]: [STB_O], [CYC_O].
-    The state of all other MASTER signals are undefined in response to a reset cycle.
+**RULE 3.20**
+    The following MASTER signals MUST be negated at the rising [CLK_I]
+    edge following the assertion of [RST_I], and MUST stay in the
+    negated state until the rising [CLK_I] edge that follows the
+    negation of [RST_I]: [STB_O], [CYC_O].  The state of all other
+    MASTER signals are undefined in response to a reset cycle.
 
-OBSERVATION 3.05
-    On MASTER interfaces [STB_O] and [CYC_O] may be asserted beginning at the rising [CLK_I] edge following the negation of [RST_I].
+**OBSERVATION 3.05**
+    On MASTER interfaces [STB_O] and [CYC_O] may be asserted beginning
+    at the rising [CLK_I] edge following the negation of [RST_I].
 
-OBSERVATION 3.10
-    SLAVE interfaces automatically negate [ACK_O], [ERR_O] and [RTY_O] when their [STB_I] is negated.
+**OBSERVATION 3.10**
+    SLAVE interfaces automatically negate [ACK_O], [ERR_O] and [RTY_O]
+    when their [STB_I] is negated.
 
-RECOMENDATION 3.00
-    Design SYSCON modules so that they assert [RST_O] during a power-up condition.
-    [RST_O] should remain asserted until all voltage levels and clock frequencies in the system are stabilized.
-    When negating [RST_O], do so in a synchronous manner that conforms to this specification.
+**RECOMENDATION 3.00**
+    Design SYSCON modules so that they assert [RST_O] during a
+    power-up condition.  [RST_O] should remain asserted until all
+    voltage levels and clock frequencies in the system are stabilized.
+    When negating [RST_O], do so in a synchronous manner that conforms
+    to this specification.
 
-OBSERVATION 3.15
-    If a gated clock generator is used, and if the clock is stopped, then the WISHBONE interface is not capable of responding to its [RST_I] signal.
+**OBSERVATION 3.15**
+    If a gated clock generator is used, and if the clock is stopped,
+    then the WISHBONE interface is not capable of responding to its
+    [RST_I] signal.
 
-SUGGESTION 3.00
-    Some circuits require an asynchronous reset capability.
-    If an IP core or other SoC component requires an asynchronous reset, then define it as a non-WISHBONE signal.
-    This prevents confusion with the WISHBONE reset [RST_I] signal that uses a purely synchronous protocol, and needs to be applied to the WISHBONE interface only.
+**SUGGESTION 3.00**
+    Some circuits require an asynchronous reset capability.  If an IP
+    core or other SoC component requires an asynchronous reset, then
+    define it as a non-WISHBONE signal.  This prevents confusion with
+    the WISHBONE reset [RST_I] signal that uses a purely synchronous
+    protocol, and needs to be applied to the WISHBONE interface only.
 
-OBSERVATION 3.20
-    All WISHBONE interfaces respond to the reset signal.
-    However, the IP Core connected to a WISHBONE interface does not necessarily need to respond to the reset signal.
+**OBSERVATION 3.20**
+    All WISHBONE interfaces respond to the reset signal.  However, the
+    IP Core connected to a WISHBONE interface does not necessarily
+    need to respond to the reset signal.
 
 Transfer Cycle initiation
 `````````````````````````
 
 MASTER interfaces initiate a transfer cycle by asserting [CYC_O].
-When [CYC_O] is negated, all other MASTER signals are invalid.
-SLAVE interfaces respond to other SLAVE signals only when [CYC_I] is asserted.
-SYSCON signals and responses to SYSCON signals are not affected.
+When [CYC_O] is negated, all other MASTER signals are invalid.  SLAVE
+interfaces respond to other SLAVE signals only when [CYC_I] is
+asserted.  SYSCON signals and responses to SYSCON signals are not
+affected.
 
-RULE 3.25
-    MASTER interfaces MUST assert [CYC_O] for the duration of SINGLE READ / WRITE, BLOCK and RMW cycles.
-    [CYC_O] MUST be asserted no later than the rising [CLK_I] edge that qualifies the assertion of [STB_O].
-    [CYC_O] MUST be negated no earlier than the rising [CLK_I] edge that qualifies the negation of [STB_O].
+**RULE 3.25**
+    MASTER interfaces MUST assert [CYC_O] for the duration of SINGLE
+    READ / WRITE, BLOCK and RMW cycles.  [CYC_O] MUST be asserted no
+    later than the rising [CLK_I] edge that qualifies the assertion of
+    [STB_O].  [CYC_O] MUST be negated no earlier than the rising
+    [CLK_I] edge that qualifies the negation of [STB_O].
 
-PERMISSION 3.05
+**PERMISSION 3.05**
     MASTER interfaces MAY assert [CYC_O] indefinitely.
 
-RECOMMENDATION 3.05
-    Arbitration logic often uses [CYC_I] to select between MASTER interfaces.
-    Keeping [CYC_O] asserted may lead to arbitration problems.
-    It is therefore recommended that [CYC_O] is not indefinitely asserted.
+**RECOMMENDATION 3.05**
+    Arbitration logic often uses [CYC_I] to select between MASTER
+    interfaces.  Keeping [CYC_O] asserted may lead to arbitration
+    problems.  It is therefore recommended that [CYC_O] is not
+    indefinitely asserted.
 
-RULE 3.30
-    SLAVE interfaces MAY NOT respond to any SLAVE signals when [CYC_I] is negated.
-    However, SLAVE interfaces MUST always respond to SYSCON signals.
+**RULE 3.30**
+    SLAVE interfaces MAY NOT respond to any SLAVE signals when [CYC_I]
+    is negated.  However, SLAVE interfaces MUST always respond to
+    SYSCON signals.
 
 Handshaking Protocol
 ````````````````````
@@ -126,24 +162,24 @@ sampled. If it is asserted, then [STB_O] is negated. This gives both
 MASTER and SLAVE interfaces the possibility to control the rate at
 which data is transferred.
 
-PERMISSION 3.10
+**PERMISSION 3.10**
   If the SLAVE guarantees it can keep pace with all MASTER interfaces
   and if the [ERR_I] and [RTY_I] signals are not used, then the SLAVE’s
   [ACK_O] signal MAY be tied to the logical AND of the SLAVE’s [STB_I]
   and [CYC_I] inputs. The interface will function normally under these
   circumstances.
 
-OBSERVATION 3.25
+**OBSERVATION 3.25**
   SLAVE interfaces assert a cycle termination signal in response to
   [STB_I]. However, [STB_I] is only valid when [CYC_I] is valid.  RULE
   3.35 The cycle termination signals [ACK_O], [ERR_O], and [RTY_O] must
   be generated in response to the logical AND of [CYC_I] and [STB_I].
 
-PERMISSION 3.15
-  Other signals, besides [CYC_I] and [STB_I], MAY be included in the generation of the cycle
-  termination signals.
+**PERMISSION 3.15**
+  Other signals, besides [CYC_I] and [STB_I], MAY be included in the
+  generation of the cycle termination signals.
 
-OBSERVATION 3.30
+**OBSERVATION 3.30**
   Internal SLAVE signals also determine what cycle termination signal is
   asserted and when it is asserted.
 
@@ -171,34 +207,34 @@ cases SLAVE circuitry asserts [RTY_I] if the local resource is
 busy. This specification does not dictate when or how the MASTER will
 respond to [RTY_I].
 
-RULE 3.40
+**RULE 3.40**
   As a minimum, the MASTER interface MUST include the following signals:
   [ACK_I], [CLK_I], [CYC_O], [RST_I], and [STB_O]. As a minimum, the
   SLAVE interface MUST include the following signals: [ACK_O],
   [CLK_I], [CYC_I], [STB_I], and [RST_I]. All other signals are optional.
 
-PERMISSION 3.20
+**PERMISSION 3.20**
   MASTER and SLAVE interfaces MAY be designed to support the [ERR_I] and
   [ERR_O] signals. In these cases, the SLAVE asserts [ERR_O] to
   indicate that an error has occurred during the bus cycle. This
   specification does not dictate what the MASTER does in response to
   [ERR_I].
 
-PERMISSION 3.25
+**PERMISSION 3.25**
   MASTER and SLAVE interfaces MAY be designed to support the [RTY_I] and
   [RTY_O] signals. In these cases, the SLAVE asserts [RTY_O] to
   indicate that the interface is busy, and that the bus cycle should be
   retried at a later time. This specification does not dictate what the
   MASTER will do in response to [RTY_I].
 
-RULE 3.45
+**RULE 3.45**
   If a SLAVE supports the [ERR_O] or [RTY_O] signals, then the SLAVE
   MUST NOT assert more than one of the following signals at any time:
   [ACK_O], [ERR_O] or [RTY_O].  OBSERVATION 3.35 If the SLAVE supports
   the [ERR_O] or [RTY_O] signals, but the MASTER does not support these
   signals, deadlock may occur.
 
-RECOMMENDATION 3.10
+**RECOMMENDATION 3.10**
   Design INTERCON modules to prevent deadlock conditions. One solution
   to this problem is to include a watchdog timer function that monitors
   the MASTER’s [STB_O] signal, and asserts [ERR_I] or [RTY_I] if the
@@ -206,7 +242,7 @@ RECOMMENDATION 3.10
   be designed to disconnect interfaces from the WISHBONE bus if they
   constantly generate bus errors and/or watchdog time-outs.
 
-RECOMMENDATION 3.15
+**RECOMMENDATION 3.15**
   Design WISHBONE MASTER interfaces so that there are no intermediate
   logic gates between a registered flip-flop and the signal outputs on
   [STB_O] and [CYC_O]. Delay timing for [STB_O] and [CYC_O] are very
@@ -214,28 +250,28 @@ RECOMMENDATION 3.15
   design practices from slowing down the interconnect because of added
   delays on these two signals.
 
-RULE 3.50
+**RULE 3.50**
   SLAVE interfaces MUST be designed so that the [ACK_O], [ERR_O], and
   [RTY_O] signals are asserted and negated in response to the assertion
   and negation of [STB_I].
 
-PERMISSION 3.30
+**PERMISSION 3.30**
   The assertion of [ACK_O], [ERR_O], and [RTY_O] MAY be asynchronous to
   the [CLK_I] signal (i.e. there is a combinatorial logic path between
   [STB_I] and [ACK_O]).
 
-OBSERVATION 3.40
+**OBSERVATION 3.40**
   The asynchronous assertion of [ACK_O], [ERR_O], and [RTY_O] assures
   that the interface can accomplish one data transfer per clock
   cycle. Furthermore, it simplifies the design of arbiters in
   multi-MASTER applications.
 
-OBSERVATION 3.45
+**OBSERVATION 3.45**
   The asynchronous assertion of [ACK_O], [ERR_O], and [RTY_O] could
   proof impossible to implement. For example slave wait states are
   easiest implemented using a registered [ACK_O] signal.
 
-OBSERVATION 3.50
+**OBSERVATION 3.50**
   In large high speed designs the asynchronous assertion of [ACK_O],
   [ERR_O], and [RTY_O] could lead to unacceptable delay times, caused by
   the loopback delay from the MASTER to the SLAVE and back to the
@@ -244,28 +280,28 @@ OBSERVATION 3.50
   additional wait state per transfer. See WISHBONE Registered Feedback
   Bus Cycles for methods of eliminating the wait state.
 
-PERMISSION 3.35
+**PERMISSION 3.35**
   Under certain circumstances SLAVE interfaces MAY be designed to hold
   [ACK_O] in the asserted state. This situation occurs on
   point-to-point interfaces where there is a single SLAVE on the
   interface, and that SLAVE always operates without wait states.
 
-RULE 3.55
+**RULE 3.55**
   MASTER interfaces MUST be designed to operate normally when the SLAVE
   interface holds [ACK_I] in the asserted state.
 
 Use of [STB_O]
 ``````````````
 
-RULE 3.60
+**RULE 3.60**
   MASTER interfaces MUST qualify the following signals with [STB_O]:
   [ADR_O], [DAT_O()], [SEL_O()], [WE_O], and [TAGN_O].
 
-PERMISSION 3.40
+**PERMISSION 3.40**
   If a MASTER doesn’t generate wait states, then [STB_O] and [CYC_O] MAY
   be assigned the same signal.
 
-OBSERVATION 3.55
+**OBSERVATION 3.55**
   [CYC_O] needs to be asserted during the entire transfer cycle. A
   MASTER that doesn’t generate wait states doesn’t negate [STB_O] during
   a transfer cycle, i.e. it is asserted the entire transfer
@@ -275,7 +311,7 @@ OBSERVATION 3.55
 Use of [ACK_O], [ERR_O] and [RTY_O]
 ```````````````````````````````````
 
-RULE 3.65
+**RULE 3.65**
   SLAVE interfaces MUST qualify the following signals with [ACK_O],
   [ERR_O] or [RTY_O]: [DAT_O()].
 
@@ -322,16 +358,16 @@ timing of [PAR_O]:
   MASTER TAG TYPE:
     TGD_O()
 
-RULE 3.70
+**RULE 3.70**
   All user defined tags MUST be assigned a TAG TYPE. Furthermore, they
   MUST adhere to the timing specifications given in this document for
   the indicated TAG TYPE.
 
-PERMISSION 3.45
+**PERMISSION 3.45**
   While all TAG TYPES are specified as arrays (with parenthesis ‘()’),
   the actual tag MAY be a non-arrayed signal.
 
-RECOMMENDATION 3.15
+**RECOMMENDATION 3.15**
   If a MASTER interface supports more than one defined bus cycle over
   a common set of signal lines, then include a cycle tag to identify
   each type of bus cycle. This allows INTERCON and SLAVE interface
@@ -349,12 +385,12 @@ WISHBONE interconnect.  Note that the [CYC_O] signal isn’t shown here
 to keep the timing diagrams as simple as possible. It is assumed
 that [CYC_O] is continuously asserted.
 
-RULE 3.75
+**RULE 3.75**
   All MASTER and SLAVE interfaces that support SINGLE READ or SINGLE
   WRITE cycles MUST conform to the timing requirements given in sections
   3.2.1 and 3.2.2.
 
-PERMISSION 3.50
+**PERMISSION 3.50**
   MASTER and SLAVE interfaces MAY be designed so that they do not
   support the SINGLE READ or SINGLE WRITE cycles.
 
@@ -458,11 +494,11 @@ asserted, as is shown.  During each of the data transfer phases
 (within the block transfer), the normal handshaking protocol between
 [STB_O] and [ACK_I] is maintained.
 
-RULE 3.80
+**RULE 3.80**
   All MASTER and SLAVE interfaces that support BLOCK cycles MUST conform
   to the timing requirements given in sections 3.3.1 and 3.3.2.
 
-PERMISSION 3.55
+**PERMISSION 3.55**
   MASTER and SLAVE interfaces MAY be designed so that they do not
   support the BLOCK cycles.
 
@@ -695,11 +731,11 @@ transfer is performed. During the second half of the cycle a write
 data transfer is performed. The [CYC_O] signal remains asserted during
 both halves of the cycle.
 
-RULE 3.85
+**RULE 3.85**
   All MASTER and SLAVE interfaces that support RMW cycles MUST conform
   to the timing requirements given in section 3.4.
 
-PERMISSION 3.60
+**PERMISSION 3.60**
   MASTER and SLAVE interfaces MAY be designed so that they do not
   support the RMW cycles.
 
@@ -832,7 +868,7 @@ transferred at the lower address, and the most significant DWORD
 transferred at the upper address. A similar situation applies to the
 WORD and BYTE cases.
 
-RULE 3.90
+**RULE 3.90**
   Data organization MUST conform to the ordering indicated in Figure 3-9.
 
 Transfer Sequencing
@@ -844,11 +880,11 @@ through a 32-bit port will take two bus cycles. However, the
 specification does not require that the lower or upper DWORD be
 transferred first.
 
-RECOMMENDATION 3.20
+**RECOMMENDATION 3.20**
   Design interfaces so that data is transferred sequentially from lower
   addresses to higher addresses.
 
-OBSERVATION 3.60
+**OBSERVATION 3.60**
   The sequence in which an operand is transferred through a data port is
   not highly regulated by the specification. That is because different
   IP cores may produce the data in different ways. The sequence is
@@ -857,25 +893,25 @@ OBSERVATION 3.60
 Data Organization for 64-bit Ports
 ``````````````````````````````````
 
-RULE 3.95
+**RULE 3.95**
   Data organization on 64-bit ports MUST conform to Figure 3-12.
 
 Data Organization for 32-bit Ports
 ``````````````````````````````````
 
-RULE 3.100
+**RULE 3.100**
   Data organization on 32-bit ports MUST conform to Figure 3-13.
 
 Data Organization for 16-bit Ports
 ``````````````````````````````````
 
-RULE 3.105
+**RULE 3.105**
   Data organization on 16-bit ports MUST conform to Figure 3-14.
 
 Data Organization for 8-bit Ports
 `````````````````````````````````
 
-RULE 3.1010
+**RULE 3.1010**
   Data organization on 8-bit ports MUST conform to Figure 3-15.
 
 References
