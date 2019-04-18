@@ -63,3 +63,7 @@ html_static_path = ['_static']
 # -- Options Latex
 
 latex_elements = { 'pointsize': '12pt' }
+
+latex_documents = [
+    ("index", 'wishbone-b3.tex', '', '', 'manual')
+]
