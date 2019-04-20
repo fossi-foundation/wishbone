@@ -555,13 +555,28 @@ example, if the SLAVE is a shared (dual port) memory, then an arbiter
 for that memory can determine when one MASTER is done with it so that
 another can gain access to the memory.
 
-As shown in Figure 3-5, the [CYC_O] signal is asserted for the
-duration of a BLOCK cycle.  This signal can be used to request
+As shown in :numref:`cycduringblock`, the [CYC_O] signal is asserted
+for the duration of a BLOCK cycle.  This signal can be used to request
 permission to access a shared resource from a local arbiter. To hold
 the access until the end of the cycle the [LOCK_O] signal must be
 asserted, as is shown.  During each of the data transfer phases
 (within the block transfer), the normal handshaking protocol between
 [STB_O] and [ACK_I] is maintained.
+
+.. _cycduringblock:
+.. wavedrom::
+   :caption: Use of [CYC_O] signal during BLOCK cycles.
+
+   {"signal": [
+      {"name": "CLK_I", "wave": "P||.|||" },
+      {"name": "LOCK_O", "wave": "0.<1|>.<.|>...<.|>.<.|><.0>..", "period": 0.5 },
+      {"name": "CYC_O", "wave": "0.<1|>.<.|>...<.|>.<.|><.0>..", "period": 0.5 },
+      {"name": "STB_O", "wave": "0.<1|>.<0|>...<1|>.<0|>...", "period": 0.5 },
+      {"name": "ACK_I", "wave": "0.<.|><.1><0|>...<.|><.1><0|>...", "period": 0.5 }
+    ],
+    "config": { "hscale": 2, "skin": "narrow" },
+    "head": { "tick": 0 }
+   }
 
 **RULE 3.80**
   All MASTER and SLAVE interfaces that support BLOCK cycles MUST conform
