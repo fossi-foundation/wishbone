@@ -385,7 +385,7 @@ The WISHBONE logo can be affixed to SoC documents that are compatible with this 
 `logo`_ shows the logo.
 
 .. _logo:
-.. figure:: _static/wishbone_stamp.pdf
+.. figure:: _static/wishbone_stamp.*
 
    WISHBONE Logo.
 
