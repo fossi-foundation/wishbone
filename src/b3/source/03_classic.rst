@@ -448,6 +448,33 @@ CLOCK EDGE 1:
   SLAVE negates [ACK_I] in response to negated [STB_O].
 
 
+.. wavedrom::
+   :caption: SINGLE READ cycle.
+
+   { "signal": [
+     ["Master Signals",
+       { "name": "CLK_I",  "wave": "P|.", "label": ".{WSS}(0.45)." },
+       { "name": "ADR_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"] },
+       { "name": "DAT_I()", "wave": "x.<.|>=.x", "period": 0.5, "data": ["VALID"] },
+       { "name": "DAT_O()", "wave": "x.<.|>...", "period": 0.5 },
+       { "name": "WE_O", "wave": "x.<0|>..x", "period": 0.5 },
+       { "name": "SEL_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"] },
+       { "name": "STB_O", "wave": "0.<1|>..0", "period": 0.5 },
+       { "name": "CYC_O", "wave": "0.<1|>..0", "period": 0.5  },
+       { "name": "ACK_I", "wave": "0.<.|>1.0", "period": 0.5 }
+       ],
+     ["Tag Types (M)",
+       { "name": "TAG_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  },
+       { "name": "TGD_I()", "wave": "x.<.|>=.x", "period": 0.5, "data": ["VALID"]  },
+       { "name": "TGD_O()", "wave": "x.<.|>...", "period": 0.5  },
+       { "name": "TGC_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  }
+     ]
+          ],
+	  "config": { "hscale": 2 },
+	  "head": { "tick": 0 }
+	}
+
+
 SINGLE WRITE Cycle
 ``````````````````
 
