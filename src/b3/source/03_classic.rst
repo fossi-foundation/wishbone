@@ -413,7 +413,7 @@ that [CYC_O] is continuously asserted.
 SINGLE READ Cycle
 `````````````````
 
-Figure 3-3 shows a SINGLE READ cycle. The bus protocol works as follows:
+:numref:`singlereadcycle` shows a SINGLE READ cycle. The bus protocol works as follows:
 
 CLOCK EDGE 0:
   MASTER presents a valid address on [ADR_O()] and [TGA_O()].
@@ -447,7 +447,7 @@ CLOCK EDGE 1:
 
   SLAVE negates [ACK_I] in response to negated [STB_O].
 
-
+.. _singlereadcycle:
 .. wavedrom::
    :caption: SINGLE READ cycle.
 
@@ -474,11 +474,10 @@ CLOCK EDGE 1:
 	  "head": { "tick": 0 }
 	}
 
-
 SINGLE WRITE Cycle
 ``````````````````
 
-Figure 3-4 shows a SINGLE WRITE cycle. The bus protocol works as follows:
+:numref:`singlewritecycle` shows a SINGLE WRITE cycle. The bus protocol works as follows:
 
 CLOCK EDGE 0:
   MASTER presents a valid address on [ADR_O()] and [TGA_O()].
@@ -512,6 +511,33 @@ CLOCK EDGE 1:
   MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.
 
   SLAVE negates [ACK_I[ in response to negated [STB_O].
+
+.. _singlewritecycle:
+.. wavedrom::
+   :caption: SINGLE WRITE cycle.
+
+   { "signal": [
+     ["Master Signals",
+       { "name": "CLK_I",  "wave": "P|.", "label": ".{WSS}(0.45)." },
+       { "name": "ADR_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"] },
+       { "name": "DAT_I()", "wave": "x.<.|>...", "period": 0.5 },
+       { "name": "DAT_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"] },
+       { "name": "WE_O", "wave": "x.<1|>..x", "period": 0.5 },
+       { "name": "SEL_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"] },
+       { "name": "STB_O", "wave": "0.<1|>..0", "period": 0.5 },
+       { "name": "CYC_O", "wave": "0.<1|>..0", "period": 0.5  },
+       { "name": "ACK_I", "wave": "0.<.|>1.0", "period": 0.5 }
+       ],
+     ["Tag Types (M)",
+       { "name": "TAG_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  },
+       { "name": "TGD_I()", "wave": "x.<.|>...", "period": 0.5  },
+       { "name": "TGD_O()", "wave": "x.<.|>=.x", "period": 0.5, "data": ["VALID"]  },
+       { "name": "TGC_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  }
+     ]
+          ],
+	  "config": { "hscale": 2 },
+	  "head": { "tick": 0 }
+	}
 
 BLOCK READ / WRITE Cycles
 -------------------------
