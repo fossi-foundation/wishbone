@@ -529,7 +529,7 @@ CLOCK EDGE 1:
        { "name": "ACK_I", "wave": "0.<.|>1.0", "period": 0.5 }
        ],
      ["Tag Types (M)",
-       { "name": "TAG_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  },
+       { "name": "TGA_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  },
        { "name": "TGD_I()", "wave": "x.<.|>...", "period": 0.5  },
        { "name": "TGD_O()", "wave": "x.<.|>=.x", "period": 0.5, "data": ["VALID"]  },
        { "name": "TGC_O()", "wave": "x.<=|>..x", "period": 0.5, "data": ["VALID"]  }
@@ -715,7 +715,7 @@ CLOCK EDGE 6:
        {"name": "STB_O", "wave": "0.1...<0|>.1...<.|>.0.", "period": 0.5 },
        {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 }
      ], ["Tag Types (M)",
-       {"name": "TAG_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "TGA_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGD_I()", "wave": "x..2x3<x|>x.4x5<x|>5x.", "period": 0.5 },
        {"name": "TGD_O()", "wave": "x..|..|." },
        {"name": "TGC_O()", "wave": "x=.|..|x" }
@@ -840,7 +840,7 @@ CLOCK EDGE 6:
      ["Master Signals",
        {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
        {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
-       {"name": "DAT_I()", "wave": "x..|..|.", "period": 0.5 },
+       {"name": "DAT_I()", "wave": "x..|..|." },
        {"name": "DAT_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "WE_O", "wave": "x1.|..|x" },
        {"name": "SEL_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
@@ -848,7 +848,7 @@ CLOCK EDGE 6:
        {"name": "STB_O", "wave": "0.1...<0|>.1...<.|>.0.", "period": 0.5 },
        {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 }
      ], ["Tag Types (M)",
-       {"name": "TAG_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "TGA_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGD_I()", "wave": "x..|..|." },
        {"name": "TGD_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGC_O()", "wave": "x=.|..|x" }
