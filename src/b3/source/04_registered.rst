@@ -6,13 +6,16 @@ Introduction, Synchronous vs. Asynchronous cycle termination
 
 To achieve the highest possible throughput, WISHBONE Classic requires
 asynchronous cycle termination signals. This results in an
-asynchronous loop from the MASTER, through the INTERCONN to the
-SLAVE, and then from the SLAVE through the INTERCONN back to the
-MASTER, as shown in figure 4-1. In large System-on-Chip devices this
+asynchronous loop from the MASTER, through the INTERCONN to the SLAVE,
+and then from the SLAVE through the INTERCONN back to the MASTER, as
+shown in :numref:`asyncterm`. In large System-on-Chip devices this
 routing delay between MASTER and SLAVE is the dominant timing
 factor. This is especially true for deep sub-micron technologies.
 
-Figure 4-1 Asynchronous cycle termination path
+.. _asyncterm:
+.. figure:: _static/asyncterm.*
+
+   Asynchronous cycle termination path
 
 The simplest solution for reducing the delay is to cut the loop, by
 using synchronous cycle termination signals. However, this
