@@ -704,9 +704,9 @@ PERMISSION 4.45
   the termination signal for the next cycle as soon as the current
   cycle terminates.
 
-:numref:`burst` shows a 4-beat wrapped INCREMENTING BURST read cycle. A
-total of four transfers are shown. The protocol for this cycle works
-as follows:
+:numref:`burst` shows a 4-beat wrapped INCREMENTING BURST read
+cycle. A total of four transfers are shown. The protocol for this
+cycle works as follows:
 
 CLOCK EDGE 0:
   MASTER presents [ADR_O()]
@@ -803,8 +803,7 @@ CLOCK, EDGE 5:
 
 .. _burst:
 .. wavedrom::
-   :caption: Figure 4-8 4-beat wrapped incrementing burst for a 32bit
-             data array
+   :caption: 4-beat wrapped incrementing burst for a 32bit data array
 
    {"signal": [
      {"name": "CLK_I",   "wave": "P......" },
