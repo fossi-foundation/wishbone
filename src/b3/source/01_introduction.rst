@@ -655,7 +655,13 @@ Negated
 
 Off-Chip Interconnection
   An off-chip interconnection is used when a WISHBONE interface extends
-  off-chip. See Figure 1-6.
+  off-chip. See :numref:`offchip`.
+
+.. _offchip:
+.. figure:: _static/offchip.*
+
+   Off-chip interconnection.
+
 
 Operand Size
   The operand size is the largest single unit of data that is moved
