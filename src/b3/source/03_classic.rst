@@ -728,14 +728,14 @@ CLOCK EDGE 6:
 BLOCK WRITE Cycle
 `````````````````
 
-Figure 3-7 shows a BLOCK WRITE cycle. The BLOCK cycle is capable of a
-data transfer on every clock cycle. However, this example also shows
-how the MASTER and the SLAVE interfaces can both throttle the bus
-transfer rate by inserting wait states. A total of five transfers are
-shown. After the second transfer the MASTER inserts a wait
-state. After the fourth transfer the SLAVE inserts a wait state. The
-cycle is terminated after the fifth transfer. The protocol for this
-transfer works as follows:
+:numref:`blockwritecycle` shows a BLOCK WRITE cycle. The BLOCK cycle
+is capable of a data transfer on every clock cycle. However, this
+example also shows how the MASTER and the SLAVE interfaces can both
+throttle the bus transfer rate by inserting wait states. A total of
+five transfers are shown. After the second transfer the MASTER inserts
+a wait state. After the fourth transfer the SLAVE inserts a wait
+state. The cycle is terminated after the fifth transfer. The protocol
+for this transfer works as follows:
 
 CLOCK EDGE 0:
   MASTER presents [ADR_O()] and [TGA_O()].
@@ -831,6 +831,32 @@ CLOCK EDGE 6:
   SLAVE latches data on [DAT_O()] and [TGD_O()].
 
   MASTER terminates cycle by negating [STB_O] and [CYC_O].
+
+.. _blockwritecycle:
+.. wavedrom::
+   :caption: BLOCK WRITE cycle.
+
+   {"signal": [
+     ["Master Signals",
+       {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
+       {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "DAT_I()", "wave": "x..|..|.", "period": 0.5 },
+       {"name": "DAT_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "WE_O", "wave": "x1.|..|x" },
+       {"name": "SEL_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01.|..|0" },
+       {"name": "STB_O", "wave": "0.1...<0|>.1...<.|>.0.", "period": 0.5 },
+       {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 }
+     ], ["Tag Types (M)",
+       {"name": "TAG_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "TGD_I()", "wave": "x..|..|." },
+       {"name": "TGD_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
+       {"name": "TGC_O()", "wave": "x=.|..|x" }
+      ]
+    ],
+    "config": { "hscale": 2, "skin": "narrow" },
+    "head": { "tick": 0 }
+   }
 
 RMW Cycle
 ---------
