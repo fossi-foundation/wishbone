@@ -717,7 +717,7 @@ CLOCK EDGE 6:
      ], ["Tag Types (M)",
        {"name": "TAG_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGD_I()", "wave": "x..2x3<x|>x.4x5<x|>5x.", "period": 0.5 },
-       {"name": "TGD_O()", "wave": "x......." },
+       {"name": "TGD_O()", "wave": "x..|..|." },
        {"name": "TGC_O()", "wave": "x=.|..|x" }
       ]
     ],
