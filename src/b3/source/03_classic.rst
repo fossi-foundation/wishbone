@@ -875,13 +875,13 @@ both halves of the cycle.
   MASTER and SLAVE interfaces MAY be designed so that they do not
   support the RMW cycles.
 
-Figure 3-8 shows a read-modify-write (RMW) cycle. The RMW cycle is
-capable of a data transfer on every clock cycle. However, this
-example also shows how the MASTER and the SLAVE interfaces can both
-throttle the bus transfer rate by inserting wait states. Two transfers
-are shown. After the first (read) transfer, the MASTER inserts a wait
-state. During the second transfer the SLAVE inserts a wait
-state. The protocol for this transfer works as follows:
+:numref:`rmwcycle` shows a read-modify-write (RMW) cycle. The RMW
+cycle is capable of a data transfer on every clock cycle. However,
+this example also shows how the MASTER and the SLAVE interfaces can
+both throttle the bus transfer rate by inserting wait states. Two
+transfers are shown. After the first (read) transfer, the MASTER
+inserts a wait state. During the second transfer the SLAVE inserts a
+wait state. The protocol for this transfer works as follows:
 
 CLOCK EDGE 0:
   MASTER presents [ADR_O()] and [TGA_O()].
@@ -943,6 +943,32 @@ CLOCK EDGE 3:
   MASTER negates [STB_O] and [CYC_O] indicating the end of the cycle.
 
   SLAVE negates [ACK_I] in response to negated [STB_O].
+
+.. _rmwcycle:
+.. wavedrom::
+   :caption: RMW cycle.
+
+   {"signal": [
+     ["Master Signals",
+       {"name": "CLK_I", "wave": "P.|.|.", "labels": "..{WSM}(0.45).{WSS}(0.45)." },
+       {"name": "ADR_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
+       {"name": "DAT_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
+       {"name": "DAT_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
+       {"name": "WE_O",    "wave": "x.0.<x|>...<1|>.x.", "period": 0.5 },
+       {"name": "SEL_O()", "wave": "x.2.<x|>...<2|>.x.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01|.|0" },
+       {"name": "STB_O", "wave": "x.1.<0|>...<1|>.x.", "period": 0.5 },
+       {"name": "ACK_I", "wave": "x..2<x|>...<x|>2x.", "period": 0.5 }
+     ], ["Tag Types (M)",
+       {"name": "TGA_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
+       {"name": "TGD_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
+       {"name": "TGD_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
+       {"name": "TGC_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 }
+      ]
+    ],
+    "config": { "hscale": 2, "skin": "narrow" },
+    "head": { "tick": 0 }
+   }
 
 Data Organization
 -----------------
