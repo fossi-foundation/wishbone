@@ -704,8 +704,13 @@ Phase (Bus Cycle)
 Point-to-point Interconnection
   1. An interconnection system that supports a single WISHBONE MASTER
      and a single WISHBONE SLAVE interface. It is the simplest way to
-     connect two cores. See Figure 1-7.
+     connect two cores. See :numref:`p2p`.
   2. A connection with only two endpoints.
+
+.. _p2p:
+.. figure:: _static/p2p.*
+
+   Point-to-point interconnection.
 
 Port Size
   The width of the WISHBONE data ports in bits. Also see: granularity
