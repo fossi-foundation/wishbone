@@ -486,8 +486,13 @@ Data Flow Interconnection
   An interconnection where data flows through a prearranged set of IP
   cores in a sequential order.  Data flow architectures often have the
   advantage of parallelism, whereby two or more functions are executed
-  at the same time. Figure 1-5 shows a data flow interconnection between
-  IP cores.
+  at the same time. :numref:`dataflow` shows a data flow
+  interconnection between IP cores.
+
+.. _dataflow:
+.. figure:: _static/dataflow.*
+
+   Data flow interconnection.
 
 Data Organization
   The ordering of data during a transfer. Generally, 8-bit (byte) data
