@@ -1015,7 +1015,7 @@ interface. For example, the smallest operand that can be passed
 through a port with 16-bit granularity is a 16-bit WORD. In this case,
 an 8-bit operand cannot be transferred.
 
-Figure 3-10 shows an example of how the 64-bit value of
+:numref:`bigendian` shows an example of how the 64-bit value of
 0x0123456789ABCDEF is transferred through BYTE, WORD, DWORD and QWORD
 ports using BIG ENDIAN data organization.  Through the 64-bit QWORD
 port the number is directly transferred with the most significant bit
@@ -1027,7 +1027,13 @@ transferred at the lower address, and the least significant DWORD
 transferred at the upper address. A similar situation applies to the
 WORD and BYTE cases.
 
-Figure 3-11 shows an example of how the 64-bit value of
+.. _bigendian:
+.. figure:: _static/bigendian.*
+
+   Example showing a variety of BIG ENDIAN transfers over various port
+   sizes.
+
+:numref:`littleendian` shows an example of how the 64-bit value of
 0x0123456789ABC is transferred through BYTE, WORD, DWORD and QWORD
 ports using LITTLE ENDIAN data organization. Through the 64-bit QWORD
 port the number is directly transferred with the most significant bit
@@ -1039,8 +1045,15 @@ transferred at the lower address, and the most significant DWORD
 transferred at the upper address. A similar situation applies to the
 WORD and BYTE cases.
 
+.. _littleendian:
+.. figure:: _static/littleendian.*
+
+   Example showing a variety of LITTLE ENDIAN transfers over various port
+   sizes.
+
 **RULE 3.90**
-  Data organization MUST conform to the ordering indicated in Figure 3-9.
+  Data organization MUST conform to the ordering indicated in
+  :numref:`operands`.
 
 Transfer Sequencing
 ```````````````````
