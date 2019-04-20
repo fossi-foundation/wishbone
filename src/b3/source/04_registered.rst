@@ -522,15 +522,15 @@ PERMISSION 4.40
   the termination signal for the next cycle as soon as the current cycle
   terminates.
 
-Figure 4-7 shows a CONSTANT ADDRESS BURST write cycle. After the
-initial setup cycle, the Constant Address Burst cycle is capable of a
-data transfer on every clock cycle. However, this example also shows
-how the MASTER and the SLAVE interfaces can both throttle the bus
-transfer rate by inserting wait states. A total of four transfers are
-shown. After the first transfer the MASTER inserts a wait state. After
-the second transfer the SLAVE inserts a wait state. The cycle is
-terminated after the fourth transfer. The protocol for this transfer
-works as follows:
+:numref:`constantaddress` shows a CONSTANT ADDRESS BURST write
+cycle. After the initial setup cycle, the Constant Address Burst cycle
+is capable of a data transfer on every clock cycle. However, this
+example also shows how the MASTER and the SLAVE interfaces can both
+throttle the bus transfer rate by inserting wait states. A total of
+four transfers are shown. After the first transfer the MASTER inserts
+a wait state. After the second transfer the SLAVE inserts a wait
+state. The cycle is terminated after the fourth transfer. The protocol
+for this transfer works as follows:
 
 CLOCK EDGE 0:
   MASTER presents [ADR_O()].
@@ -634,6 +634,25 @@ CLOCK, EDGE 7:
 
   MASTER negates [CYC_O] and [STB_O] ending the burst cycle.
 
+.. _constantaddress:
+.. wavedrom::
+   :caption: Constant address burst
+
+   {"signal": [
+     {"name": "CLK_I",   "wave": "P..|.|..." },
+     {"name": "CTI_O()", "wave": "x2.|.|.2x", "data": ["001", "111"] },
+     {"name": "ADR_O()", "wave": "x2.|.|..x"},
+     {"name": "DAT_I()", "wave": "x..|.|..."},
+     {"name": "DAT_O()", "wave": "x.2...<x|>.2.<.|>.....x.", "period": 0.5},
+     {"name": "WE_O",    "wave": "x1.|.|..x"},
+     {"name": "SEL_O()", "wave": "x.2...<x|>.2.<.|>.....x.", "period": 0.5},
+     {"name": "CYC_O",   "wave": "01.|.|..0" },
+     {"name": "STB_O",   "wave": "0.1...<0|>.1.<.|>.....0.", "period": 0.5 },
+     {"name": "ACK_I",   "wave": "0...1.<.|>...<0|>.1...0.", "period": 0.5 }
+   ], "config": { "skin": "narrow", "hscale": 2 }, "head": { "tick": 0 }
+   }
+
+
 Incrementing Burst Cycle
 ````````````````````````
 
@@ -685,7 +704,7 @@ PERMISSION 4.45
   the termination signal for the next cycle as soon as the current
   cycle terminates.
 
-Figure 4-8 shows a 4-beat wrapped INCREMENTING BURST read cycle. A
+:numref:`burst` shows a 4-beat wrapped INCREMENTING BURST read cycle. A
 total of four transfers are shown. The protocol for this cycle works
 as follows:
 
@@ -781,3 +800,23 @@ CLOCK, EDGE 5:
   MASTER negates [CYC_O] and [STB_O] ending burst cycle
 
   SLAVE ends burst by negates [ACK_I]
+
+.. _burst:
+.. wavedrom::
+   :caption: Figure 4-8 4-beat wrapped incrementing burst for a 32bit
+             data array
+
+   {"signal": [
+     {"name": "CLK_I",   "wave": "P......" },
+     {"name": "CTI_O()", "wave": "x2...2x", "data": ["001", "111"] },
+     {"name": "BTE_O()", "wave": "x2....x", "data": "01"},
+     {"name": "DAT_O()", "wave": "x2.222x", "data": ["N+8", "N+C", "N", "N+4"]},
+     {"name": "DAT_I()", "wave": "x.2222x"},
+     {"name": "DAT_O()", "wave": "x......"},
+     {"name": "WE_O",    "wave": "x0....x"},
+     {"name": "SEL_O()", "wave": "x2....x"},
+     {"name": "CYC_O",   "wave": "01....0"},
+     {"name": "STB_O",   "wave": "01....0"},
+     {"name": "ACK_I",   "wave": "0.1...0"}
+   ], "head": { "tick": 0 }
+   }
