@@ -739,12 +739,18 @@ RTL
      represents a structural description of other RTL models.
 
 Shared Bus Interconnection
+
   The shared bus interconnection is a system where a MASTER initiates
   addressable bus cycles to a target SLAVE. Traditional buses such as
   VMEbus and PCI bus use this type of interconnec- tion. As a
   consequence of this architecture, only one MASTER at a time can use
-  the intercon- nection resource (i.e. bus). Figure 1-8 shows an example
-  of a WISHBONE shared bus inter- connection.
+  the interconnection resource (i.e. bus). Figure :numref:`sharedbus`
+  shows an example of a WISHBONE shared bus inter- connection.
+
+.. _sharedbus:
+.. figure:: _static/sharedbus.*
+
+   Shared bus interconnection.
 
 Silicon Foundry
   A factory that produces integrated circuits.
