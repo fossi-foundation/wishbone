@@ -60,6 +60,8 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+wavedrom_html_jsinline = False
+
 # -- Options Latex
 
 latex_elements = { 'pointsize': '12pt' }
