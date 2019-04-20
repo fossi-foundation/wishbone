@@ -986,8 +986,8 @@ Nomenclature
 
 A BYTE(N), WORD(N), DWORD(N) and QWORD(N) nomenclature is used to
 define data ordering. These terms are defined in
-:numref:`nomenclature`. Figure 3-9 shows the operand locations for
-input and output data ports.
+:numref:`nomenclature`. Figure :numref:`operands` shows the operand
+locations for input and output data ports.
 
 .. _nomenclature:
 .. table:: Data Transfer Nomenclature
@@ -1004,6 +1004,10 @@ input and output data ports.
    | QWORD(N)     | 64-bit      | A 64-bit Quadruple WORD transfer at address 'N'.|
    +--------------+-------------+-------------------------------------------------+
 
+.. _operands:
+.. figure:: _static/operands.*
+
+   Operand locations for input and output data ports.
 
 The table also defines the granularity of the interface. This
 indicates the minimum unit of data transfer that is supported by the
