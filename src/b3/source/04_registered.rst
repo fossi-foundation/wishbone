@@ -16,9 +16,20 @@ Figure 4-1 Asynchronous cycle termination path
 
 The simplest solution for reducing the delay is to cut the loop, by
 using synchronous cycle termination signals. However, this
-introduces a wait state for every transfer, as shown in figure 4-3.
+introduces a wait state for every transfer, as shown in :numref:`classicsync`.
 
-Figure 4-3 WISHBONE Classic synchronous cycle terminated burst
+.. _classicsync:
+.. wavedrom::
+   :caption: WISHBONE Classic synchronous cycle terminated burst
+
+   {"signal": [
+     {"name": "CLK_I", "wave": "P....." },
+     {"name": "ADR_I()", "wave": "x2.3.x", "data": ["N", "N+1"], "node": ".A.B.."},
+     {"name": "STB_I", "wave": "01...0" },
+     {"name": "ACK_O", "wave": "0.1010", "node": "..C.D.." }
+   ], "edge": ["A~>C", "B~>D"],
+   "head": { "tick": 0 }
+   }
 
 During cycle-1 the MASTER initiates a transfer. The addressed SLAVE
 responds in the next cycle with the assertion of ACK_O. During
@@ -33,7 +44,19 @@ the available bandwidth is useable. If the SLAVE would know in
 advance that it is being addressed again, it could already respond in
 cycle-3. Decreasing the amount of cycles needed to perform the
 transfers, and thus increasing throughput. The waveforms for that
-cycle are as shown in figure 4-4.
+cycle are as shown in :numref:`advancedsync`.
+
+.. _advancedsync:
+.. wavedrom::
+   :caption: Advanced synchronous terminated burst
+
+   {"signal": [
+     {"name": "CLK_I", "wave": "P...." },
+     {"name": "ADR_I()", "wave": "x2.3x", "data": ["N", "N+1"]},
+     {"name": "STB_I", "wave": "01..0" },
+     {"name": "ACK_O", "wave": "0.1.0" }
+   ], "head": { "tick": 0 }
+   }
 
 During cycle-1 the MASTER initiates a transfer. The addressed SLAVE
 responds in the next cycle with the assertion of ACK_O. The MASTER
@@ -266,7 +289,7 @@ OBSERVATION 4.05
   might be useful for arbitration logic, or to keep the buses from/to
   interfaces coherent.
 
-Figure 4-5 shows a Classic read cycle. A total of two transfers are
+:numref:`classicread` shows a Classic read cycle. A total of two transfers are
 shown. The cycle is terminated after the second transfer. The
 protocol for this cycle works as follows:
 
@@ -339,6 +362,25 @@ CLOCK EDGE 4:
 
   MASTER negates [CYC_O] and [STB_O] ending the cycle
 
+.. todo::
+   Does SEL_O really stay constant between accesses?
+
+.. _classicread:
+.. wavedrom::
+   :caption: Classic Cycle
+
+   {"signal": [
+     {"name": "CLK_I",   "wave": "P....." },
+     {"name": "CTI_O()", "wave": "x2...x", "data": "000" },
+     {"name": "ADR_O()", "wave": "x2.3.x"},
+     {"name": "DAT_I()", "wave": "x.2x3x"},
+     {"name": "DAT_O()", "wave": "x....."},
+     {"name": "SEL_O()", "wave": "x2...x"},
+     {"name": "CYC_O",   "wave": "01...0" },
+     {"name": "STB_O",   "wave": "01...0" },
+     {"name": "ACK_I",   "wave": "0.1010" }
+   ], "head": { "tick": 0 }
+   }
 
 End-Of-Burst
 ````````````
@@ -359,8 +401,8 @@ PERMISSION 4.40
 OBSERVATION 4.05
   A single access is in fact a burst with a burst length of one.
 
-Figure 4-6 demonstrates the usage of End-Of-Burst. A total of three
-transfers are shown. The first transfer is part of a WISHBONE
+:numref:`endofburst` demonstrates the usage of End-Of-Burst. A total
+of three transfers are shown. The first transfer is part of a WISHBONE
 Registered Feedback read burst. Transfer two is the last transfer of
 that burst. The burst is ended when the MASTER sets [CTI_O()] to
 End-Of-Burst (‘111’). The cycle is terminated after the third
@@ -443,6 +485,24 @@ CLOCK EDGE 3:
   SLAVE negates [ACK_I]
 
   MASTER negates [CYC_O] and [STB_O] ending the cycle.
+
+.. _endofburst:
+.. wavedrom::
+   :caption: End-of-Burst
+
+   {"signal": [
+     {"name": "CLK_I",   "wave": "P...." },
+     {"name": "CTI_O()", "wave": "234.x", "data": ["", "111", "111"] },
+     {"name": "ADR_O()", "wave": "234.x"},
+     {"name": "DAT_I()", "wave": "23x.."},
+     {"name": "DAT_O()", "wave": "xx4.x"},
+     {"name": "WE_O",    "wave": "0.1.0"},
+     {"name": "SEL_O()", "wave": "3.4.x"},
+     {"name": "CYC_O",   "wave": "1...0" },
+     {"name": "STB_O",   "wave": "1...0" },
+     {"name": "ACK_I",   "wave": "1.010" }
+   ], "head": { "tick": 0 }
+   }
 
 Constant Address Burst Cycle
 ````````````````````````````
