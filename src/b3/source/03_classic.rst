@@ -985,20 +985,25 @@ Nomenclature
 ````````````
 
 A BYTE(N), WORD(N), DWORD(N) and QWORD(N) nomenclature is used to
-define data ordering. These terms are defined in Table 3-1. Figure
-3-9 shows the operand locations for input and output data ports.
+define data ordering. These terms are defined in
+:numref:`nomenclature`. Figure 3-9 shows the operand locations for
+input and output data ports.
 
-+--------------+-------------+-------------------------------------------------+
-| Nomenclature | Granularity | Description                                     |
-+--------------+-------------+-------------------------------------------------+
-| BYTE(N)      | 8-bit       | An 8-bit BYTE transfer at address 'N'.          |
-+--------------+-------------+-------------------------------------------------+
-| WORD(N)      | 16-bit      | A 16-bit WORD transfer at address 'N'.          |
-+--------------+-------------+-------------------------------------------------+
-| DWORD(N)     | 32-bit      | A 32-bit Double WORD transfer at address 'N'.   |
-+--------------+-------------+-------------------------------------------------+
-| QWORD(N)     | 64-bit      | A 64-bit Quadruple WORD transfer at address 'N'.|
-+--------------+-------------+-------------------------------------------------+
+.. _nomenclature:
+.. table:: Data Transfer Nomenclature
+
+   +--------------+-------------+-------------------------------------------------+
+   | Nomenclature | Granularity | Description                                     |
+   +--------------+-------------+-------------------------------------------------+
+   | BYTE(N)      | 8-bit       | An 8-bit BYTE transfer at address 'N'.          |
+   +--------------+-------------+-------------------------------------------------+
+   | WORD(N)      | 16-bit      | A 16-bit WORD transfer at address 'N'.          |
+   +--------------+-------------+-------------------------------------------------+
+   | DWORD(N)     | 32-bit      | A 32-bit Double WORD transfer at address 'N'.   |
+   +--------------+-------------+-------------------------------------------------+
+   | QWORD(N)     | 64-bit      | A 64-bit Quadruple WORD transfer at address 'N'.|
+   +--------------+-------------+-------------------------------------------------+
+
 
 The table also defines the granularity of the interface. This
 indicates the minimum unit of data transfer that is supported by the
