@@ -458,16 +458,23 @@ BYTE
 
 Crossbar Interconnection (Crossbar Switch)
   Crossbar switches are mechanisms that allow modules to connect and
-  communicate. Each con- nection channel can be operated in parallel to
-  other connection channels. This increases the data transfer rate of
-  the entire system by employing parallelism. Stated another way, two
-  100 MByte/second channels can operate in parallel, thereby providing a
-  200 MByte/second transfer rate. This makes the crossbar switches
-  inherently faster than traditional bus schemes. Crossbar routing
-  mechanisms generally support dynamic configuration. This creates a
-  configurable and reliable network system. Most crossbar architectures
-  are also scalable, meaning that families of crossbars can be added as
-  the needs arise. A crossbar interconnection is shown in Figure 1-4.
+  communicate. Each con- nection channel can be operated in parallel
+  to other connection channels. This increases the data transfer rate
+  of the entire system by employing parallelism. Stated another way,
+  two 100 MByte/second channels can operate in parallel, thereby
+  providing a 200 MByte/second transfer rate. This makes the crossbar
+  switches inherently faster than traditional bus schemes. Crossbar
+  routing mechanisms generally support dynamic configuration. This
+  creates a configurable and reliable network system. Most crossbar
+  architectures are also scalable, meaning that families of crossbars
+  can be added as the needs arise. A crossbar interconnection is shown
+  in :numref:`crossbar`.
+
+.. _crossbar:
+.. figure:: _static/crossbar.*
+
+   Crossbar (switch) interconnection. (Note: Dotted lines indicate one
+   possible connection option).
 
 Cycle Tag
   One or more user defined signals that modify a WISHBONE bus cycle. For
