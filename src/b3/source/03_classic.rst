@@ -1089,7 +1089,12 @@ Data Organization for 32-bit Ports
 ``````````````````````````````````
 
 **RULE 3.100**
-  Data organization on 32-bit ports MUST conform to Figure 3-13.
+  Data organization on 32-bit ports MUST conform to :numref:`organization32`.
+
+.. _organization32:
+.. figure:: _static/organization32.*
+
+   Data organization for 32-bit ports.
 
 Data Organization for 16-bit Ports
 ``````````````````````````````````
