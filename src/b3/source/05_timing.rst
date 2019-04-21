@@ -10,9 +10,12 @@ the maximum clock frequency (for [CLK_I]) that is passed to a place &
 route tool. The maximum clock frequency is dictated by the time de-
 lay between a positive clock edge on [CLK_I] to the setup on a stage
 further down the logical signal path. This delay is shown graphically
-in Figure 5-1, and is defined as Tpd,clk-su.
+in :numref:`timing`, and is defined as Tpd,clk-su.
 
-Figure 5-1. Definition for Tpd,clk-su.
+.. _timing:
+.. figure:: _static/timing.*
+
+   Definition for Tpd,clk-su.
 
 RULE 5.00
   The clock input [CLK_I] to each IP core MUST coordinate all activities
