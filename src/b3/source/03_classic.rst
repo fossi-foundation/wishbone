@@ -1078,7 +1078,12 @@ Data Organization for 64-bit Ports
 ``````````````````````````````````
 
 **RULE 3.95**
-  Data organization on 64-bit ports MUST conform to Figure 3-12.
+  Data organization on 64-bit ports MUST conform to :numref:`organization64`.
+
+.. _organization64:
+.. figure:: _static/organization64.*
+
+   Data organization for 64-bit ports.
 
 Data Organization for 32-bit Ports
 ``````````````````````````````````
