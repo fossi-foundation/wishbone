@@ -1100,7 +1100,12 @@ Data Organization for 16-bit Ports
 ``````````````````````````````````
 
 **RULE 3.105**
-  Data organization on 16-bit ports MUST conform to Figure 3-14.
+  Data organization on 16-bit ports MUST conform to :numref:`organization16`.
+
+.. _organization16:
+.. figure:: _static/organization16.*
+
+   Data organization for 16-bit ports.
 
 Data Organization for 8-bit Ports
 `````````````````````````````````
