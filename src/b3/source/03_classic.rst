@@ -338,24 +338,27 @@ The WISHBONE interface can be modified with user defined signals. This
 is done with a technique known as tagging. Tags are a well known
 concept in the microcomputer bus industry.  They allow user defined
 information to be associated with an address, a data word or a bus
-cycle.  All tag signals must conform to set of guidelines known as TAG
-TYPEs. Table 3-1 lists all of the defined TAG TYPEs along with their
-associated data set and signal waveform. When a tag is added to an
-interface it is assigned a TAG TYPE from the table. This explicitly
-defines how the tag operates. This information must also be included
-in the WISHBONE DATASHEET.
+cycle. All tag signals must conform to set of guidelines known as TAG
+TYPEs. :numref:`tagtypes` lists all of the defined TAG TYPEs along
+with their associated data set and signal waveform. When a tag is
+added to an interface it is assigned a TAG TYPE from the table. This
+explicitly defines how the tag operates. This information must also be
+included in the WISHBONE DATASHEET.
 
-+------------------+----------+-----------------+----------+-----------------+
-| Description      | TAG TYPE | Associated with | TAG TYPE | Associated with |
-+------------------+----------+-----------------+----------+-----------------+
-| Address tag      | TGA_O()  |  ADR_O()        | TGA_I()  |  ADR_I()        |
-+------------------+----------+-----------------+----------+-----------------+
-| Data tag, input  | TGD_I()  |  DAT_I()        | TGD_I()  |  DAT_I()        |
-+------------------+----------+-----------------+----------+-----------------+
-| Data tag, output | TGD_O()  |  DAT_O()        | TGD_O()  |  DAT_O()        |
-+------------------+----------+-----------------+----------+-----------------+
-| Cycle tag        | TGC_O()  |  Bus Cycle      | TGC_I()  |  Bus Cycle      |
-+------------------+----------+-----------------+----------+-----------------+
+.. _tagtypes:
+.. table:: TAG TYPEs
+
+   +------------------+----------+-----------------+----------+-----------------+
+   | Description      | TAG TYPE | Associated with | TAG TYPE | Associated with |
+   +------------------+----------+-----------------+----------+-----------------+
+   | Address tag      | TGA_O()  |  ADR_O()        | TGA_I()  |  ADR_I()        |
+   +------------------+----------+-----------------+----------+-----------------+
+   | Data tag, input  | TGD_I()  |  DAT_I()        | TGD_I()  |  DAT_I()        |
+   +------------------+----------+-----------------+----------+-----------------+
+   | Data tag, output | TGD_O()  |  DAT_O()        | TGD_O()  |  DAT_O()        |
+   +------------------+----------+-----------------+----------+-----------------+
+   | Cycle tag        | TGC_O()  |  Bus Cycle      | TGC_I()  |  Bus Cycle      |
+   +------------------+----------+-----------------+----------+-----------------+
 
 For example, consider a MASTER interface where a parity protection bit
 named [PAR_O] is generated from an output data word on
