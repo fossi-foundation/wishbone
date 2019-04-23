@@ -149,18 +149,18 @@ cycles, the cycle terminates as though it were a WISHBONE Classic bus
 cycle. This eases the integration of WISHBONE Classic and WISHBONE
 Registered Feedback IP cores.
 
-PERMISSION 4.00
+**PERMISSION 4.00**
   MASTER and SLAVE interfaces MAY be designed to support WISHBONE
   Registered Feedback bus cycles.
 
-RECOMMENDATION 4.00
+**RECOMMENDATION 4.00**
   Interfaces compatible with WISHBONE Registered Feedback bus cycles
   support both WISHBONE Classic and WISHBONE Registered Feedback bus
   cycles. It is recommended to design new IP cores to support WISHBONE
   Registered Feedback bus cycles, so as to ensure maximum throughput in
   all systems.
 
-RULE 4.00
+**RULE 4.00**
   All WISHBONE Registered Feedback compatible cores MUST support
   WISHBONE Classic bus cycles.
 
@@ -169,9 +169,9 @@ Signal Description
 
 CTI_IO()
 
-The Cycle Type Idenfier [CTI_IO()] Address Tag provides additional information about the
-current cycle. The MASTER sends this information to the SLAVE. The SLAVE can use this
-information to prepare the response for the next cycle.
+The Cycle Type Idenfier [CTI_IO()] Address Tag provides additional information about the current cycle.
+The MASTER sends this information to the SLAVE.
+The SLAVE can use this information to prepare the response for the next cycle.
 Table 4-2 Cycle Type Identifiers
 
 +------------+--------------------------------+
@@ -194,31 +194,31 @@ Table 4-2 Cycle Type Identifiers
 | ‘111’      |  End-of-Burst                  |
 +------------+--------------------------------+
 
-PERMISSION 4.05
+**PERMISSION 4.05**
   MASTER and SLAVE interfaces MAY be designed to support the [CTI_I()]
   and [CTI_O()] signals. Also MASTER and SLAVE interfaces MAY be
   designed to support a limited number of burst types.
 
-RULE 4.05
+**RULE 4.05**
   MASTER and SLAVE interfaces that do support the [CTI_I()] and
   [CTI_O()] signals MUST at least support the Classic cycle
   [CTI_IO()=’000’] and the End-of-Cycle [CTI_IO()=’111’].
 
-RULE 4.10
+**RULE 4.10**
   MASTER and SLAVE interfaces that are designed to support a limited
   number of burst types MUST complete the unsupported cycles as though
   they were WISHBONE Classic cycle, i.e.  [CTI_IO()= ‘000’].
 
-PERMISSION 4.10
+**PERMISSION 4.10**
   For description languages that allow default values for input ports
   (like VHDL), [CTI_I()] MAY be assigned a default value of ‘000’.
 
-PERMISSION 4.15
+**PERMISSION 4.15**
   In addition to the WISHBONE Classic rules for generating cycle
   termination signals [ACK_O], [RTY_O], and [ERR_O], a SLAVE MAY assert
   a termination cycle without checking the [STB_I] signal.
 
-OBSERVATION 4.00
+**OBSERVATION 4.00**
   To avoid the inherent wait state in synchronous termination schemes,
   the SLAVE must generate the response as soon as possible (i.e. the
   next cycle). It can use the [CTI_I()] signals to determine the
@@ -226,11 +226,11 @@ OBSERVATION 4.00
   [STB_I] for the next cycle, therefore it must generate the response
   independent of [STB_I].
 
-PERMISSION 4.20
+**PERMISSION 4.20**
   [ACK_O], [RTY_O], and [ERR_O] MAY be asserted while [STB_O] is
   negated.
 
-RULE 4.15
+**RULE 4.15**
   A cycle terminates when both the cycle termination signal and [STB_I],
   [STB_O] is asserted.  Even if [ACK_O], [ACK_I] is asserted, the other
   signals are only valid when [STB_O], [STB_I] is also asserted.
@@ -256,15 +256,15 @@ BTE_IO()
   | ‘11’        | 16-beat wrap burst |
   +-------------+--------------------+
 
-RULE 4.20
+**RULE 4.20**
   MASTER and SLAVE interfaces that support incrementing burst cycles
   MUST support the [BTE_O()] and [BTE_I()] signals.
 
-PERMISSION 4.25
+**PERMISSION 4.25**
   MASTER and SLAVE interfaces MAY be designed to support a limited
   number of burst extensions.
 
-RULE 4.25
+**RULE 4.25**
   MASTER and SLAVE interfaces that are designed to support a limited
   number of burst extensions MUST complete the unsupported cycles as
   though they were WISHBONE Classic cycle, i.e. [CTI_IO()= 000’].
@@ -280,10 +280,10 @@ A Classic Cycle indicates that the current cycle is a WISHBONE Classic
 cycle. The SLAVE terminates the cycle as described in chapter 3. There
 is no information about what the MASTER will do the next cycle.
 
-PERMISSION 4.30
+**PERMISSION 4.30**
   A MASTER MAY signal Classic Cycle indefinitely.
 
-OBSERVATION 4.05
+**OBSERVATION 4.05**
   A MASTER that signals Classic Cycle indefinitely is a pure WISHBONE
   Classic MASTER.  The Cycle Type Identifier [CTI_O()] signals have no
   effect; all SLAVE interfaces already support WISHBONE Classic
@@ -392,16 +392,16 @@ End-Of-Burst indicates that the current cycle is the last of the
 current burst. The MASTER signals the slave that the burst ends
 after this transfer.
 
-RULE 4.30
+**RULE 4.30**
   A MASTER MUST set End-Of-Burst to signal the end of the current burst.
 
-PERMISSION 4.35
+**PERMISSION 4.35**
   The MASTER MAY start a new cycle after the assertion of End-Of-Burst.
 
-PERMISSION 4.40
+**PERMISSION 4.40**
   A MASTER MAY use End-Of-Burst to indicate a single access.
 
-OBSERVATION 4.05
+**OBSERVATION 4.05**
   A single access is in fact a burst with a burst length of one.
 
 :numref:`endofburst` demonstrates the usage of End-Of-Burst. A total
@@ -514,13 +514,13 @@ A constant address burst is defined as a single cycle with multiple
 accesses to the same address.  Example: A MASTER reading a stream from
 a FIFO.
 
-RULE 4.35
+**RULE 4.35**
   A MASTER signaling a constant address burst MUST initiate another
   cycle, the next cycle MUST be the same operation (either read or
   write), the select lines [SEL_O()] MUST have the same value, and that
   the address array [ADR_O()] MUST have the same value.
 
-PERMISSION 4.40
+**PERMISSION 4.40**
   When the MASTER signals a constant address burst, the SLAVE MAY assert
   the termination signal for the next cycle as soon as the current cycle
   terminates.
@@ -695,14 +695,14 @@ Table 4-3 Wrap Size address increments
 
 Example: Processor cache line read
 
-RULE 4.40
+**RULE 4.40**
   A MASTER signaling an incrementing burst MUST initiate another cycle,
   the next cycle MUST be the same operation (either read or write), the
   select lines [SEL_O()] MUST have the same value, the address array
   [ADR_O()] MUST be incremented, and the wrap size MUST be set by the
   burst type extension [BTE_O()] signals.
 
-PERMISSION 4.45
+**PERMISSION 4.45**
   When the MASTER signals an incrementing burst, the SLAVE MAY assert
   the termination signal for the next cycle as soon as the current
   cycle terminates.
