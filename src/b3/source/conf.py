@@ -24,6 +24,7 @@ author = 'WISHBONE specification authors'
 # The full version, including alpha/beta/rc tags
 release = 'B3'
 
+master_doc = "index"
 
 # -- General configuration ---------------------------------------------------
 
@@ -67,5 +68,5 @@ wavedrom_html_jsinline = False
 latex_elements = { 'pointsize': '12pt' }
 
 latex_documents = [
-    ("index", 'wishbone-b3.tex', '', '', 'manual')
+    (master_doc, 'wishbone-b3.tex', '', '', 'manual')
 ]
