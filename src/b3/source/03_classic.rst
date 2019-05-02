@@ -349,6 +349,8 @@ included in the WISHBONE DATASHEET.
 .. table:: TAG TYPEs
 
    +------------------+----------+-----------------+----------+-----------------+
+   |                  |   MASTER                   |   SLAVE                    |
+   +------------------+----------+-----------------+----------+-----------------+
    | Description      | TAG TYPE | Associated with | TAG TYPE | Associated with |
    +------------------+----------+-----------------+----------+-----------------+
    | Address tag      | TGA_O()  |  ADR_O()        | TGA_I()  |  ADR_I()        |

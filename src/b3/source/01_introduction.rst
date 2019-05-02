@@ -375,7 +375,7 @@ The WISHBONE logo can be affixed to SoC documents that are compatible with this 
 
    WISHBONE Logo.
 
-PERMISSION 1.00
+**PERMISSION 1.00**
   Documents describing a WISHBONE compatible SoC component that are 100% compliant with this specification MAY use the WISHBONE logo.
 
 Glossary of Terms
