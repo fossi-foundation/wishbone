@@ -73,24 +73,27 @@ complete, instead of 16. This is a throughput increase of
 77%. WISHBONE Classic would require eight cycles. For single transfers
 there is no performance gain.
 
-+--------------+-------------------+-------------------+----------------------+
-| Burst length | Asynchronous      | Synchronous       | Advanced Synchronous |
-|              | Cycle termination | Cycle termination | Cycle termination    |
-+--------------+-------------------+-------------------+----------------------+
-| 1            |  1 (200%)         |  2 (100%)         |  2                   |
-+--------------+-------------------+-------------------+----------------------+
-| 2            |  2 (150%)         |  4 (75%)          |  3                   |
-+--------------+-------------------+-------------------+----------------------+
-| 4            |  4 (125%)         |  8 (62%)          |  5                   |
-+--------------+-------------------+-------------------+----------------------+
-| 8            |  8 (112%)         | 16 (56%)          |  9                   |
-+--------------+-------------------+-------------------+----------------------+
-| 16           | 16 (106%)         | 32 (53%)          | 17                   |
-+--------------+-------------------+-------------------+----------------------+
-| 32           | 32 (103%)         | 64 (51%)          | 33                   |
-+--------------+-------------------+-------------------+----------------------+
+.. _burst_comp:
+.. table:: Burst comparison
 
-Table 4-1 shows a comparison between the discussed cycle termination
+  +--------------+-------------------+-------------------+----------------------+
+  | Burst length | Asynchronous      | Synchronous       | Advanced Synchronous |
+  |              | Cycle termination | Cycle termination | Cycle termination    |
+  +--------------+-------------------+-------------------+----------------------+
+  | 1            |  1 (200%)         |  2 (100%)         |  2                   |
+  +--------------+-------------------+-------------------+----------------------+
+  | 2            |  2 (150%)         |  4 (75%)          |  3                   |
+  +--------------+-------------------+-------------------+----------------------+
+  | 4            |  4 (125%)         |  8 (62%)          |  5                   |
+  +--------------+-------------------+-------------------+----------------------+
+  | 8            |  8 (112%)         | 16 (56%)          |  9                   |
+  +--------------+-------------------+-------------------+----------------------+
+  | 16           | 16 (106%)         | 32 (53%)          | 17                   |
+  +--------------+-------------------+-------------------+----------------------+
+  | 32           | 32 (103%)         | 64 (51%)          | 33                   |
+  +--------------+-------------------+-------------------+----------------------+
+
+:numref:`burst_comp` shows a comparison between the discussed cycle termination
 types, for zero wait state bursts at a given
 bus-frequency. Asynchronous cycle termination requires only one cycle
 per transfer, synchronous cycle termination requires two cycles per
@@ -109,27 +112,30 @@ NOTE that for a system that already needs wait states, the advanced
 synchronous scheme provides the same throughput as the asynchronous
 scheme.
 
-A given system, with an average burst length of 8, is intended to run
-at over 150MHz.  It is shown that moving from asynchronous termination
-to synchronous termination would improve timing by 1.5ns. Thus
-allowing a 193MHz clock frequency, instead of the 150MHz.
++--------------------------------------------------------------------------+
+|  A given system, with an average burst length of 8, is intended to run   |
+|  at over 150MHz.  It is shown that moving from asynchronous termination  |
+|  to synchronous termination would improve timing by 1.5ns. Thus          |
+|  allowing a 193MHz clock frequency, instead of the 150MHz.               |
++--------------------------------------------------------------------------+
+|  The asynchronous termination scheme has a theoretical throughput of     |
+|  150Mcycles per sec.                                                     |
+|                                                                          |
+|  For the given average burst length of 8, the advanced synchronous       |
+|  termination scheme has a 12% lower theoretical throughput than the      |
+|  asynchronous termination scheme. However the increased operating        |
+|  frequency allows it to perform more cycles per second. The theoretical  |
+|  throughput for the advanced synchronous scheme is 193M / 1.12 =         |
+|  172Mcycles per sec.                                                     |
++--------------------------------------------------------------------------+
 
-The asynchronous termination scheme has a theoretical throughput of
-150Mcycles per sec.
-
-For the given average burst length of 8, the advanced synchronous
-termination scheme has a 12% lower theoretical throughput than the
-asynchronous termination scheme. However the increased operating
-frequency allows it to perform more cycles per second. The theoretical
-throughput for the advanced synchronous scheme is 193M / 1.12 =
-172Mcycles per sec.
-
-System layout requires that all block have registered outputs. The
-average burst length used in the system is 4.
-
-Moving to the advanced synchronous termination scheme improves
-performance by 60 %.
-
++--------------------------------------------------------------------------+
+|  System layout requires that all block have registered outputs. The      |
+|  average burst length used in the system is 4.                           |
++--------------------------------------------------------------------------+
+|  Moving to the advanced synchronous termination scheme improves          |
+|  performance by 60 %.                                                    |
++--------------------------------------------------------------------------+
 
 WISHBONE Registered Feedback
 ----------------------------
@@ -172,27 +178,30 @@ CTI_IO()
 The Cycle Type Idenfier [CTI_IO()] Address Tag provides additional information about the current cycle.
 The MASTER sends this information to the SLAVE.
 The SLAVE can use this information to prepare the response for the next cycle.
-Table 4-2 Cycle Type Identifiers
+:numref:`cti` Type Identifiers
 
-+------------+--------------------------------+
-| CTI_O(2:0) |  Description                   |
-+------------+--------------------------------+
-| ‘000’      |  Classic cycle.                |
-+------------+--------------------------------+
-| ‘001’      |  Constant address burst cycle  |
-+------------+--------------------------------+
-| ‘010’      |  Incrementing burst cycle      |
-+------------+--------------------------------+
-| ‘011’      |  Reserved                      |
-+------------+--------------------------------+
-| ‘100’      |  Reserved                      |
-+------------+--------------------------------+
-| ‘101       |  Reserved                      |
-+------------+--------------------------------+
-| ‘110’      |  Reserved                      |
-+------------+--------------------------------+
-| ‘111’      |  End-of-Burst                  |
-+------------+--------------------------------+
+.. _cti:
+.. table:: Cycle Type Identifiers
+
+  +------------+--------------------------------+
+  | CTI_O(2:0) |  Description                   |
+  +------------+--------------------------------+
+  | ‘000’      |  Classic cycle.                |
+  +------------+--------------------------------+
+  | ‘001’      |  Constant address burst cycle  |
+  +------------+--------------------------------+
+  | ‘010’      |  Incrementing burst cycle      |
+  +------------+--------------------------------+
+  | ‘011’      |  Reserved                      |
+  +------------+--------------------------------+
+  | ‘100’      |  Reserved                      |
+  +------------+--------------------------------+
+  | ‘101       |  Reserved                      |
+  +------------+--------------------------------+
+  | ‘110’      |  Reserved                      |
+  +------------+--------------------------------+
+  | ‘111’      |  End-of-Burst                  |
+  +------------+--------------------------------+
 
 **PERMISSION 4.05**
   MASTER and SLAVE interfaces MAY be designed to support the [CTI_I()]
@@ -241,8 +250,8 @@ BTE_IO()
   burst. Currently this information is only relevant for incrementing
   bursts, but future burst types may use these signals.
 
-  Table 4-2 Burst
-  Type Extension for Incrementing and Decrementing bursts
+.. _bte:
+.. table:: Type Extension for Incrementing and Decrementing bursts
 
   +-------------+--------------------+
   | BTE_IO(1:0) | Description        |
@@ -670,28 +679,29 @@ address is one increment more than the current address. Wrapped
 increments means that the address increments one, but that the
 addresses’ LSBs are modulo the wrap size.
 
-Table 4-3 Wrap Size address increments
+.. _wrap_size:
+.. table:: Wrap Size address increments
 
-+---------------+-----------------+-----------------+-----------------+
-| Starting      |                 |                 |                 |
-| address’ LSBs |  Linear         | Wrap-4          | Wrap-8          |
-+---------------+-----------------+-----------------+-----------------+
-| 000           | 0-1-2-3-4-5-6-7 | 0-1-2-3-4-5-6-7 | 0-1-2-3-4-5-6-7 |
-+---------------+-----------------+-----------------+-----------------+
-| 001           | 1-2-3-4-5-6-7-8 | 1-2-3-0-5-6-7-4 | 1-2-3-4-5-6-7-0 |
-+---------------+-----------------+-----------------+-----------------+
-| 010           | 2-3-4-5-6-7-8-9 | 2-3-0-1-6-7-4-5 | 2-3-4-5-6-7-0-1 |
-+---------------+-----------------+-----------------+-----------------+
-| 011           | 3-4-5-6-7-8-9-A | 3-0-1-2-7-4-5-6 | 3-4-5-6-7-0-1-2 |
-+---------------+-----------------+-----------------+-----------------+
-| 100           | 4-5-6-7-8-9-A-B | 4-5-6-7-8-9-A-B | 4-5-6-7-0-1-2-3 |
-+---------------+-----------------+-----------------+-----------------+
-| 101           | 5-6-7-8-9-A-B-C | 5-6-7-4-9-A-B-8 | 5-6-7-0-1-2-3-4 |
-+---------------+-----------------+-----------------+-----------------+
-| 110           | 6-7-8-9-A-B-C-D | 6-7-4-5-A-B-8-9 | 6-7-0-1-2-3-4-5 |
-+---------------+-----------------+-----------------+-----------------+
-| 111           | 7-8-9-A-B-C-D-E | 7-4-5-6-B-8-9-A | 7-0-1-2-3-4-5-6 |
-+---------------+-----------------+-----------------+-----------------+
+  +---------------+-----------------+-----------------+-----------------+
+  | Starting      |                 |                 |                 |
+  | address’ LSBs |  Linear         | Wrap-4          | Wrap-8          |
+  +---------------+-----------------+-----------------+-----------------+
+  | 000           | 0-1-2-3-4-5-6-7 | 0-1-2-3-4-5-6-7 | 0-1-2-3-4-5-6-7 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 001           | 1-2-3-4-5-6-7-8 | 1-2-3-0-5-6-7-4 | 1-2-3-4-5-6-7-0 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 010           | 2-3-4-5-6-7-8-9 | 2-3-0-1-6-7-4-5 | 2-3-4-5-6-7-0-1 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 011           | 3-4-5-6-7-8-9-A | 3-0-1-2-7-4-5-6 | 3-4-5-6-7-0-1-2 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 100           | 4-5-6-7-8-9-A-B | 4-5-6-7-8-9-A-B | 4-5-6-7-0-1-2-3 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 101           | 5-6-7-8-9-A-B-C | 5-6-7-4-9-A-B-8 | 5-6-7-0-1-2-3-4 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 110           | 6-7-8-9-A-B-C-D | 6-7-4-5-A-B-8-9 | 6-7-0-1-2-3-4-5 |
+  +---------------+-----------------+-----------------+-----------------+
+  | 111           | 7-8-9-A-B-C-D-E | 7-4-5-6-B-8-9-A | 7-0-1-2-3-4-5-6 |
+  +---------------+-----------------+-----------------+-----------------+
 
 Example: Processor cache line read
 
