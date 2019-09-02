@@ -508,12 +508,12 @@ CLOCK EDGE 3:
      {"name": "ADR_O()", "wave": "234.x"},
      {"name": "DAT_I()", "wave": "23x.."},
      {"name": "DAT_O()", "wave": "xx4.x"},
-     {"name": "WE_O",    "wave": "0.1.0"},
+     {"name": "WE_O",    "wave": "0.1.x"},
      {"name": "SEL_O()", "wave": "3.4.x"},
-     {"name": "CYC_O",   "wave": "1...0" },
      {"name": "STB_O",   "wave": "1...0" },
-     {"name": "ACK_I",   "wave": "1.010" }
-   ], "head": { "tick": 0 }
+     {"name": "ACK_I",   "wave": "1.010" },
+     {"name": "CYC_O",   "wave": "1...0" }
+   ], "head": { "tick": -1 }
    }
 
 Constant Address Burst Cycle
