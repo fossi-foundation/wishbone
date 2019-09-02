@@ -298,11 +298,6 @@ Furthermore, the actual waveforms at the SLAVE may vary from those at the MASTER
 That's because the MASTER and SLAVE interfaces can be connected together in different ways.
 Unless otherwise noted, the timing diagrams refer to the connection diagram shown in :numref:`connection`.
 
-.. _connection:
-.. figure:: _static/connection.*
-
-   Standard connection for timing diagrams.
-
 .. _timingdiagram:
 .. wavedrom::
    :caption: Use of timing diagrams.
@@ -314,6 +309,11 @@ Unless otherwise noted, the timing diagrams refer to the connection diagram show
 	  "config": { "hscale": 2 },
 	  "head": { "tick": 0 }
 	}
+
+.. _connection:
+.. figure:: _static/connection.*
+
+   Standard connection for timing diagrams.
 
 Some signals may or may not be present on a specific interface.
 That's because many of the signals are optional.
