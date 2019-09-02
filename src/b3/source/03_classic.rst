@@ -517,7 +517,7 @@ CLOCK EDGE 1:
 
   MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.
 
-  SLAVE negates [ACK_I[ in response to negated [STB_O].
+  SLAVE negates [ACK_I] in response to negated [STB_O].
 
 .. _singlewritecycle:
 .. wavedrom::
