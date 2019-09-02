@@ -388,10 +388,10 @@ CLOCK EDGE 4:
      {"name": "DAT_I()", "wave": "x.2x3x"},
      {"name": "DAT_O()", "wave": "x....."},
      {"name": "SEL_O()", "wave": "x2...x"},
-     {"name": "CYC_O",   "wave": "01...0" },
      {"name": "STB_O",   "wave": "01...0" },
-     {"name": "ACK_I",   "wave": "0.1010" }
-   ], "head": { "tick": 0 }
+     {"name": "ACK_I",   "wave": "0.1010" },
+     {"name": "CYC_O",   "wave": "01...0" }
+   ], "head": { "tick": -1 }
    }
 
 End-Of-Burst
