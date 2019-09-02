@@ -246,9 +246,11 @@ respond to [RTY_I].
 **RULE 3.45**
   If a SLAVE supports the [ERR_O] or [RTY_O] signals, then the SLAVE
   MUST NOT assert more than one of the following signals at any time:
-  [ACK_O], [ERR_O] or [RTY_O].  OBSERVATION 3.35 If the SLAVE supports
-  the [ERR_O] or [RTY_O] signals, but the MASTER does not support these
-  signals, deadlock may occur.
+  [ACK_O], [ERR_O] or [RTY_O].
+
+**OBSERVATION 3.35**
+  If the SLAVE supports the [ERR_O] or [RTY_O] signals, but the MASTER
+  does not support these signals, deadlock may occur.
 
 **RECOMMENDATION 3.10**
   Design INTERCON modules to prevent deadlock conditions. One solution
