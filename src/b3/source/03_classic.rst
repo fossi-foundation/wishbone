@@ -712,7 +712,7 @@ CLOCK EDGE 6:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
+       {"name": "CLK_I", "wave": "P..|..|.", "label": "...{WSM}(0.45)..{WSS}(0.45)." },
        {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "DAT_I()", "wave": "x..2x3<x|>x.4x5<x|>5x.", "period": 0.5 },
        {"name": "DAT_O()", "wave": "x..|..|." },
@@ -845,15 +845,15 @@ CLOCK EDGE 6:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
+       {"name": "CLK_I", "wave": "P..|..|.", "label": "...{WSM}(0.45)..{WSS}(0.45)." },
        {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "DAT_I()", "wave": "x..|..|." },
        {"name": "DAT_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "WE_O", "wave": "x1.|..|x" },
        {"name": "SEL_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
-       {"name": "CYC_O", "wave": "01.|..|0" },
        {"name": "STB_O", "wave": "0.1...<0|>.1...<.|>.0.", "period": 0.5 },
-       {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 }
+       {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01.|..|0" }
      ], ["Tag Types (M)",
        {"name": "TGA_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGD_I()", "wave": "x..|..|." },
@@ -862,7 +862,7 @@ CLOCK EDGE 6:
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 RMW Cycle
