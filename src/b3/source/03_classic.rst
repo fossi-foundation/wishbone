@@ -478,7 +478,7 @@ CLOCK EDGE 1:
      ]
           ],
 	  "config": { "hscale": 2 },
-	  "head": { "tick": 0 }
+	  "head": { "tick": -1 }
 	}
 
 SINGLE WRITE Cycle
@@ -543,7 +543,7 @@ CLOCK EDGE 1:
      ]
           ],
 	  "config": { "hscale": 2 },
-	  "head": { "tick": 0 }
+	  "head": { "tick": -1 }
 	}
 
 BLOCK READ / WRITE Cycles
