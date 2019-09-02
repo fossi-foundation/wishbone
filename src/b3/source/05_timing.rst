@@ -2,13 +2,13 @@ Timing Specification
 ====================
 
 The WISHBONE specification is designed to provide the end user with
-very simple timing con- straints. Although the application specific
+very simple timing constraints. Although the application specific
 circuit(s) will vary in this regard, the interface itself is designed
 to work without the need for detailed timing specifications. In all
-cases, the only tim- ing information that is needed by the end user is
+cases, the only timing information that is needed by the end user is
 the maximum clock frequency (for [CLK_I]) that is passed to a place &
-route tool. The maximum clock frequency is dictated by the time de-
-lay between a positive clock edge on [CLK_I] to the setup on a stage
+route tool. The maximum clock frequency is dictated by the time delay
+between a positive clock edge on [CLK_I] to the setup on a stage
 further down the logical signal path. This delay is shown graphically
 in :numref:`timing`, and is defined as Tpd,clk-su.
 
@@ -40,7 +40,7 @@ in :numref:`timing`, and is defined as Tpd,clk-su.
 **OBSERVATION 5.05**
   Realistically, the WISHBONE interface will never be expected to
   operate over a nearly infinite frequency range. However this
-  requirement eliminates the need for non-portable timing con- straints
+  requirement eliminates the need for non-portable timing constraints
   (that may work only on certain target devices).
 
 **OBSERVATION 5.10**
@@ -51,7 +51,7 @@ in :numref:`timing`, and is defined as Tpd,clk-su.
 
 **PERMISSION 5.05**
   The IP core connected to a WISHBONE interface MAY include application
-  specific timing re- quirements.
+  specific timing requirements.
 
 **RULE 5.10**
   The clock input [CLK_I] MUST have a duty cycle that is no less than
@@ -72,7 +72,7 @@ in :numref:`timing`, and is defined as Tpd,clk-su.
 **SUGGESTION 5.00**
   When using a gated clock generator, turn the clock off when the
   WISHBONE interconnection is not busy. One way of doing this is to
-  create a MASTER interface whose sole purpose is to ac- quire the
+  create a MASTER interface whose sole purpose is to acquire the
   WISHBONE interconnection and turn the clock off. This assures that the
   WISHBONE interconnection is not busy when gating the clock off. When
   the clock signal is restored the MASTER then releases the WISHBONE
