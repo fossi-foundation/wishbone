@@ -653,17 +653,17 @@ CLOCK, EDGE 7:
    :caption: Constant address burst
 
    {"signal": [
-     {"name": "CLK_I",   "wave": "P..|.|..." },
+     {"name": "CLK_I",   "wave": "P..|.|...", "label": "...{WSM}(0.45).{WSS}(0.45)..."  },
      {"name": "CTI_O()", "wave": "x2.|.|.2x", "data": ["001", "111"] },
      {"name": "ADR_O()", "wave": "x2.|.|..x"},
      {"name": "DAT_I()", "wave": "x..|.|..."},
      {"name": "DAT_O()", "wave": "x.2...<x|>.2.<.|>.....x.", "period": 0.5},
      {"name": "WE_O",    "wave": "x1.|.|..x"},
      {"name": "SEL_O()", "wave": "x.2...<x|>.2.<.|>.....x.", "period": 0.5},
-     {"name": "CYC_O",   "wave": "01.|.|..0" },
      {"name": "STB_O",   "wave": "0.1...<0|>.1.<.|>.....0.", "period": 0.5 },
-     {"name": "ACK_I",   "wave": "0...1.<.|>...<0|>.1...0.", "period": 0.5 }
-   ], "config": { "skin": "narrow", "hscale": 2 }, "head": { "tick": 0 }
+     {"name": "ACK_I",   "wave": "0...1.<.|>...<0|>.1...0.", "period": 0.5 },
+     {"name": "CYC_O",   "wave": "01.|.|..0" }
+   ], "config": { "skin": "narrow", "hscale": 2 }, "head": { "tick": -1 }
    }
 
 
