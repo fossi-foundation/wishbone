@@ -154,7 +154,7 @@ Handshaking Protocol
 ````````````````````
 
 All bus cycles use a handshaking protocol between the MASTER and SLAVE
-interfaces. As shown in Figure :ref:`hanshaking <handshake>`, the
+interfaces. As shown in :numref:`handshake`, the
 MASTER asserts [STB_O] when it is ready to transfer data. [STB_O]
 remains asserted until the SLAVE asserts one of the cycle terminating
 signals [ACK_I], [ERR_I] or [RTY_I]. At every rising edge of [CLK_I]
