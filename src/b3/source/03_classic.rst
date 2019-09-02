@@ -213,7 +213,7 @@ during the cycle. This signal is generally used if an error was
 detected by SLAVE logic circuitry. For example, if the SLAVE is a
 parity-protected memory, then the [ERR_I] signal can be asserted if
 a parity fault is detected. This specification does not dictate what
-the eMASTER will do in response to [ERR_I].
+the MASTER will do in response to [ERR_I].
 
 Asserting the optional [RTY_I] signal during a bus cycle will
 terminate the cycle. It also serves to notify the MASTER that the
