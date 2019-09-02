@@ -1041,7 +1041,7 @@ WORD and BYTE cases.
    sizes.
 
 :numref:`littleendian` shows an example of how the 64-bit value of
-0x0123456789ABC is transferred through BYTE, WORD, DWORD and QWORD
+0x0123456789ABCDEF is transferred through BYTE, WORD, DWORD and QWORD
 ports using LITTLE ENDIAN data organization. Through the 64-bit QWORD
 port the number is directly transferred with the most significant bit
 at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
