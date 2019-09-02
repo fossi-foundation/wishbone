@@ -22,7 +22,7 @@ copyright = '2019, WISHBONE specification authors'
 author = 'WISHBONE specification authors'
 
 # The full version, including alpha/beta/rc tags
-release = 'B3'
+release = 'B3.1'
 
 master_doc = "index"
 
@@ -68,5 +68,5 @@ wavedrom_html_jsinline = False
 latex_elements = { 'pointsize': '12pt' }
 
 latex_documents = [
-    (master_doc, 'wishbone-b3.tex', '', '', 'manual')
+    (master_doc, 'wishbone-b3-1.tex', '', '', 'manual')
 ]
