@@ -616,9 +616,11 @@ SETUP, EDGE 5:
 
   MASTER prepares to signal last transfer.
 
-  CLOCK, EDGE 5: SLAVE asserts [ACK_I].
+CLOCK, EDGE 5:
+  SLAVE asserts [ACK_I].
 
-  SETUP, EDGE 6: SLAVE prepares to latch data on [DAT_O()].
+SETUP, EDGE 6:
+  SLAVE prepares to latch data on [DAT_O()].
 
   SLAVE expects another transfer and prepares response for new transfer.
 
