@@ -829,8 +829,8 @@ CLOCK, EDGE 5:
      {"name": "DAT_O()", "wave": "x......"},
      {"name": "WE_O",    "wave": "x0....x"},
      {"name": "SEL_O()", "wave": "x2....x"},
-     {"name": "CYC_O",   "wave": "01....0"},
      {"name": "STB_O",   "wave": "01....0"},
-     {"name": "ACK_I",   "wave": "0.1...0"}
-   ], "head": { "tick": 0 }
+     {"name": "ACK_I",   "wave": "0.1...0"},
+     {"name": "CYC_O",   "wave": "01....0"}
+   ], "head": { "tick": -1 }
    }
