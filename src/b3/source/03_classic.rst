@@ -12,9 +12,9 @@ General Operation
 
 MASTER and SLAVE interfaces are interconnected with a set of signals
 that permit them to exchange data.  For descriptive purposes these
-signals are cumulatively known as a bus, and are contained within a
+signals are cumulatively known as a *bus*, and are contained within a
 functional module called the INTERCON.  Address, data and other
-information is impressed upon this bus in the form of bus cycles.
+information is impressed upon this bus in the form of *bus cycles*.
 
 Reset Operation
 ```````````````
@@ -109,14 +109,14 @@ and SLAVE interfaces.  :numref:`resetcycle` shows the reset cycle.
     [RST_I] signal.
 
 **SUGGESTION 3.00**
-    Some circuits require an asynchronous reset capability.  If an IP
+    Some circuits require an *asynchronous* reset capability.  If an IP
     core or other SoC component requires an asynchronous reset, then
     define it as a non-WISHBONE signal.  This prevents confusion with
     the WISHBONE reset [RST_I] signal that uses a purely synchronous
     protocol, and needs to be applied to the WISHBONE interface only.
 
 **OBSERVATION 3.20**
-    All WISHBONE interfaces respond to the reset signal.  However, the
+    All WISHBONE *interfaces* respond to the reset signal.  However, the
     IP Core connected to a WISHBONE interface does not necessarily
     need to respond to the reset signal.
 
@@ -553,7 +553,7 @@ modifications to support multiple transfers.
 
 During BLOCK cycles, the interface basically performs SINGLE
 READ/WRITE cycles as described above. However, the BLOCK cycles are
-modified somewhat so that these individual cycles (called phases)
+modified somewhat so that these individual cycles (called *phases*)
 are combined together to form a single BLOCK cycle. This function is
 most useful when multiple MASTERs are used on the interconnect. For
 example, if the SLAVE is a shared (dual port) memory, then an arbiter
@@ -1126,6 +1126,6 @@ Data Organization for 8-bit Ports
 References
 ----------
 
-Cohen, Danny. On Holy Wars and a Plea for Peace. IEEE Computer
+Cohen, Danny. *On Holy Wars and a Plea for Peace*. IEEE Computer
 Magazine, October 1981.  Pages 49-54. [Description of BIG ENDIAN and
 LITTLE ENDIAN.]
