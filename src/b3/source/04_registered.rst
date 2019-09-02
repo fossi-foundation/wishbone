@@ -141,9 +141,9 @@ WISHBONE Registered Feedback
 ----------------------------
 
 WISHBONE Registered Feedback bus cycles use the Cycle Type Identifier
-[CTI_O()], [CT_I()] Address Tags to implement the advanced synchronous
+[CTI_O()], [CTI_I()] Address Tags to implement the advanced synchronous
 cycle termination scheme. Both MASTER and SLAVE interfaces must
-support [CTI_O()], [CTI_()] in order to provide the improved
+support [CTI_O()], [CTI_I()] in order to provide the improved
 bandwidth. Additional information about the type of burst is provided
 by the Burst Type Extension [BTE_O()], [BTE_I()] Address
 Tags. Because WISHBONE Registered Feedback uses Tag signals to
