@@ -33,7 +33,7 @@ and SLAVE interfaces.  :numref:`resetcycle` shows the reset cycle.
 
         { "signal": [
 		["Master Signals",
-                  { "name": "CLK_I",  "wave": "P...." },
+                  { "name": "CLK_I",  "wave": "P.|.." },
 		  { "name": "RST_I", "wave": "0.1.x|0...", "period": 0.5 },
 		  { "name": "STB_O", "wave": "x...0|..x.", "period": 0.5 },
 		  { "name": "CYC_O", "wave": "x...0|..x.", "period": 0.5 }
