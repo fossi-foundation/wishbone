@@ -1117,7 +1117,7 @@ Data Organization for 16-bit Ports
 Data Organization for 8-bit Ports
 `````````````````````````````````
 
-**RULE 3.1010**
+**RULE 3.110**
   Data organization on 8-bit ports MUST conform to :numref:`organization8`.
 
 .. _organization8:
