@@ -957,24 +957,24 @@ CLOCK EDGE 3:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P.|.|.", "labels": "..{WSM}(0.45).{WSS}(0.45)." },
-       {"name": "ADR_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
-       {"name": "DAT_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
-       {"name": "DAT_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
-       {"name": "WE_O",    "wave": "x.0.<x|>...<1|>.x.", "period": 0.5 },
-       {"name": "SEL_O()", "wave": "x.2.<x|>...<2|>.x.", "period": 0.5 },
-       {"name": "CYC_O", "wave": "01|.|0" },
-       {"name": "STB_O", "wave": "x.1.<0|>...<1|>.x.", "period": 0.5 },
-       {"name": "ACK_I", "wave": "x..2<x|>...<x|>2x.", "period": 0.5 }
+       {"name": "CLK_I", "wave": "P.||.", "label": "..{WSM}(0.45).{WSS}(0.45)." },
+       {"name": "ADR_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 },
+       {"name": "DAT_I()", "wave": "x..2<x|>.<.|>...", "period": 0.5 },
+       {"name": "DAT_O()", "wave": "x...<.|>.<2|>.x.", "period": 0.5 },
+       {"name": "WE_O",    "wave": "x.0.<x|>.<1|>.x.", "period": 0.5 },
+       {"name": "SEL_O()", "wave": "x.2.<x|>.<2|>.x.", "period": 0.5 },
+       {"name": "STB_O", "wave": "x.1.<0|>.<1|>.x.", "period": 0.5 },
+       {"name": "ACK_I", "wave": "x..2<x|>.<x|>2x.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01||0" }
      ], ["Tag Types (M)",
-       {"name": "TGA_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
-       {"name": "TGD_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
-       {"name": "TGD_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
-       {"name": "TGC_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 }
+       {"name": "TGA_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 },
+       {"name": "TGD_I()", "wave": "x..2<x|>.<.|>...", "period": 0.5 },
+       {"name": "TGD_O()", "wave": "x...<.|>.<2|>.x.", "period": 0.5 },
+       {"name": "TGC_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 }
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 Data Organization
