@@ -729,7 +729,7 @@ CLOCK EDGE 6:
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 BLOCK WRITE Cycle
