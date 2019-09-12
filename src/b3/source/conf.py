@@ -61,6 +61,8 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_title = "WISHBONE B3"
+
 wavedrom_html_jsinline = False
 
 # -- Options Latex
