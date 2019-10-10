@@ -32,7 +32,7 @@ Application Notes
 -----------------
 
 * [Combining Wishbone interface signals by Richard Herveille](https://github.com/fossi-foundation/wishbone/raw/master/documents/appnotes/appnote_01.pdf)
-* [Review of Three SoC Buses by Rudolf Usselmann](https://github.com/fossi-foundation/wishbone/raw/master/documents/appnotes/soc_bus_comparison.pdf)
+* [Review of Three SoC Buses by Rudolf Usselmann](https://github.com/fossi-foundation/wishbone/raw/master/documents/soc_bus_comparison.pdf)
 
 
 Contributing and Maintainership
