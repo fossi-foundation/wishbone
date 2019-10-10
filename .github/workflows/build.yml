@@ -1,0 +1,14 @@
+name: 'build'
+on: [ push, pull_request ]
+jobs:
+  spec:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: |
+        ./.github/btdi.sh
+        mv src/b3/build/latex/wishbone-b3-1.pdf src/b3/build/
+    - uses: actions/upload-artifact@master
+      with:
+        name: wishbone_B3.1
+        path: src/b3/build
