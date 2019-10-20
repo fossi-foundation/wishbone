@@ -169,7 +169,7 @@ The main objectives of this specification are
 
 * to allow users to create SoC components without infringing on the patent rights of others.
   While the use of WISHBONE technology does not necessarily prevent patent infringement, it does provide a reasonable safe haven where users can design around the patent claims of others.
-  The specification also provides cited patent references, which describes the field of search used by the WISHBONE architects.
+  The specification also provides *cited patent references*, which describes the field of search used by the WISHBONE architects.
 
 * to identify critical System-on-Chip interconnection technologies, and to place them into the public domain at the earliest possible date.
   This makes it more difficult for individuals and organizations to create proprietary technologies through the use of patent, trademark, copyright and trade secret protection mechanisms.
@@ -298,11 +298,6 @@ Furthermore, the actual waveforms at the SLAVE may vary from those at the MASTER
 That's because the MASTER and SLAVE interfaces can be connected together in different ways.
 Unless otherwise noted, the timing diagrams refer to the connection diagram shown in :numref:`connection`.
 
-.. _connection:
-.. figure:: _static/connection.*
-
-   Standard connection for timing diagrams.
-
 .. _timingdiagram:
 .. wavedrom::
    :caption: Use of timing diagrams.
@@ -314,6 +309,11 @@ Unless otherwise noted, the timing diagrams refer to the connection diagram show
 	  "config": { "hscale": 2 },
 	  "head": { "tick": 0 }
 	}
+
+.. _connection:
+.. figure:: _static/connection.*
+
+   Standard connection for timing diagrams.
 
 Some signals may or may not be present on a specific interface.
 That's because many of the signals are optional.
@@ -355,8 +355,8 @@ For example, [DAT_I(63..0)] is a signal array with upper array boundary number s
 The array size on any particular core may vary.
 In many cases the array boundaries are omitted if they are irrelevant to the context of the description.
 
-Special user defined signals, called tags, can also be used.
-Tags are assigned a tag type that indicates the exact timing to which the signal must adhere.
+Special user defined signals, called *tags*, can also be used.
+Tags are assigned a *tag type* that indicates the exact timing to which the signal must adhere.
 For example, if a parity bit such as [PAR_O] is added to a data bus, it would probably be assigned a tag type of TAG TYPE: TGD_O().
 This indicates that the signal will adhere to the timing diagrams shown for [TGD_O()], which are shown in the timing diagrams for each bus cycle.
 Also note that, while all tag types are specified as arrays (with parenthesis '()'), the actual tag does not have to be a signal array.
@@ -375,7 +375,7 @@ The WISHBONE logo can be affixed to SoC documents that are compatible with this 
 
    WISHBONE Logo.
 
-PERMISSION 1.00
+**PERMISSION 1.00**
   Documents describing a WISHBONE compatible SoC component that are 100% compliant with this specification MAY use the WISHBONE logo.
 
 Glossary of Terms
@@ -397,7 +397,7 @@ Address Tag
   One or more user defined signals that modify a WISHBONE address.
   For example, they can be used create a parity bit on an address bus, to indicate an address width (16-bit, 24-bit etc.) or can be used by memory management hardware to indicate a protected address space.
   All address tags must be assigned a tag type of [TGA_I()] or [TGA_O()].
-  Also see tag, tag type, data tag and cycle tag.
+  Also see *tag*, *tag type*, *data tag* and *cycle tag*.
 
 ASIC
   Acronym for: Application Specific Integrated Circuit.
@@ -407,8 +407,8 @@ ASIC
 Asserted
   1. A verb indicating that a logic state has switched from the inactive to the active state.
      When active high logic is used it means that a signal has switched from a logic low level to a logic high level.
-  2. Assert: to cause a signal line to make a transition from its logically false (inactive) state to its logically true (active) state.
-     Opposite of negated.
+  2. *Assert*: to cause a signal line to make a transition from its logically false (inactive) state to its logically true (active) state.
+     Opposite of *negated*.
 
 Bit
   A single binary (base 2) digit.
@@ -426,10 +426,10 @@ Bus Interface
 
 Bus Cycle
   The process whereby digital signals effect the transfer of data across a bus by means of an inter-locked sequence of control signals.
-  Also see: Phase (bus cycle).
+  Also see: *Phase (bus cycle)*.
 
 BYTE
-  A unit of data that is 8-bits wide. Also see: WORD, DWORD and QWORD.
+  A unit of data that is 8-bits wide. Also see: *WORD*, *DWORD* and *QWORD*.
 
 Crossbar Interconnection (Crossbar Switch)
   Crossbar switches are mechanisms that allow modules to connect and communicate.
@@ -451,7 +451,7 @@ Cycle Tag
   One or more user defined signals that modify a WISHBONE bus cycle.
   For example, they can be used to discriminate between WISHBONE SINGLE, BLOCK and RMW cycles.
   All cycle tags must be assigned a tag type of [TGC_I()] or [TGC_O()].
-  Also see tag type, address tag and data tag.
+  Also see *tag type*, *address tag* and *data tag*.
 
 Data Flow Interconnection
   An interconnection where data flows through a prearranged set of IP cores in a sequential order.
@@ -475,7 +475,7 @@ Data Tag
   One or more user defined signals that modify a WISHBONE data transfer.
   For example, they can be used carry parity information, error correction codes or time stamps.
   All data tags must be assigned a tag type of [TGD_I()] or [TGD_O()].
-  Also see tag type, address tag and cycle tag.
+  Also see *tag type*, *address tag* and *cycle tag*.
 
 DMA Unit
   Acronym for Direct Memory Access Unit.
@@ -487,7 +487,7 @@ DMA Unit
   3. A device that does not use low-level instructions and is intended for transferring data between memory and/or I/O locations.
 
 DWORD
-  A unit of data that is 32-bits wide. Also see: BYTE, WORD and QWORD.
+  A unit of data that is 32-bits wide. Also see: *BYTE*, *WORD* and *QWORD*.
 
 ENDIAN
   See the definition under 'Data Organization'.
@@ -503,16 +503,16 @@ Firm Core
   It is analogous to a binary or object file in the field of computer software design.
 
 Fixed Interconnection
-  An interconnection system that is fixed, and cannot be changed without causing incompatibilities between bus modules (or SoC/IP cores).
-  Also called a static interconnection.
+  An interconnection system that is fixed, and *cannot* be changed without causing incompatibilities between bus modules (or SoC/IP cores).
+  Also called a *static interconnection*.
   Examples of fixed interconnection buses include PCI, cPCI and VMEbus.
-  Also see: variable interconnection.
+  Also see: *variable interconnection*.
 
 Fixed Timing Specification
   A timing specification that is based upon a fixed set of rules.
   Generally used in traditional microcomputer buses like PCI and VMEbus.
   Each bus module must conform to the ridged set of timing specifications.
-  Also see: variable timing specification.
+  Also see: *variable timing specification*.
 
 Foundry
   See silicon foundry.
@@ -525,14 +525,14 @@ FPGA
 Full Address Decoding
   A method of address decoding where each SLAVE decodes all of the available address space.
   For example, if a 32-bit address bus is used, then each SLAVE decodes all thirty-two address bits.
-  This technique is used on standard microcomputer buses like PCI and VMEbus. Also see: partial address decoding.
+  This technique is used on standard microcomputer buses like PCI and VMEbus. Also see: *partial address decoding*.
 
 Gated Clock
   A clock that can be stopped and restarted.
   In WISHBONE, a gated clock generator allows [CLK_O] to be stopped in its low state.
   This technique is often used to reduce the power consumption of an integrated circuit.
   Under WISHBONE, the gated clock generator is optional.
-  Also see: variable clock generator.
+  Also see: *variable clock generator*.
 
 Glue Logic
   1. Logic gates and interconnections required to connect IP cores together.
@@ -544,7 +544,7 @@ Granularity
   The smallest unit of data transfer that a port is capable of transferring.
   For example, a 32-bit port can be broken up into four 8-bit BYTE segments.
   In this case, the granularity of the interface is 8-bits.
-  Also see: port size and operand size.
+  Also see: *port size* and *operand size*.
 
 Hard Core
   An IP Core that is delivered in the form of a mask set (i.e. a graphical description of the features and connections in an integrated circuit).
@@ -557,14 +557,14 @@ Hardware Description Language (HDL)
 Interface
   A combination of signals and data-ports on a module that is capable of either generating or receiving bus cycles.
   WISHBONE defines these as MASTER and SLAVE interfaces respectively.
-  Also see: MASTER and SLAVE interfaces.
+  Also see: *MASTER and SLAVE interfaces*.
 
 INTERCON
   A WISHBONE module that interconnects MASTER and SLAVE interfaces.
 
 IP Core
   Acronym for: Intellectual Property Core.
-  Also see: soft core, firm core and hard core.
+  Also see: *soft core*, *firm core* and *hard core*.
 
 Mask Set
   A graphical description of the features and connections in an integrated circuit.
@@ -572,7 +572,7 @@ Mask Set
 MASTER
   A WISHBONE interface that is capable of generating bus cycles.
   All systems based on the WISHBONE interconnect must have at least one MASTER interface.
-  Also see: SLAVE.
+  Also see: *SLAVE*.
 
 Memory Mapped Addressing
   An architecture that allows data to be stored and recalled in memory at individual, binary addresses.
@@ -588,12 +588,12 @@ Module
 Multiplexer Interconnection
   An interconnection that uses multiplexers to route address, data and control signals.
   Often used for System-on-Chip (SoC) applications.
-  Also see: three-state bus interconnection.
+  Also see: *three-state bus interconnection*.
 
 Negated
   A verb indicating that a logic state has switched from the active to the inactive state.
   When active high logic is used it means that a signal has switched from a logic high level to a logic low level.
-  Also see: asserted.
+  Also see: *asserted*.
 
 Off-Chip Interconnection
   An off-chip interconnection is used when a WISHBONE interface extends off-chip. See :numref:`offchip`.
@@ -606,7 +606,7 @@ Off-Chip Interconnection
 Operand Size
   The operand size is the largest single unit of data that is moved through an interface.
   For example, a 32-bit DWORD operand can be moved through an 8-bit port with four data transfers.
-  Also see: granularity and port size.
+  Also see: *granularity* and *port size*.
 
 Parametric Core Generator
   A software tool used for the generation of IP cores based on input parameters.
@@ -621,7 +621,7 @@ Partial Address Decoding
   The remaining address bits are decoded by the interconnection system.
   This technique is used on SoC buses and has the advantages of less redundant logic in the system.
   It supports variable address buses, variable interconnection buses, and is relatively fast.
-  Also see: full address decoding.
+  Also see: *full address decoding*.
 
 PCI
   Acronym for: Peripheral Component Interconnect.
@@ -646,11 +646,11 @@ Point-to-point Interconnection
 
 Port Size
   The width of the WISHBONE data ports in bits.
-  Also see: granularity and operand size.
+  Also see: *granularity* and *operand size*.
 
 QWORD
   A unit of data that is 64-bits wide.
-  Also see: BYTE, WORD and DWORD.
+  Also see: *BYTE*, *WORD* and *DWORD*.
 
 Router
   A software tool that physically routes interconnection paths between logic gates.
@@ -683,14 +683,14 @@ Silicon Foundry
 SLAVE
   A WISHBONE interface that is capable of receiving bus cycles.
   All systems based on the WISHBONE interconnect must have at least one SLAVE.
-  Also see: MASTER.
+  Also see: *MASTER*.
 
 Soft Core
   An IP Core that is delivered in the form of a hardware description language or schematic diagram.
 
 SoC
   Acronym for System-on-Chip.
-  Also see: System-on-Chip.
+  Also see: *System-on-Chip*.
 
 Structured Design
   1. A popular method for managing complex projects that is often used with large project teams.
@@ -716,7 +716,7 @@ System-on-Chip (SoC)
 
 Tag
   One or more characters or signals associated with a set of data, containing information about the set.
-  Also see: tag type.
+  Also see: *tag type*.
 
 Tag Type
   A special class of signals that is defined to ease user enhancements to the WISHBONE spec.
@@ -727,7 +727,7 @@ Tag Type
   These allow additional information to be attached to an address transfer, a data transfer or a bus cycle (respectively).
   The uppercase form TAG TYPE is used when specifying a tag type in the WISHBONE DATASHEET.
   For example, TAG TYPE: TGA_O() indicates an address tag.
-  Also see: address tag, data tag and cycle tag.
+  Also see: *address tag*, *data tag* and *cycle tag*.
 
 Target Device
   The semiconductor type (or technology) onto which the IP core design is impressed.
@@ -739,27 +739,27 @@ Three-State Bus Interconnection
   Three state buffers can assume a logic low state (‘0’ or ‘L’), a logic high state (‘1’ or ‘H’) or a high impedance state (‘Z’).
   Three-state buffers are sometimes called Tri-State® buffers.
   Tri-State® is a registered trademark of National Semiconductor Corporation.
-  Also see: multiplexer interconnection.
+  Also see: *multiplexer interconnection*.
 
 Variable Clock Generator
   A type of SYSCON module where the frequency of [CLK_O] can be changed dynamically.
   The frequency can be changed by way of a programmable phase-lock-loop (PLL) circuit or other control mechanism.
   Among other things, this technique is used to reduce the power consumption of the circuit.
   In WISHBONE the variable clock generator capability is optional.
-  Also see: gated clock generator and variable timing specification.
+  Also see: *gated clock generator* and *variable timing specification*.
 
 Variable Interconnection
-  A microcomputer bus interconnection that can be changed without causing incompatibilities between bus modules (or SoC/IP cores).
+  A microcomputer bus interconnection that *can* be changed without causing incompatibilities between bus modules (or SoC/IP cores).
   Also called a dynamic interconnection.
   An example of a variable interconnection bus is the WISHBONE SoC architecture.
-  Also see: fixed interconnection.
+  Also see: *fixed interconnection*.
 
 Variable Timing Specification
   A timing specification that is not fixed.
   In WISHBONE, variable timing can be achieved in a number of ways.
   For example, the system integrator can select the frequency of [CLK_O] by enforcing a timing specification during the circuit design.
   Variable timing can also be  achieved during circuit operation with a variable clock generator.
-  Also see: gated clock generator and variable clock generator.
+  Also see: *gated clock generator* and *variable clock generator*.
 
 Verilog®
   A textual based hardware description language (HDL) intended for use in circuit design.
@@ -790,7 +790,7 @@ WISHBONE Classic
   WISHBONE Classic is a high performance System-on-Chip (SoC) interconnect.
   For zero-wait-state operation it requires that the SLAVE generates an asynchronous cycle termination signal.
   See chapter 3 for WISHBONE Classic bus cycles.
-  Also see: WISHBONE Registered Feedback
+  Also see: *WISHBONE Registered Feedback*.
 
 WISHBONE DATASHEET
   A type of documentation required for WISHBONE compatible IP cores.
@@ -802,7 +802,7 @@ WISHBONE Registered Feedback
   It requires that all interface signals are registered.
   To maintain performance, it introduces a number of novel bus-cycles.
   See chapter 4 for WISHBONE Registered Feedback bus cycles.
-  Also see: WISHBONE Classic
+  Also see: *WISHBONE Classic*.
 
 WISHBONE Signal
   A signal that is defined as part of the WISHBONE specification.
@@ -819,7 +819,7 @@ Wrapper
   A wrapper is analogous to a technique used to convert software written in 'C' to that written in 'C++'.
 
 WORD
-  A unit of data that is 16-bits wide. Also see: BYTE, DWORD and QWORD.
+  A unit of data that is 16-bits wide. Also see: *BYTE*, *DWORD* and *QWORD*.
 
 
 References

@@ -12,9 +12,9 @@ General Operation
 
 MASTER and SLAVE interfaces are interconnected with a set of signals
 that permit them to exchange data.  For descriptive purposes these
-signals are cumulatively known as a bus, and are contained within a
+signals are cumulatively known as a *bus*, and are contained within a
 functional module called the INTERCON.  Address, data and other
-information is impressed upon this bus in the form of bus cycles.
+information is impressed upon this bus in the form of *bus cycles*.
 
 Reset Operation
 ```````````````
@@ -33,7 +33,7 @@ and SLAVE interfaces.  :numref:`resetcycle` shows the reset cycle.
 
         { "signal": [
 		["Master Signals",
-                  { "name": "CLK_I",  "wave": "P...." },
+                  { "name": "CLK_I",  "wave": "P.|.." },
 		  { "name": "RST_I", "wave": "0.1.x|0...", "period": 0.5 },
 		  { "name": "STB_O", "wave": "x...0|..x.", "period": 0.5 },
 		  { "name": "CYC_O", "wave": "x...0|..x.", "period": 0.5 }
@@ -109,14 +109,14 @@ and SLAVE interfaces.  :numref:`resetcycle` shows the reset cycle.
     [RST_I] signal.
 
 **SUGGESTION 3.00**
-    Some circuits require an asynchronous reset capability.  If an IP
+    Some circuits require an *asynchronous* reset capability.  If an IP
     core or other SoC component requires an asynchronous reset, then
     define it as a non-WISHBONE signal.  This prevents confusion with
     the WISHBONE reset [RST_I] signal that uses a purely synchronous
     protocol, and needs to be applied to the WISHBONE interface only.
 
 **OBSERVATION 3.20**
-    All WISHBONE interfaces respond to the reset signal.  However, the
+    All WISHBONE *interfaces* respond to the reset signal.  However, the
     IP Core connected to a WISHBONE interface does not necessarily
     need to respond to the reset signal.
 
@@ -154,7 +154,7 @@ Handshaking Protocol
 ````````````````````
 
 All bus cycles use a handshaking protocol between the MASTER and SLAVE
-interfaces. As shown in Figure :ref:`hanshaking <handshake>`, the
+interfaces. As shown in :numref:`handshake`, the
 MASTER asserts [STB_O] when it is ready to transfer data. [STB_O]
 remains asserted until the SLAVE asserts one of the cycle terminating
 signals [ACK_I], [ERR_I] or [RTY_I]. At every rising edge of [CLK_I]
@@ -213,7 +213,7 @@ during the cycle. This signal is generally used if an error was
 detected by SLAVE logic circuitry. For example, if the SLAVE is a
 parity-protected memory, then the [ERR_I] signal can be asserted if
 a parity fault is detected. This specification does not dictate what
-the eMASTER will do in response to [ERR_I].
+the MASTER will do in response to [ERR_I].
 
 Asserting the optional [RTY_I] signal during a bus cycle will
 terminate the cycle. It also serves to notify the MASTER that the
@@ -246,9 +246,11 @@ respond to [RTY_I].
 **RULE 3.45**
   If a SLAVE supports the [ERR_O] or [RTY_O] signals, then the SLAVE
   MUST NOT assert more than one of the following signals at any time:
-  [ACK_O], [ERR_O] or [RTY_O].  OBSERVATION 3.35 If the SLAVE supports
-  the [ERR_O] or [RTY_O] signals, but the MASTER does not support these
-  signals, deadlock may occur.
+  [ACK_O], [ERR_O] or [RTY_O].
+
+**OBSERVATION 3.35**
+  If the SLAVE supports the [ERR_O] or [RTY_O] signals, but the MASTER
+  does not support these signals, deadlock may occur.
 
 **RECOMMENDATION 3.10**
   Design INTERCON modules to prevent deadlock conditions. One solution
@@ -348,6 +350,8 @@ included in the WISHBONE DATASHEET.
 .. _tagtypes:
 .. table:: TAG TYPEs
 
+   +------------------+----------+-----------------+----------+-----------------+
+   |                  |   MASTER                   |   SLAVE                    |
    +------------------+----------+-----------------+----------+-----------------+
    | Description      | TAG TYPE | Associated with | TAG TYPE | Associated with |
    +------------------+----------+-----------------+----------+-----------------+
@@ -474,7 +478,7 @@ CLOCK EDGE 1:
      ]
           ],
 	  "config": { "hscale": 2 },
-	  "head": { "tick": 0 }
+	  "head": { "tick": -1 }
 	}
 
 SINGLE WRITE Cycle
@@ -513,7 +517,7 @@ CLOCK EDGE 1:
 
   MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.
 
-  SLAVE negates [ACK_I[ in response to negated [STB_O].
+  SLAVE negates [ACK_I] in response to negated [STB_O].
 
 .. _singlewritecycle:
 .. wavedrom::
@@ -539,7 +543,7 @@ CLOCK EDGE 1:
      ]
           ],
 	  "config": { "hscale": 2 },
-	  "head": { "tick": 0 }
+	  "head": { "tick": -1 }
 	}
 
 BLOCK READ / WRITE Cycles
@@ -551,7 +555,7 @@ modifications to support multiple transfers.
 
 During BLOCK cycles, the interface basically performs SINGLE
 READ/WRITE cycles as described above. However, the BLOCK cycles are
-modified somewhat so that these individual cycles (called phases)
+modified somewhat so that these individual cycles (called *phases*)
 are combined together to form a single BLOCK cycle. This function is
 most useful when multiple MASTERs are used on the interconnect. For
 example, if the SLAVE is a shared (dual port) memory, then an arbiter
@@ -708,7 +712,7 @@ CLOCK EDGE 6:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
+       {"name": "CLK_I", "wave": "P..|..|.", "label": "...{WSM}(0.45)..{WSS}(0.45)." },
        {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "DAT_I()", "wave": "x..2x3<x|>x.4x5<x|>5x.", "period": 0.5 },
        {"name": "DAT_O()", "wave": "x..|..|." },
@@ -725,7 +729,7 @@ CLOCK EDGE 6:
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 BLOCK WRITE Cycle
@@ -841,15 +845,15 @@ CLOCK EDGE 6:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P..|..|.", "labels": "...{WSM}(0.45)..{WSS}(0.45)." },
+       {"name": "CLK_I", "wave": "P..|..|.", "label": "...{WSM}(0.45)..{WSS}(0.45)." },
        {"name": "ADR_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "DAT_I()", "wave": "x..|..|." },
        {"name": "DAT_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "WE_O", "wave": "x1.|..|x" },
        {"name": "SEL_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
-       {"name": "CYC_O", "wave": "01.|..|0" },
        {"name": "STB_O", "wave": "0.1...<0|>.1...<.|>.0.", "period": 0.5 },
-       {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 }
+       {"name": "ACK_I", "wave": "0..1..<0|>..1..<0|>10.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01.|..|0" }
      ], ["Tag Types (M)",
        {"name": "TGA_O()", "wave": "x.2.3.<x|>x4.5.<.|>.x.", "period": 0.5 },
        {"name": "TGD_I()", "wave": "x..|..|." },
@@ -858,7 +862,7 @@ CLOCK EDGE 6:
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 RMW Cycle
@@ -953,24 +957,24 @@ CLOCK EDGE 3:
 
    {"signal": [
      ["Master Signals",
-       {"name": "CLK_I", "wave": "P.|.|.", "labels": "..{WSM}(0.45).{WSS}(0.45)." },
-       {"name": "ADR_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
-       {"name": "DAT_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
-       {"name": "DAT_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
-       {"name": "WE_O",    "wave": "x.0.<x|>...<1|>.x.", "period": 0.5 },
-       {"name": "SEL_O()", "wave": "x.2.<x|>...<2|>.x.", "period": 0.5 },
-       {"name": "CYC_O", "wave": "01|.|0" },
-       {"name": "STB_O", "wave": "x.1.<0|>...<1|>.x.", "period": 0.5 },
-       {"name": "ACK_I", "wave": "x..2<x|>...<x|>2x.", "period": 0.5 }
+       {"name": "CLK_I", "wave": "P.||.", "label": "..{WSM}(0.45).{WSS}(0.45)." },
+       {"name": "ADR_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 },
+       {"name": "DAT_I()", "wave": "x..2<x|>.<.|>...", "period": 0.5 },
+       {"name": "DAT_O()", "wave": "x...<.|>.<2|>.x.", "period": 0.5 },
+       {"name": "WE_O",    "wave": "x.0.<x|>.<1|>.x.", "period": 0.5 },
+       {"name": "SEL_O()", "wave": "x.2.<x|>.<2|>.x.", "period": 0.5 },
+       {"name": "STB_O", "wave": "x.1.<0|>.<1|>.x.", "period": 0.5 },
+       {"name": "ACK_I", "wave": "x..2<x|>.<x|>2x.", "period": 0.5 },
+       {"name": "CYC_O", "wave": "01||0" }
      ], ["Tag Types (M)",
-       {"name": "TGA_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 },
-       {"name": "TGD_I()", "wave": "x..2<x|>...<.|>...", "period": 0.5 },
-       {"name": "TGD_O()", "wave": "x...<.|>...<2|>.x.", "period": 0.5 },
-       {"name": "TGC_O()", "wave": "x.2.<.|>...<.|>.x.", "period": 0.5 }
+       {"name": "TGA_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 },
+       {"name": "TGD_I()", "wave": "x..2<x|>.<.|>...", "period": 0.5 },
+       {"name": "TGD_O()", "wave": "x...<.|>.<2|>.x.", "period": 0.5 },
+       {"name": "TGC_O()", "wave": "x.2.<.|>.<.|>.x.", "period": 0.5 }
       ]
     ],
     "config": { "hscale": 2, "skin": "narrow" },
-    "head": { "tick": 0 }
+    "head": { "tick": -1 }
    }
 
 Data Organization
@@ -1037,7 +1041,7 @@ WORD and BYTE cases.
    sizes.
 
 :numref:`littleendian` shows an example of how the 64-bit value of
-0x0123456789ABC is transferred through BYTE, WORD, DWORD and QWORD
+0x0123456789ABCDEF is transferred through BYTE, WORD, DWORD and QWORD
 ports using LITTLE ENDIAN data organization. Through the 64-bit QWORD
 port the number is directly transferred with the most significant bit
 at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
@@ -1113,7 +1117,7 @@ Data Organization for 16-bit Ports
 Data Organization for 8-bit Ports
 `````````````````````````````````
 
-**RULE 3.1010**
+**RULE 3.110**
   Data organization on 8-bit ports MUST conform to :numref:`organization8`.
 
 .. _organization8:
@@ -1124,6 +1128,6 @@ Data Organization for 8-bit Ports
 References
 ----------
 
-Cohen, Danny. On Holy Wars and a Plea for Peace. IEEE Computer
+Cohen, Danny. *On Holy Wars and a Plea for Peace*. IEEE Computer
 Magazine, October 1981.  Pages 49-54. [Description of BIG ENDIAN and
 LITTLE ENDIAN.]
