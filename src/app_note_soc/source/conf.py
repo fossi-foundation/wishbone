@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'WISHBONE System-on-Chip (SoC) Application Note'
-copyright = '2019, OuabacheDesign Works'
+copyright = '2019, CC0 1.0 Universal'
 author = 'John Eaton '
 
 # The full version, including alpha/beta/rc tags
