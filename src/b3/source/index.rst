@@ -8,11 +8,12 @@ WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores
 
 **Stewardship**
 
-This specification is maintained by the Free and Open Source Silicon Foundation.
-Questions, comments and suggestions about this document are welcome and should be directed to the FOSSi Foundation Specification Committee (specs@fossi-foundation.org, https://www.fossi-foundation.org).
-Steward for this specification is Richard Herveille (rherveille@opencores.org).
-
-FOSSi Foundation maintains this document to provide an open, freely useable interconnect architecture for IP-cores hosted on OpenCores.org, LibreCores.org and others' IP Cores.
+This specification is maintained by Richard Herveille
+(rherveille@opencores.org) and hosted by the Free and Open Source
+Silicon Foundation.  Questions, comments and suggestions about this
+document are welcome and should be directed to the mailing list
+(https://lists.librecores.org/listinfo/discussion) and the GitHub
+repository (https://github.com/fossi-foundation/wishbone).
 
 These specifications are intended to guarantee compatibility between compliant IP-cores and to improve cooperation among different users and suppliers.
 
