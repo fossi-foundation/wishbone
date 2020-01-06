@@ -73,7 +73,7 @@ Features of this technology include:
 
 * Variable core interconnection methods support point-to-point, shared bus, crossbar switch, and switched fabric interconnections.
 
-*  Handshaking protocol allows each IP core to throttle its data transfer speed.
+* Handshaking protocol allows each IP core to throttle its data transfer speed.
 
 * Supports single clock data transfers.
 
