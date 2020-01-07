@@ -187,8 +187,10 @@ to control the rate at which data is transferred.
 
 **OBSERVATION 3.25**
   SLAVE interfaces assert a cycle termination signal in response to
-  [STB_I]. However, [STB_I] is only valid when [CYC_I] is valid.  RULE
-  3.35 The cycle termination signals [ACK_O], [ERR_O], and [RTY_O] must
+  [STB_I]. However, [STB_I] is only valid when [CYC_I] is valid.
+
+**RULE 3.35**
+  The cycle termination signals [ACK_O], [ERR_O], and [RTY_O] must
   be generated in response to the logical AND of [CYC_I] and [STB_I].
 
 **PERMISSION 3.15**
