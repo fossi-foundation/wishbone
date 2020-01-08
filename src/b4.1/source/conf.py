@@ -22,7 +22,7 @@ copyright = '2019, WISHBONE specification authors'
 author = 'WISHBONE specification authors'
 
 # The full version, including alpha/beta/rc tags
-release = 'B3.1'
+release = 'B4.1'
 
 master_doc = "index"
 
@@ -61,7 +61,7 @@ html_theme = 'alabaster'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_title = "WISHBONE B3"
+html_title = "WISHBONE B4"
 
 wavedrom_html_jsinline = False
 
@@ -70,5 +70,5 @@ wavedrom_html_jsinline = False
 latex_elements = { 'pointsize': '12pt' }
 
 latex_documents = [
-    (master_doc, 'wishbone-b3-1.tex', '', '', 'manual')
+    (master_doc, 'wishbone-b4-1.tex', '', '', 'manual')
 ]
