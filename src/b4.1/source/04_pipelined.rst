@@ -392,3 +392,197 @@ CLOCK EDGE 4:
     "config": { "hscale": 2 },
     "head": { "tick": -1 }
    }
+
+Interfacing standard and pipelined peripherals
+----------------------------------------------
+
+The following use cases need special attention
+
+  1. A MASTER operating in standard mode connected to a SLAVE operating in
+     pipelined mode
+
+  2. A MASTER operating in pipelined mode connected to a SLAVE operating in
+     standard mode
+
+Standard master connected to pipelined slave
+````````````````````````````````````````````
+
+For this combination to work the [STB_I] signal must be changed.
+
+For a standard master the following is true:
+
+  1. [STB_O] is asserted at the beginning of a transfer and is negated
+     upon receiving [ACK_I]
+
+For a pipelined slave the following is true:
+
+  1. a new transaction is initiated when [STB_I] is asserted
+
+A finite state machine is needed to supervise the bus activity. This
+state machine should have two states:
+
+  1. idle:
+     if [STB_I] change state to wait4ack
+
+  2. wait4ack:
+     if [ACK_O] change state to idle
+
+Signal [STB_I] to slave can now be defined as a function of current
+state and [STB_O] from MASTER.
+
+VHDL example::
+
+    WBS_STB_I <= WBM_STB_O when state=idle else '0';
+
+Verilog example::
+
+    assign WBS_STB_I = (state==idle) ? WBM_STB_O : 1'b0;
+
+This logic could be implemented in wrapper. The new top level would
+present a standard wishbone peripheral.
+
+Pipelined master connected to standard slave
+````````````````````````````````````````````
+
+For this to work we must ensure that the updated functionality,
+pipelining, in the master is not put into use. With the [STALL_I]
+signal asserted this function can be avoided.  There is also a special
+case where a simple slave peripheral designed for Wishbone release B3
+actually can support pipelined mode in a limited context.
+
+Using [STALL_I] to avoid pipelining
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A master with [STALL_I] asserted will not initiate new transactions
+until the [STALL_I] condition is negated. This can easily be achieved
+with a [STALL_I] as a function of [ACK_O] and [CYC_I].
+
+Example in VHDL::
+
+  WBM_STALL_I <= '0' when WBS_CYC_I='0' else not WBS_ACK_O;
+
+Example in Verilog::
+
+  assign WBM_STALL_I = !WBS_CYC_I ? 1'b0 : !WBS_ACK_O;
+
+
+.. _writepipemasterstdslave:
+.. wavedrom::
+   :caption: Write - pipelined master standard slave
+
+   { "signal": [
+     { "name": "CLK_I",   "wave": "P..." },
+      { "name": "WE_O",    "wave": "01.0" },
+      { "name": "CYC_O",   "wave": "01.0" },
+      { "name": "STB_O",   "wave": "01.0" },
+      { "name": "STALL_I", "wave": "010." },
+      { "name": "ACK_I",   "wave": "0.10" }
+     ],
+     "config": { "hscale": 2 },
+     "head": { "tick": 0 }
+   }
+
+
+.. _readpipemasterstdslave:
+.. wavedrom::
+   :caption: Read - pipelined master standard slave
+
+   { "signal": [
+      { "name": "CLK_I",   "wave": "P..." },
+      { "name": "WE_O",    "wave": "0..." },
+      { "name": "CYC_O",   "wave": "01.0" },
+      { "name": "STB_O",   "wave": "01.0" },
+      { "name": "STALL_I", "wave": "010." },
+      { "name": "ACK_I",   "wave": "0.10" }
+     ],
+     "config": { "hscale": 2 },
+     "head": { "tick": 0 }
+   }
+
+This logic could be implemented in a wrapper. The new top level module
+would present a pipelined peripheral. In Verilog HDL this could
+optionally be done in the port mapping.
+
+Simple slaves directly supporting pipelined mode
+````````````````````````````````````````````````
+
+Even though not initially designed for pipelined mode many simple
+wishbone slaves directly support this mode. For this to be true the
+following characteristics must be true
+
+  1. [ACK_O] should be registered
+
+  2. a read or write classic bus cycle should always occupy two clock cycles
+
+  3. actual write to internal register must be done on rising clock edge 1.
+     See :numref:`pipelinedwrite4` below
+
+Master input signal [STALL_I] should be tied low, inactive, statically.
+
+Classic pipelined write to simple wishbone peripheral
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _pipelinedwrite4:
+.. wavedrom::
+   :caption: Pipelined write
+
+   { "signal": [
+     { "name": "CLK_I",   "wave": "P..." },
+     { "name": "WE_O",    "wave": "010." },
+     { "name": "CYC_O",   "wave": "01.0" },
+     { "name": "STB_O",   "wave": "010." },
+     { "name": "STALL_I", "wave": "0..." },
+     { "name": "ACK_I",   "wave": "0.10" }
+     ],
+     "config": { "hscale": 2 },
+     "head": { "tick": -1 }
+   }
+
+CLOCK EDGE 0:
+  MASTER presents [CYC_O] and [STB_O] to initiate transaction
+
+  MASTER asserts [WE_O] to indicate a WRITE cycle
+
+CLOCK EDGE 1:
+  SLAVE writes [DAT_I] to register (or similar function depending on peripheral
+  functionality)
+
+  SLAVE asserts [ACK_O]
+
+  MASTER negate [STB_O] when [STALL_I] is inactive
+
+CLOCK EDGE 2:
+  MASTER negates [CYC_I] in response to [ACK_I] and terminates cycle
+
+Classic pipelined read from simple wishbone peripheral
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. wavedrom::
+   :caption: Pipelined read
+
+   { "signal": [
+     { "name": "CLK_I",   "wave": "P..." },
+     { "name": "WE_O",    "wave": "0..." },
+     { "name": "CYC_O",   "wave": "01.0" },
+     { "name": "STB_O",   "wave": "010." },
+     { "name": "STALL_I", "wave": "0..." },
+     { "name": "ACK_I",   "wave": "0.10" }
+     ],
+     "config": { "hscale": 2 },
+     "head": { "tick": -1 }
+   }
+
+CLOCK EDGE 0:
+  MASTER presents [CYC_O] and [STB_O] to initiate transaction
+
+  MASTER negates [WE_O] to indicate a READ cycle
+
+CLOCK EDGE 1:
+  SLAVE presents [DAT_O]
+
+  SLAVE asserts [ACK_O]
+
+  MASTER negate [STB_O] when [STALL_I] is inactive
+
+CLOCK EDGE 2:
+  MASTER negates [CYC_I] in response to [ACK_I] and terminates cycle
