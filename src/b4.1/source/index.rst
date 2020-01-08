@@ -74,6 +74,7 @@ This specification is managed at the following repository: https://github.com/fo
    01_introduction
    02_interface
    03_classic
+   04_pipelined
    05_registered
    06_timing
    07_patents
