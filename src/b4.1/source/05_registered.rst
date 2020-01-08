@@ -394,6 +394,28 @@ CLOCK EDGE 4:
    ], "head": { "tick": -1 }
    }
 
+The behaviour for pipelined mode is shown below.
+
+.. _pipelinedread:
+.. wavedrom::
+   :caption: Pipelined Cycle
+
+   {"signal": [
+     {"name": "CLK_I",   "wave": "P....." },
+     {"name": "CTI_O()", "wave": "x2...x", "data": "000" },
+     {"name": "ADR_O()", "wave": "x==x..", "data": ["A0", "A1"]},
+     {"name": "DAT_I()", "wave": "x.==x.", "data": ["D0", "D1"]},
+     {"name": "DAT_O()", "wave": "x....."},
+     {"name": "WE_O()",  "wave": "x00x.."},
+     {"name": "SEL_O()", "wave": "x==x.."},
+     {"name": "STB_O",   "wave": "01.0.."},
+     {"name": "ACK_I",   "wave": "0.110."},
+     {"name": "STALL_I", "wave": "0....."},
+     {"name": "CYC_O",   "wave": "01..0."}
+   ], "head": { "tick": -1 }
+   }
+
+
 End-Of-Burst
 ````````````
 
