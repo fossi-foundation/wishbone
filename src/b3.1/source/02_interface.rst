@@ -162,7 +162,7 @@ machines are forced into an initial state. The INTERCON connects the
 [RST_O] output to the [RST_I] input on MASTER and SLAVE interfaces.
 
 Signals Common to MASTER and SLAVE Interfaces
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+`````````````````````````````````````````````
 
 **CLK_I**
 
