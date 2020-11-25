@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction &#8212; WISHBONE B3</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Interface Specification" href="02_interface.html" />
+    <link rel="prev" title="WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>The WISHBONE <a class="footnote-reference brackets" href="#id2" id="id1">1</a> System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores is a flexible design methodology for use with semiconductor IP cores.
+Its purpose is to foster design reuse by alleviating System-on-Chip integration problems.
+This is accomplished by creating a common interface between IP cores.
+This improves the portability and reliability of the system, and results in faster time-to-market for the end user.</p>
+<p>Previously, IP cores used non-standard interconnection schemes that made them difficult to integrate.
+This required the creation of custom glue logic to connect each of the cores together.
+By adopting a standard interconnection scheme, the cores can be integrated more quickly and easily by the end user.</p>
+<p>This specification can be used for soft core, firm core or hard core IP. Since firm and hard cores are generally conceived as soft cores, the specification is written from that standpoint.
+This specification does not require the use of specific development tools or target hardware.
+Furthermore, it is fully compliant with virtually all logic synthesis tools.
+However, the examples presented in the specification do use the VHDL hardware description language.
+These are presented only as a convenience to the reader, and should be readily understood by users of other hardware description languages (such as Verilog®).
+Schematic based tools can also be used.
+The WISHBONE interconnect is intended as a general purpose interface.
+As such, it defines the standard data exchange between IP core modules.
+It does not attempt to regulate the application-specific functions of the IP core.</p>
+<p>The WISHBONE architects were strongly influenced by three factors.
+First, there was a need for a good, reliable System-on-Chip integration solution.
+Second, there was a need for a common interface specification to facilitate structured design methodologies on large project teams.
+Third, they were impressed by the traditional system integration solutions afforded by micro-computer buses such as PCI bus and VMEbus.</p>
+<p>In fact, the WISHBONE architecture is analogous to a microcomputer bus in that that they both:
+(a) offer a flexible integration solution that can be easily tailored to a specific application;
+(b) offer a variety of bus cycles and data path widths to solve various system problems; and
+(c) allow products to be designed by a variety of suppliers (thereby driving down price while improv- ing performance and quality).</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Webster’s dictionary defines a WISHBONE as “the forked clavicle in front of the breastbone of most birds.”
+The term ‘WISHBONE interconnect’ was coined by Wade Peterson of Silicore Corporation.
+During the initial definition of the scheme he was attempting to find a name that was descriptive of a bi-directional data bus that used either multiplexers or three-state logic.
+This was solved by forming an interface with separate input and output paths.
+When these paths are connected to three-state logic it forms a ‘Y’ shaped configuration that resembles a wishbone.
+The actual name was conceived during a Thanksgiving Day dinner that included roast turkey.
+Thanksgiving Day is a national holiday in the United States, and is observed on the third Thursday in November.
+It is generally celebrated with a traditional turkey dinner.</p>
+</dd>
+</dl>
+<p>However, traditional microcomputer buses are fundamentally handicapped for use as a System-on-Chip interconnection.
+That’s because they are designed to drive long signal traces and connector systems which are highly inductive and capacitive.
+In this regard, System-on-Chip is much simpler and faster.
+Furthermore, the System-on-Chip solutions have a rich set of interconnection resources.
+These do not exist in microcomputer buses because they are limited by IC packaging and mechanical connectors.</p>
+<p>The WISHBONE architects have attempted to create a specification that is robust enough to insure complete compatibility between IP cores.
+However, it has not been over specified so as to unduly constrain the creativity of the core developer or the end user.
+It is believed that these two goals have been accomplished with the publication of this document.</p>
+<div class="section" id="wishbone-features">
+<h2>WISHBONE Features<a class="headerlink" href="#wishbone-features" title="Permalink to this headline">¶</a></h2>
+<p>The WISHBONE interconnection makes System-on-Chip and design reuse easy by creating a standard data exchange protocol.
+Features of this technology include:</p>
+<ul>
+<li><p>Simple, compact, logical IP core hardware interfaces that require very few logic gates.</p></li>
+<li><p>Supports structured design methodologies used by large project teams.</p></li>
+<li><p>Full set of popular data transfer bus protocols including:</p>
+<ul class="simple">
+<li><p>READ/WRITE cycle</p></li>
+<li><p>BLOCK transfer cycle</p></li>
+<li><p>RMW cycle</p></li>
+</ul>
+</li>
+<li><p>Modular data bus widths and operand sizes.</p></li>
+<li><p>Supports both BIG ENDIAN and LITTLE ENDIAN data ordering.</p></li>
+<li><p>Variable core interconnection methods support point-to-point, shared bus, crossbar switch, and switched fabric interconnections.</p></li>
+<li><p>Handshaking protocol allows each IP core to throttle its data transfer speed.</p></li>
+<li><p>Supports single clock data transfers.</p></li>
+<li><p>Supports normal cycle termination, retry termination and termination due to error.</p></li>
+<li><p>Modular address widths</p></li>
+<li><p>Partial address decoding scheme for SLAVEs.
+This facilitates high speed address decoding, uses less redundant logic and supports variable address sizing and interconnection means.</p></li>
+<li><p>User-defined tags.
+These are useful for applying information to an address bus, a data bus or a bus cycle.
+They are especially helpful when modifying a bus cycle to identify information such as:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Data transfers</p></li>
+<li><p>Parity or error correction bits</p></li>
+<li><p>Interrupt vectors</p></li>
+<li><p>Cache control operations</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>MASTER / SLAVE architecture for very flexible system designs.</p></li>
+<li><p>Multiprocessing (multi-MASTER) capabilities. This allows for a wide variety of System-on-Chip configurations.</p></li>
+<li><p>Arbitration methodology is defined by the end user (priority arbiter, round-robin arbiter, etc.).</p></li>
+<li><p>Supports various IP core interconnection means, including:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Point-to-point</p></li>
+<li><p>Shared bus</p></li>
+<li><p>Crossbar switch</p></li>
+<li><p>Data flow interconnection</p></li>
+<li><p>Off chip</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Synchronous design assures portability, simplicity and ease of use.</p></li>
+<li><p>Very simple, variable timing specification.</p></li>
+<li><p>Documentation standards simplify IP core reference manuals.</p></li>
+<li><p>Independent of hardware technology (FPGA, ASIC, etc.).</p></li>
+<li><p>Independent of delivery method (soft, firm or hard core).</p></li>
+<li><p>Independent of synthesis tool, router and layout tool technology.</p></li>
+<li><p>Independent of FPGA and ASIC test methodologies.</p></li>
+<li><p>Seamless design progression between FPGA prototypes and ASIC production chips.</p></li>
+</ul>
+</div>
+<div class="section" id="wishbone-objectives">
+<h2>WISHBONE Objectives<a class="headerlink" href="#wishbone-objectives" title="Permalink to this headline">¶</a></h2>
+<p>The main objectives of this specification are</p>
+<ul class="simple">
+<li><p>to create a flexible interconnection means for use with semiconductor IP cores.
+This allows various IP cores to be connected together to form a System-on-Chip.</p></li>
+<li><p>to enforce compatibility between IP cores. This enhances design reuse.</p></li>
+<li><p>to create a robust standard, but one that does not unduly constrain the creativity of the core developer or the end user.</p></li>
+<li><p>to make it easy to understand by both the core developer and the end user.</p></li>
+<li><p>to facilitate structured design methodologies on large project teams.
+With structured design, individual team members can build and test small parts of the design.
+Each member of the design team can interface to the common, well-defined WISHBONE specification.
+When all of the sub-assemblies have been completed, the full system can be integrated.</p></li>
+<li><p>to create a portable interface that is independent of the underlying semiconductor technology.
+For example, WISHBONE interconnections can be made that support both FPGA and ASIC target devices.</p></li>
+<li><p>to make WISHBONE interfaces independent of logic signaling levels.</p></li>
+<li><p>to create a flexible interconnection scheme that is independent of the IP core delivery method.
+For example, it may be used with ‘soft core’, ‘firm core’ or ‘hard core’ delivery methods.</p></li>
+<li><p>to be independent of the underlying hardware description.
+For example, soft cores may be written and synthesized in VHDL, Verilog® or some other hardware description language.
+Schematic entry may also be used.</p></li>
+<li><p>to require a minimum standard for documentation.
+This takes the form of the WISHBONE DATASHEET, and allows IP core users to quickly evaluate and integrate new cores.</p></li>
+<li><p>to eliminate extensive interface documentation on the part of the IP core developer.
+In most cases, this specification along with the WISHBONE DATASHEET is sufficient to completely document an IP core data interface.</p></li>
+<li><p>to allow users to create SoC components without infringing on the patent rights of others.
+While the use of WISHBONE technology does not necessarily prevent patent infringement, it does provide a reasonable safe haven where users can design around the patent claims of others.
+The specification also provides <em>cited patent references</em>, which describes the field of search used by the WISHBONE architects.</p></li>
+<li><p>to identify critical System-on-Chip interconnection technologies, and to place them into the public domain at the earliest possible date.
+This makes it more difficult for individuals and organizations to create proprietary technologies through the use of patent, trademark, copyright and trade secret protection mechanisms.</p></li>
+<li><p>to support a business model whereby IP Core suppliers can cooperate at a technical standards level, but can also compete in the commercial marketplace.
+This improves the overall quality and value of products through market forces such as price, service, delivery, performance and time-to-market.
+This business model also allows open source IP cores to be offered as well.</p></li>
+<li><p>to create an architecture that has a smooth transition path to support new technologies.
+This increases the longevity of the specification as it can adapt to new, and as yet unthought-of, requirements.</p></li>
+<li><p>to create an architecture that allows various interconnection means between IP core modules.
+This insures that the end user can tailor the System-on-Chip to his/her own needs.
+For example, the entire interconnection system (which is analogous to a backplane on a standard microcomputer bus like VMEbus or cPCI) can be created by the system integrator.
+This allows the interconnection to be tailored to the final target device.</p></li>
+<li><p>to create an architecture that requires a minimum of glue logic.
+In some cases the System-on-Chip needs no glue logic whatsoever.
+However, in other cases the end user may choose to use a more sophisticated interconnection method (for example with FIFO memories or crossbar switches) that requires additional glue logic.</p></li>
+<li><p>to create an architecture with variable address and data path widths to meet a wide variety of system requirements.</p></li>
+<li><p>to create an architecture that fully supports the automatic generation of interconnection and IP Core systems.
+This allows components to be generated with parametric core generators.</p></li>
+<li><p>to create an architecture that supports both BIG ENDIAN and LITTLE ENDIAN data transfer organizations.</p></li>
+<li><p>to create an architecture that supports one data transfer per clock cycle.</p></li>
+<li><p>to create a flexible architecture that allows address, data and bus cycles to be tagged.
+Tags are user defined signals that allow users to modify a bus cycle with additional information.
+They are especially useful when novel or unusual control signals (such as parity, cache control or interrupt acknowledge) are needed on an interface.</p></li>
+<li><p>to create an architecture with a MASTER/SLAVE topology.
+Furthermore, the system must be capable of supporting multiple MASTERs and multiple SLAVEs with an efficient arbitration mechanism.</p></li>
+<li><p>to create an architecture that supports point-to-point interconnections between IP cores.</p></li>
+<li><p>to create an architecture that supports shared bus interconnections between IP cores.</p></li>
+<li><p>to create an architecture that supports crossbar switches between IP cores.</p></li>
+<li><p>to create an architecture that supports switched fabrics.</p></li>
+<li><p>to create a synchronous protocol to insure ease of use, good reliability and easy testing.
+Furthermore, all transactions can be coordinated by a single clock.</p></li>
+<li><p>to create a synchronous protocol that works over a wide range of interface clock speeds.
+The effects of this are:
+(a) that the WISHBONE interface can work synchronously with all attached IP cores,
+(b) that the interface can be used on a large range of target devices,
+(c) that the timing specification is much simpler, and
+(d) that the resulting semiconductor device is much more testable.</p></li>
+<li><p>to create a variable timing mechanism whereby the system clock frequency can be adjusted so as to control the power consumption of the integrated circuit.</p></li>
+<li><p>to create a synchronous protocol that provides a simple timing specification.
+This makes the interface very easy to integrate.</p></li>
+<li><p>to create a synchronous protocol where each MASTER and SLAVE can throttle the data transfer rate with a handshaking mechanism.</p></li>
+<li><p>to create a synchronous protocol that is optimized for System-on-Chip, but that is also suitable for off-chip I/O routing.
+Generally, the off-chip WISHBONE interconnect will operate at slower speeds.</p></li>
+<li><p>to create a backward compatible registered feedback high performance burst bus.</p></li>
+</ul>
+</div>
+<div class="section" id="specification-terminology">
+<h2>Specification Terminology<a class="headerlink" href="#specification-terminology" title="Permalink to this headline">¶</a></h2>
+<p>To avoid confusion, and to clarify the requirements for compliance, this specification uses five keywords.
+They are:</p>
+<ul class="simple">
+<li><p><strong>RULE</strong></p></li>
+<li><p><strong>RECOMMENDATION</strong></p></li>
+<li><p><strong>SUGGESTION</strong></p></li>
+<li><p><strong>PERMISSION</strong></p></li>
+<li><p><strong>OBSERVATION</strong></p></li>
+</ul>
+<p>Any text not labeled with one of these keywords describes the operation in a narrative style.
+The keywords are defined as follows:</p>
+<dl class="simple">
+<dt><strong>RULE</strong></dt><dd><p>Rules form the basic framework of the specification.
+They are sometimes expressed in text form and sometimes in the form of figures, tables or drawings.
+All rules MUST be followed to ensure compatibility between interfaces.
+Rules are characterized by an imperative style.
+The uppercase words MUST and MUST NOT are reserved exclusively for stating rules in this document, and are not used for any other purpose.</p>
+</dd>
+<dt><strong>RECOMMENDATION</strong></dt><dd><p>Whenever a recommendation appears, designers would be wise to take the advice given.
+Doing otherwise might result in some awkward problems or poor performance.
+While this specification has been designed to support high performance systems, it is possible to create an interconnection that complies with all the rules, but has very poor performance.
+In many cases a designer needs a certain level of experience with the system architecture in order to design interfaces that deliver top performance.
+Recommendations found in this document are based on this kind of experience and are provided as guidance for the user.</p>
+</dd>
+<dt><strong>SUGGESTION</strong></dt><dd><p>A suggestion contains advice which is helpful but not vital.
+The reader is encouraged to consider the advice before discarding it.
+Some design decisions are difficult until experience has been gained.
+Suggestions help a designer who has not yet gained this experience.
+Some suggestions have to do with designing compatible interconnections, or with making system integration easier.</p>
+</dd>
+<dt><strong>PERMISSION</strong></dt><dd><p>In some cases a rule does not specifically prohibit a certain design approach, but the reader might be left wondering whether that approach might violate the spirit of the rule, or whether it might lead to some subtle problem.
+Permissions reassure the reader that a certain approach is acceptable and will not cause problems.
+The upper-case word MAY is reserved exclusively for stating a permission and is not used for any other purpose.</p>
+</dd>
+<dt><strong>OBSERVATION</strong></dt><dd><p>Observations do not offer any specific advice.
+They usually clarify what has just been discussed.
+They spell out the implications of certain rules and bring attention to things that might otherwise be overlooked.
+They also give the rationale behind certain rules, so that the reader understands why the rule must be followed.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="use-of-timing-diagrams">
+<h2>Use of Timing Diagrams<a class="headerlink" href="#use-of-timing-diagrams" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="#timingdiagram"><span class="std std-numref">Figure 1</span></a> shows some of the key features of the timing diagrams in this specification.
+Unless otherwise noted, the MASTER signal names are referenced in the timing diagrams.
+In some cases the MASTER and SLAVE signal names are different.
+For example, in the point-to-point interconnections the [ADR_O] and [ADR_I] signals are connected together.
+Furthermore, the actual waveforms at the SLAVE may vary from those at the MASTER.
+That’s because the MASTER and SLAVE interfaces can be connected together in different ways.
+Unless otherwise noted, the timing diagrams refer to the connection diagram shown in <a class="reference internal" href="#connection"><span class="std std-numref">Figure 2</span></a>.</p>
+<div class="figure align-default" id="id3">
+<span id="timingdiagram"></span><img alt="_images/wavedrom-7ddae766-d3ab-4e4b-aa38-2fe9aa56da1c.svg" src="_images/wavedrom-7ddae766-d3ab-4e4b-aa38-2fe9aa56da1c.svg" /><p class="caption"><span class="caption-number">Figure 1 </span><span class="caption-text">Use of timing diagrams.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id4">
+<span id="connection"></span><img alt="_images/connection.svg" src="_images/connection.svg" /><p class="caption"><span class="caption-number">Figure 2 </span><span class="caption-text">Standard connection for timing diagrams.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>Some signals may or may not be present on a specific interface.
+That’s because many of the signals are optional.</p>
+<p>Two symbols are also presented in relation to the [CLK_I] signal.
+These include the positive going clock edge transition point and the clock edge number.
+In most diagrams a vertical guideline is shown at the positive-going edge of each [CLK_I] transition.
+This represents the theoretical transition point at which flip-flops register their input value, and transfer it to their output.
+The exact level of this transition point varies depending upon the technology used in the target device.
+The clock edge number is included as a convenience so that specific points in the timing diagram may be referenced in the text.
+The clock edge number in one timing diagram is not related to the clock edge number in another diagram.</p>
+<p>Gaps in the timing waveforms may be shown.
+These indicate either:
+(a) a wait state or
+(b) a portion of the waveform that is not of interest in the context of the diagram.
+When the gap indicates a wait state, the symbols ‘-WSM-‘ or ‘-WSS-‘ are placed in the gap along the [CLK_I] waveform.
+These correspond to wait states inserted by the MASTER or SLAVE interfaces respectively.
+They also indicate that the signals (with the exception of clock transitions and hatched regions) will remain in a steady state during that time.</p>
+<p>Undefined signal levels are indicated by a hatched region.
+This region indicates that the signal level is undefined, and may take any state.
+It also indicates that the current state is undefined, and should not be relied upon.
+When signal arrays are used, stable and predictable signal levels are indicated with the word ‘VALID’.</p>
+</div>
+<div class="section" id="signal-naming-conventions">
+<h2>Signal Naming Conventions<a class="headerlink" href="#signal-naming-conventions" title="Permalink to this headline">¶</a></h2>
+<p>All signal names used in this specification have the ‘_I’ or ‘_O’ characters attached to them.
+These indicate if the signals are an input (to the core) or an output (from the core).
+For example, [ACK_I] is an input and [ACK_O] is an output.
+This convention is used to clearly identify the direction of each signal.</p>
+<p>Signal arrays are identified by a name followed by a set of parenthesis.
+For example, [DAT_I()] is a signal array.
+Array limits may also be shown within the parenthesis.
+In this case the first number of the array limit indicates the most significant bit, and the second number indicates the least significant bit.
+For example, [DAT_I(63..0)] is a signal array with upper array boundary number sixty-three (the most significant bit), and lower array boundary number zero (the least significant bit).
+The array size on any particular core may vary.
+In many cases the array boundaries are omitted if they are irrelevant to the context of the description.</p>
+<p>Special user defined signals, called <em>tags</em>, can also be used.
+Tags are assigned a <em>tag type</em> that indicates the exact timing to which the signal must adhere.
+For example, if a parity bit such as [PAR_O] is added to a data bus, it would probably be assigned a tag type of TAG TYPE: TGD_O().
+This indicates that the signal will adhere to the timing diagrams shown for [TGD_O()], which are shown in the timing diagrams for each bus cycle.
+Also note that, while all tag types are specified as arrays (with parenthesis ‘()’), the actual tag does not have to be a signal array.
+It can also be non-arrayed signal.
+When used as part of a sentence, signal names are enclosed in brackets ‘[ ]’.
+This helps to discriminate signal names from the words in the sentence.</p>
+</div>
+<div class="section" id="wishbone-logo">
+<h2>WISHBONE Logo<a class="headerlink" href="#wishbone-logo" title="Permalink to this headline">¶</a></h2>
+<p>The WISHBONE logo can be affixed to SoC documents that are compatible with this standard.
+<a class="reference internal" href="#logo">logo</a> shows the logo.</p>
+<div class="figure align-default" id="id5">
+<span id="logo"></span><img alt="_images/wishbone_stamp.svg" src="_images/wishbone_stamp.svg" /><p class="caption"><span class="caption-number">Figure 3 </span><span class="caption-text">WISHBONE Logo.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>PERMISSION 1.00</strong></dt><dd><p>Documents describing a WISHBONE compatible SoC component that are 100% compliant with this specification MAY use the WISHBONE logo.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="glossary-of-terms">
+<h2>Glossary of Terms<a class="headerlink" href="#glossary-of-terms" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>0x (numerical prefix)</dt><dd><p>The ‘0x’ prefix indicates a hexadecimal number.
+It is the same nomenclature as commonly used in the ‘C’ programming language.</p>
+</dd>
+<dt>Active High Logic State</dt><dd><p>A logic state that is ‘true’ when the logic level is a binary ‘1’ (high state).
+The high state is at a higher voltage than the low state.</p>
+</dd>
+<dt>Active Low Logic State</dt><dd><p>A logic state that is ‘true’ when the logic level is a binary ‘0’ (low state).
+The low state is at a lower voltage than the high state.</p>
+</dd>
+<dt>Address Tag</dt><dd><p>One or more user defined signals that modify a WISHBONE address.
+For example, they can be used create a parity bit on an address bus, to indicate an address width (16-bit, 24-bit etc.) or can be used by memory management hardware to indicate a protected address space.
+All address tags must be assigned a tag type of [TGA_I()] or [TGA_O()].
+Also see <em>tag</em>, <em>tag type</em>, <em>data tag</em> and <em>cycle tag</em>.</p>
+</dd>
+<dt>ASIC</dt><dd><p>Acronym for: Application Specific Integrated Circuit.
+A general term which describes a generic array of logic gates or analog building blocks which are programmed by a metalization layer at a silicon foundry.
+High level circuit descriptions are impressed upon the logic gates or analog building blocks in the form of metal interconnects.</p>
+</dd>
+<dt>Asserted</dt><dd><ol class="arabic simple">
+<li><p>A verb indicating that a logic state has switched from the inactive to the active state.
+When active high logic is used it means that a signal has switched from a logic low level to a logic high level.</p></li>
+<li><p><em>Assert</em>: to cause a signal line to make a transition from its logically false (inactive) state to its logically true (active) state.
+Opposite of <em>negated</em>.</p></li>
+</ol>
+</dd>
+<dt>Bit</dt><dd><p>A single binary (base 2) digit.</p>
+</dd>
+<dt>Bridge</dt><dd><p>An interconnection system that allows data exchange between two or more buses.
+The buses may have similar or different electrical, mechanical and logical structures.</p>
+</dd>
+<dt>Bus</dt><dd><ol class="arabic simple">
+<li><p>A common group of signals.</p></li>
+<li><p>A signal line or a set of lines used by a data transfer system to connect a number of devices.</p></li>
+</ol>
+</dd>
+<dt>Bus Interface</dt><dd><p>An electronic circuit that drives or receives data or power from a bus.</p>
+</dd>
+<dt>Bus Cycle</dt><dd><p>The process whereby digital signals effect the transfer of data across a bus by means of an inter-locked sequence of control signals.
+Also see: <em>Phase (bus cycle)</em>.</p>
+</dd>
+<dt>BYTE</dt><dd><p>A unit of data that is 8-bits wide. Also see: <em>WORD</em>, <em>DWORD</em> and <em>QWORD</em>.</p>
+</dd>
+<dt>Crossbar Interconnection (Crossbar Switch)</dt><dd><p>Crossbar switches are mechanisms that allow modules to connect and communicate.
+Each connection channel can be operated in parallel to other connection channels.
+This increases the data transfer rate of the entire system by employing parallelism.
+Stated another way, two 100 MByte/second channels can operate in parallel, thereby providing a 200 MByte/second transfer rate.
+This makes the crossbar switches inherently faster than traditional bus schemes.
+Crossbar routing mechanisms generally support dynamic configuration.
+This creates a configurable and reliable network system.
+Most crossbar architectures are also scalable, meaning that families of crossbars can be added as the needs arise.
+A crossbar interconnection is shown in <a class="reference internal" href="#crossbar"><span class="std std-numref">Figure 4</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id6">
+<span id="crossbar"></span><img alt="_images/crossbar.svg" src="_images/crossbar.svg" /><p class="caption"><span class="caption-number">Figure 4 </span><span class="caption-text">Crossbar (switch) interconnection. (Note: Dotted lines indicate one possible connection option).</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt>Cycle Tag</dt><dd><p>One or more user defined signals that modify a WISHBONE bus cycle.
+For example, they can be used to discriminate between WISHBONE SINGLE, BLOCK and RMW cycles.
+All cycle tags must be assigned a tag type of [TGC_I()] or [TGC_O()].
+Also see <em>tag type</em>, <em>address tag</em> and <em>data tag</em>.</p>
+</dd>
+<dt>Data Flow Interconnection</dt><dd><p>An interconnection where data flows through a prearranged set of IP cores in a sequential order.
+Data flow architectures often have the advantage of parallelism, whereby two or more functions are executed at the same time.
+<a class="reference internal" href="#dataflow"><span class="std std-numref">Figure 5</span></a> shows a data flow interconnection between IP cores.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id7">
+<span id="dataflow"></span><img alt="_images/dataflow.svg" src="_images/dataflow.svg" /><p class="caption"><span class="caption-number">Figure 5 </span><span class="caption-text">Data flow interconnection.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt>Data Organization</dt><dd><p>The ordering of data during a transfer.
+Generally, 8-bit (byte) data can be stored with the most significant byte of a mult-byte transfer at the higher or the lower address.
+These two methods are generally called BIG ENDIAN and LITTLE ENDIAN, respectively.
+In general, BIG ENDIAN refers to byte lane ordering where the most significant byte is stored at the lower address.
+LITTLE ENDIAN refers to byte lane ordering where the most significant byte is stored at the higher address.
+The terms BIG ENDIAN and LITTLE ENDIAN for data organization was coined by Danny Cohen of the Information Sciences Institute, and was derived from the book Gulliver’s Travels by Jonathan Swift.</p>
+</dd>
+<dt>Data Tag</dt><dd><p>One or more user defined signals that modify a WISHBONE data transfer.
+For example, they can be used carry parity information, error correction codes or time stamps.
+All data tags must be assigned a tag type of [TGD_I()] or [TGD_O()].
+Also see <em>tag type</em>, <em>address tag</em> and <em>cycle tag</em>.</p>
+</dd>
+<dt>DMA Unit</dt><dd><p>Acronym for Direct Memory Access Unit.</p>
+<ol class="arabic simple">
+<li><p>A device that transfers data from one location in memory to another location in memory.</p></li>
+<li><p>A device for transferring data between a device and memory without interrupting program flow.</p></li>
+<li><p>A device that does not use low-level instructions and is intended for transferring data between memory and/or I/O locations.</p></li>
+</ol>
+</dd>
+<dt>DWORD</dt><dd><p>A unit of data that is 32-bits wide. Also see: <em>BYTE</em>, <em>WORD</em> and <em>QWORD</em>.</p>
+</dd>
+<dt>ENDIAN</dt><dd><p>See the definition under ‘Data Organization’.</p>
+</dd>
+<dt>FIFO</dt><dd><p>Acronym for: First In First Out.
+A type of memory used to transfer data between ports on two devices.
+In FIFO memories, data is removed in the same order that they were added.
+The FIFO memory is very useful for interconnecting cores of differing speeds.</p>
+</dd>
+<dt>Firm Core</dt><dd><p>An IP Core that is delivered in a way that allows conversion into an integrated circuit design, but does not allow the design to be easily reverse engineered.
+It is analogous to a binary or object file in the field of computer software design.</p>
+</dd>
+<dt>Fixed Interconnection</dt><dd><p>An interconnection system that is fixed, and <em>cannot</em> be changed without causing incompatibilities between bus modules (or SoC/IP cores).
+Also called a <em>static interconnection</em>.
+Examples of fixed interconnection buses include PCI, cPCI and VMEbus.
+Also see: <em>variable interconnection</em>.</p>
+</dd>
+<dt>Fixed Timing Specification</dt><dd><p>A timing specification that is based upon a fixed set of rules.
+Generally used in traditional microcomputer buses like PCI and VMEbus.
+Each bus module must conform to the ridged set of timing specifications.
+Also see: <em>variable timing specification</em>.</p>
+</dd>
+<dt>Foundry</dt><dd><p>See silicon foundry.</p>
+</dd>
+<dt>FPGA</dt><dd><p>Acronym for: Field Programmable Gate Array.
+Describes a generic array of logical gates and interconnect paths which are programmed by the end user.
+High level logic descriptions are impressed upon the gates and interconnect paths, often in the form of IP Cores.</p>
+</dd>
+<dt>Full Address Decoding</dt><dd><p>A method of address decoding where each SLAVE decodes all of the available address space.
+For example, if a 32-bit address bus is used, then each SLAVE decodes all thirty-two address bits.
+This technique is used on standard microcomputer buses like PCI and VMEbus. Also see: <em>partial address decoding</em>.</p>
+</dd>
+<dt>Gated Clock</dt><dd><p>A clock that can be stopped and restarted.
+In WISHBONE, a gated clock generator allows [CLK_O] to be stopped in its low state.
+This technique is often used to reduce the power consumption of an integrated circuit.
+Under WISHBONE, the gated clock generator is optional.
+Also see: <em>variable clock generator</em>.</p>
+</dd>
+<dt>Glue Logic</dt><dd><ol class="arabic simple">
+<li><p>Logic gates and interconnections required to connect IP cores together.
+The requirements for glue logic vary greatly depending upon the interface requirements of the IP cores.</p></li>
+<li><p>A family of logic circuits consisting of various gates and simple logic elements, each of which serve as an interface between various parts of a computer system.</p></li>
+</ol>
+</dd>
+<dt>Granularity</dt><dd><p>The smallest unit of data transfer that a port is capable of transferring.
+For example, a 32-bit port can be broken up into four 8-bit BYTE segments.
+In this case, the granularity of the interface is 8-bits.
+Also see: <em>port size</em> and <em>operand size</em>.</p>
+</dd>
+<dt>Hard Core</dt><dd><p>An IP Core that is delivered in the form of a mask set (i.e. a graphical description of the features and connections in an integrated circuit).</p>
+</dd>
+<dt>Hardware Description Language (HDL)</dt><dd><ol class="arabic simple">
+<li><p>Acronym for: Hardware Description Language.
+Examples include VHDL and Verilog®.</p></li>
+<li><p>A general-purpose language used for the design of digital electronic systems.</p></li>
+</ol>
+</dd>
+<dt>Interface</dt><dd><p>A combination of signals and data-ports on a module that is capable of either generating or receiving bus cycles.
+WISHBONE defines these as MASTER and SLAVE interfaces respectively.
+Also see: <em>MASTER and SLAVE interfaces</em>.</p>
+</dd>
+<dt>INTERCON</dt><dd><p>A WISHBONE module that interconnects MASTER and SLAVE interfaces.</p>
+</dd>
+<dt>IP Core</dt><dd><p>Acronym for: Intellectual Property Core.
+Also see: <em>soft core</em>, <em>firm core</em> and <em>hard core</em>.</p>
+</dd>
+<dt>Mask Set</dt><dd><p>A graphical description of the features and connections in an integrated circuit.</p>
+</dd>
+<dt>MASTER</dt><dd><p>A WISHBONE interface that is capable of generating bus cycles.
+All systems based on the WISHBONE interconnect must have at least one MASTER interface.
+Also see: <em>SLAVE</em>.</p>
+</dd>
+<dt>Memory Mapped Addressing</dt><dd><p>An architecture that allows data to be stored and recalled in memory at individual, binary addresses.</p>
+</dd>
+<dt>Minimization (Logic Minimization)</dt><dd><p>A process by which HDL synthesis, router or other software development tools remove unused logic.
+This is important in WISHBONE because there are optional signals defined on many of the interfaces.
+If a signal is unused, then the logic minimization tools will remove these signals and their associated logic, thereby making a faster and more efficient design.</p>
+</dd>
+<dt>Module</dt><dd><p>In the context of this specification, it’s another name for an IP core.</p>
+</dd>
+<dt>Multiplexer Interconnection</dt><dd><p>An interconnection that uses multiplexers to route address, data and control signals.
+Often used for System-on-Chip (SoC) applications.
+Also see: <em>three-state bus interconnection</em>.</p>
+</dd>
+<dt>Negated</dt><dd><p>A verb indicating that a logic state has switched from the active to the inactive state.
+When active high logic is used it means that a signal has switched from a logic high level to a logic low level.
+Also see: <em>asserted</em>.</p>
+</dd>
+<dt>Off-Chip Interconnection</dt><dd><p>An off-chip interconnection is used when a WISHBONE interface extends off-chip. See <a class="reference internal" href="#offchip"><span class="std std-numref">Figure 6</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id8">
+<span id="offchip"></span><img alt="_images/offchip.svg" src="_images/offchip.svg" /><p class="caption"><span class="caption-number">Figure 6 </span><span class="caption-text">Off-chip interconnection.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt>Operand Size</dt><dd><p>The operand size is the largest single unit of data that is moved through an interface.
+For example, a 32-bit DWORD operand can be moved through an 8-bit port with four data transfers.
+Also see: <em>granularity</em> and <em>port size</em>.</p>
+</dd>
+<dt>Parametric Core Generator</dt><dd><p>A software tool used for the generation of IP cores based on input parameters.
+One example of a parametric core generator is a DSP filter generator.
+These are programs that create lowpass, bandpass and highpass DSP filters.
+The parameters for the filter are provided by the user, which causes the program to produce the digital filter as a VHDL or Verilog® hardware description.
+Parametric core generators can also be used create WISHBONE interconnections.</p>
+</dd>
+<dt>Partial Address Decoding</dt><dd><p>A method of address decoding where each SLAVE decodes only the range of addresses that it requires.
+For example, if the module needs only  four addresses, then it decodes only the two least significant address bits.
+The remaining address bits are decoded by the interconnection system.
+This technique is used on SoC buses and has the advantages of less redundant logic in the system.
+It supports variable address buses, variable interconnection buses, and is relatively fast.
+Also see: <em>full address decoding</em>.</p>
+</dd>
+<dt>PCI</dt><dd><p>Acronym for: Peripheral Component Interconnect.
+Generally used as an interconnection scheme between integrated circuits.
+It also exists as a board level interconnection known as Compact PCI (or cPCI).
+While this specification is very flexible, it isn’t practical for SoC applications.</p>
+</dd>
+<dt>Phase (Bus Cycle)</dt><dd><p>A periodic portion of a bus cycle.
+For example, a WISHBONE BLOCK READ cycle could contain ten phases, with each phase transferring a single 32-bit word of data.
+Collectively, the ten phases form the BLOCK READ cycle.</p>
+</dd>
+<dt>Point-to-point Interconnection</dt><dd><ol class="arabic simple">
+<li><p>An interconnection system that supports a single WISHBONE MASTER and a single WISHBONE SLAVE interface.
+It is the simplest way to connect two cores. See <a class="reference internal" href="#p2p"><span class="std std-numref">Figure 7</span></a>.</p></li>
+<li><p>A connection with only two endpoints.</p></li>
+</ol>
+</dd>
+</dl>
+<div class="figure align-default" id="id9">
+<span id="p2p"></span><img alt="_images/p2p.svg" src="_images/p2p.svg" /><p class="caption"><span class="caption-number">Figure 7 </span><span class="caption-text">Point-to-point interconnection.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt>Port Size</dt><dd><p>The width of the WISHBONE data ports in bits.
+Also see: <em>granularity</em> and <em>operand size</em>.</p>
+</dd>
+<dt>QWORD</dt><dd><p>A unit of data that is 64-bits wide.
+Also see: <em>BYTE</em>, <em>WORD</em> and <em>DWORD</em>.</p>
+</dd>
+<dt>Router</dt><dd><p>A software tool that physically routes interconnection paths between logic gates.
+Applies to both FPGA and ASIC devices.</p>
+</dd>
+<dt>RTL</dt><dd><ol class="arabic simple">
+<li><p>Register-transfer logic.
+A design methodology that moves data between registers.
+Data is latched in the registers at one or more stages along the path of signal propagation.
+The WISHBONE specification uses a synchronous RTL design methodology where all registers use a common clock.</p></li>
+<li><p>Register-transfer level.
+A description of computer operations where data transfers from register to register, latch to latch and through logic gates.</p></li>
+<li><p>A level of description of a digital design in which the clocked behavior of the design is expressly described in terms of data transfers between storage elements (which may be implied) and combinatorial logic (which may represent any computing logic or arithmetic-logic-unit).
+RTL modeling allows design hierarchy that represents a structural description of other RTL models.</p></li>
+</ol>
+</dd>
+<dt>Shared Bus Interconnection</dt><dd><p>The shared bus interconnection is a system where a MASTER initiates addressable bus cycles to a target SLAVE.
+Traditional buses such as VMEbus and PCI bus use this type of interconnection.
+As a consequence of this architecture, only one MASTER at a time can use the interconnection resource (i.e. bus).
+Figure <a class="reference internal" href="#sharedbus"><span class="std std-numref">Figure 8</span></a> shows an example of a WISHBONE shared bus inter- connection.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id10">
+<span id="sharedbus"></span><img alt="_images/sharedbus.svg" src="_images/sharedbus.svg" /><p class="caption"><span class="caption-number">Figure 8 </span><span class="caption-text">Shared bus interconnection.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt>Silicon Foundry</dt><dd><p>A factory that produces integrated circuits.</p>
+</dd>
+<dt>SLAVE</dt><dd><p>A WISHBONE interface that is capable of receiving bus cycles.
+All systems based on the WISHBONE interconnect must have at least one SLAVE.
+Also see: <em>MASTER</em>.</p>
+</dd>
+<dt>Soft Core</dt><dd><p>An IP Core that is delivered in the form of a hardware description language or schematic diagram.</p>
+</dd>
+<dt>SoC</dt><dd><p>Acronym for System-on-Chip.
+Also see: <em>System-on-Chip</em>.</p>
+</dd>
+<dt>Structured Design</dt><dd><ol class="arabic simple">
+<li><p>A popular method for managing complex projects that is often used with large project teams.
+When structured design practices are used, individual team members build and test small parts of the design with a common set of tools.
+Each sub-assembly is designed to a common standard.
+When all of the sub-assemblies have been completed, the full system can be integrated and tested.
+This approach makes it much easier to manage the design process.</p></li>
+<li><p>Any disciplined approach to design that adheres to specified rules based on principles such as modularity and top-down design.</p></li>
+</ol>
+</dd>
+<dt>Switched Fabric Interconnection</dt><dd><p>A type of interconnection that uses large numbers of crossbar switches.
+These are organized into arrays that resemble the threads in a fabric.
+The resulting system is a network of redundant interconnections.</p>
+</dd>
+<dt>SYSCON</dt><dd><p>A WISHBONE module that drives the system clock [CLK_O] and reset [RST_O] signals.</p>
+</dd>
+<dt>System-on-Chip (SoC)</dt><dd><p>A method by which whole systems are created on a single integrated circuit chip.
+In many cases, this requires the use of IP cores which have been designed by multiple IP core providers.
+System-on-Chip is similar to traditional microcomputer bus systems whereby the individual components are designed, tested and built separately.
+The components are then integrated to form a finished system.</p>
+</dd>
+<dt>Tag</dt><dd><p>One or more characters or signals associated with a set of data, containing information about the set.
+Also see: <em>tag type</em>.</p>
+</dd>
+<dt>Tag Type</dt><dd><p>A special class of signals that is defined to ease user enhancements to the WISHBONE spec.
+When a user defined signal is specified, it is assigned a tag type that indicates the precise timing to which the signal must conform.
+This simplifies the creation of new signals.
+There are three basic tag types.
+These include address tags, data tags and cycle tags.
+These allow additional information to be attached to an address transfer, a data transfer or a bus cycle (respectively).
+The uppercase form TAG TYPE is used when specifying a tag type in the WISHBONE DATASHEET.
+For example, TAG TYPE: TGA_O() indicates an address tag.
+Also see: <em>address tag</em>, <em>data tag</em> and <em>cycle tag</em>.</p>
+</dd>
+<dt>Target Device</dt><dd><p>The semiconductor type (or technology) onto which the IP core design is impressed.
+Typical examples include FPGA and ASIC target devices.</p>
+</dd>
+<dt>Three-State Bus Interconnection</dt><dd><p>A microcomputer bus interconnection that relies upon three-state bus drivers.
+Often used to reduce the number of interconnecting signal paths through connector and IC pins.
+Three state buffers can assume a logic low state (‘0’ or ‘L’), a logic high state (‘1’ or ‘H’) or a high impedance state (‘Z’).
+Three-state buffers are sometimes called Tri-State® buffers.
+Tri-State® is a registered trademark of National Semiconductor Corporation.
+Also see: <em>multiplexer interconnection</em>.</p>
+</dd>
+<dt>Variable Clock Generator</dt><dd><p>A type of SYSCON module where the frequency of [CLK_O] can be changed dynamically.
+The frequency can be changed by way of a programmable phase-lock-loop (PLL) circuit or other control mechanism.
+Among other things, this technique is used to reduce the power consumption of the circuit.
+In WISHBONE the variable clock generator capability is optional.
+Also see: <em>gated clock generator</em> and <em>variable timing specification</em>.</p>
+</dd>
+<dt>Variable Interconnection</dt><dd><p>A microcomputer bus interconnection that <em>can</em> be changed without causing incompatibilities between bus modules (or SoC/IP cores).
+Also called a dynamic interconnection.
+An example of a variable interconnection bus is the WISHBONE SoC architecture.
+Also see: <em>fixed interconnection</em>.</p>
+</dd>
+<dt>Variable Timing Specification</dt><dd><p>A timing specification that is not fixed.
+In WISHBONE, variable timing can be achieved in a number of ways.
+For example, the system integrator can select the frequency of [CLK_O] by enforcing a timing specification during the circuit design.
+Variable timing can also be  achieved during circuit operation with a variable clock generator.
+Also see: <em>gated clock generator</em> and <em>variable clock generator</em>.</p>
+</dd>
+<dt>Verilog®</dt><dd><p>A textual based hardware description language (HDL) intended for use in circuit design.
+The Verilog® language is both a synthesis and a simulation tool.
+Verilog® was originally a proprietary language first conceived in 1983 at Gateway Design Automation (Acton, MA), and was later refined by Cadence Corporation.
+It has since been greatly expanded and refined, and much of it has been placed into the public domain.
+Complete descriptions of the language can be found in the IEEE 1364 specification.</p>
+</dd>
+<dt>VHDL</dt><dd><p>Acronym for: VHSIC Hardware Description Language [VHSIC: Very High Speed Integrated Circuit].
+A textual based computer language intended for use in circuit design.
+The VHDL language is both a synthesis and a simulation tool.
+Early forms of the language emerged from US Dept. of Defense ARPA projects in the 1960’s, and have since been greatly expanded and refined.
+Complete descriptions of the language can be found in the IEEE 1076, IEEE 1073.3, IEEE 1164 specifications.</p>
+</dd>
+<dt>VMEbus</dt><dd><p>Acronym for: Versa Module Eurocard bus.
+A popular microcomputer (board) bus.
+While this specification is very flexible, it isn’t practical for SoC applications.</p>
+</dd>
+<dt>WISHBONE</dt><dd><p>A flexible System-on-Chip (SoC) design methodology.
+WISHBONE establishes common interface standards for data exchange between modules within an integrated circuit chip.
+Its purpose is to foster design reuse, portability and reliability of SoC designs.
+WISHBONE is a public domain standard.</p>
+</dd>
+<dt>WISHBONE Classic</dt><dd><p>WISHBONE Classic is a high performance System-on-Chip (SoC) interconnect.
+For zero-wait-state operation it requires that the SLAVE generates an asynchronous cycle termination signal.
+See chapter 3 for WISHBONE Classic bus cycles.
+Also see: <em>WISHBONE Registered Feedback</em>.</p>
+</dd>
+<dt>WISHBONE DATASHEET</dt><dd><p>A type of documentation required for WISHBONE compatible IP cores.
+This helps the end user understand the detailed operation of the core, and how to connect it to other cores.
+The WISHBONE DATASHEET can be included as part of an IP core technical reference manual, or as part of the IP core hardware description.</p>
+</dd>
+<dt>WISHBONE Registered Feedback</dt><dd><p>WISHBONE Registered Feedback is a high performace System-on-Chip (SoC) interconnect.
+It requires that all interface signals are registered.
+To maintain performance, it introduces a number of novel bus-cycles.
+See chapter 4 for WISHBONE Registered Feedback bus cycles.
+Also see: <em>WISHBONE Classic</em>.</p>
+</dd>
+<dt>WISHBONE Signal</dt><dd><p>A signal that is defined as part of the WISHBONE specification.
+Non-WISHBONE signals can also be used on the IP core, but are not defined as part of this specification.
+For example, [ACK_O] is a WISHBONE signal, but [CLK100_I] is not.</p>
+</dd>
+<dt>WISHBONE Logo</dt><dd><p>A logo that, when affixed to a document, indicates that the associated SoC component is compatible with the WISHBONE standard.</p>
+</dd>
+<dt>Wrapper</dt><dd><p>A circuit element that converts a non-WISHBONE IP Core into a WISHBONE compatible IP Core.
+For example, consider a 16-byte synchronous memory primitive that is provided by an IC vendor.
+The memory primitive can be made into a WISHBONE compatible SLAVE by layering a circuit over the memory primitive, thereby creating a WISHBONE compatible SLAVE.
+A wrapper is analogous to a technique used to convert software written in ‘C’ to that written in ‘C++’.</p>
+</dd>
+<dt>WORD</dt><dd><p>A unit of data that is 16-bits wide. Also see: <em>BYTE</em>, <em>DWORD</em> and <em>QWORD</em>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>IEEE 100: The Authoritative Dictionary of IEEE Standards Terms, Seventh Edition. IEEE Press 2000.</p>
+<p>Feustel, Edward A. “On the Advantages of Tagged Architecture”. IEEE Transactions on Computers, Vol. C-22, No. 7, July 1973.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wishbone-features">WISHBONE Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wishbone-objectives">WISHBONE Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#specification-terminology">Specification Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-of-timing-diagrams">Use of Timing Diagrams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal-naming-conventions">Signal Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wishbone-logo">WISHBONE Logo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#glossary-of-terms">Glossary of Terms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_classic.html">WISHBONE Classic Bus Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_registered.html">WISHBONE Registered Feedback Bus Cylces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_timing.html">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></li>
+      <li>Next: <a href="02_interface.html" title="next chapter">Interface Specification</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, WISHBONE specification authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/01_introduction.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

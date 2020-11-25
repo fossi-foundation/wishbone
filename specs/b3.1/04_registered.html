@@ -1,0 +1,798 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WISHBONE Registered Feedback Bus Cylces &#8212; WISHBONE B3</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Timing Specification" href="05_timing.html" />
+    <link rel="prev" title="WISHBONE Classic Bus Cycle" href="03_classic.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wishbone-registered-feedback-bus-cylces">
+<h1>WISHBONE Registered Feedback Bus Cylces<a class="headerlink" href="#wishbone-registered-feedback-bus-cylces" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction-synchronous-vs-asynchronous-cycle-termination">
+<h2>Introduction, Synchronous vs. Asynchronous cycle termination<a class="headerlink" href="#introduction-synchronous-vs-asynchronous-cycle-termination" title="Permalink to this headline">¶</a></h2>
+<p>To achieve the highest possible throughput, WISHBONE Classic requires
+asynchronous cycle termination signals. This results in an
+asynchronous loop from the MASTER, through the INTERCONN to the SLAVE,
+and then from the SLAVE through the INTERCONN back to the MASTER, as
+shown in <a class="reference internal" href="#asyncterm"><span class="std std-numref">Figure 24</span></a>. In large System-on-Chip devices this
+routing delay between MASTER and SLAVE is the dominant timing
+factor. This is especially true for deep sub-micron technologies.</p>
+<div class="figure align-default" id="id2">
+<span id="asyncterm"></span><img alt="_images/asyncterm.svg" src="_images/asyncterm.svg" /><p class="caption"><span class="caption-number">Figure 24 </span><span class="caption-text">Asynchronous cycle termination path</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>The simplest solution for reducing the delay is to cut the loop, by
+using synchronous cycle termination signals. However, this
+introduces a wait state for every transfer, as shown in <a class="reference internal" href="#classicsync"><span class="std std-numref">Figure 25</span></a>.</p>
+<div class="figure align-default" id="id3">
+<span id="classicsync"></span><img alt="_images/wavedrom-4c8b47bb-7bea-49d0-92a6-1e1ef7d64539.svg" src="_images/wavedrom-4c8b47bb-7bea-49d0-92a6-1e1ef7d64539.svg" /><p class="caption"><span class="caption-number">Figure 25 </span><span class="caption-text">WISHBONE Classic synchronous cycle terminated burst</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>During cycle-1 the MASTER initiates a transfer. The addressed SLAVE
+responds in the next cycle with the assertion of ACK_O. During
+cycle-3 the MASTER initiates a second cycle, addressing the same
+SLAVE. Because the SLAVE does not know in advance it is being
+addressed again, it has to negate ACK_O. At the earliest it can
+respond in cycle-4, after which it has to negate ACK_O again in
+cycle-5.</p>
+<p>Each transfer takes two WISHBONE cycles to complete, thus only half of
+the available bandwidth is useable. If the SLAVE would know in
+advance that it is being addressed again, it could already respond in
+cycle-3. Decreasing the amount of cycles needed to perform the
+transfers, and thus increasing throughput. The waveforms for that
+cycle are as shown in <a class="reference internal" href="#advancedsync"><span class="std std-numref">Figure 26</span></a>.</p>
+<div class="figure align-default" id="id4">
+<span id="advancedsync"></span><img alt="_images/wavedrom-b45de0a5-6777-486d-9f72-b9df81e725d7.svg" src="_images/wavedrom-b45de0a5-6777-486d-9f72-b9df81e725d7.svg" /><p class="caption"><span class="caption-number">Figure 26 </span><span class="caption-text">Advanced synchronous terminated burst</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>During cycle-1 the MASTER initiates a transfer. The addressed SLAVE
+responds in the next cycle with the assertion of ACK_O. The MASTER
+starts a new transfer in cycle-3. The SLAVE knows in advance it is
+being addressed again, therefore it keeps ACK_O asserted.</p>
+<p>A two cycle burst now takes three cycles to complete, instead of
+four. This is a throughput increase of 33%. WISHBONE Classic however
+would require only 2 cycles. An eight cycle burst takes nine cycles to
+complete, instead of 16. This is a throughput increase of
+77%. WISHBONE Classic would require eight cycles. For single transfers
+there is no performance gain.</p>
+<span id="burst-comp"></span><table class="docutils align-default" id="id5">
+<caption><span class="caption-number">Table 3 </span><span class="caption-text">Burst comparison</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 30%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Burst length</p></td>
+<td><p>Asynchronous
+Cycle termination</p></td>
+<td><p>Synchronous
+Cycle termination</p></td>
+<td><p>Advanced Synchronous
+Cycle termination</p></td>
+</tr>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>1 (200%)</p></td>
+<td><p>2 (100%)</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>2 (150%)</p></td>
+<td><p>4 (75%)</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>4 (125%)</p></td>
+<td><p>8 (62%)</p></td>
+<td><p>5</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>8 (112%)</p></td>
+<td><p>16 (56%)</p></td>
+<td><p>9</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>16 (106%)</p></td>
+<td><p>32 (53%)</p></td>
+<td><p>17</p></td>
+</tr>
+<tr class="row-odd"><td><p>32</p></td>
+<td><p>32 (103%)</p></td>
+<td><p>64 (51%)</p></td>
+<td><p>33</p></td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#burst-comp"><span class="std std-numref">Table 3</span></a> shows a comparison between the discussed cycle termination
+types, for zero wait state bursts at a given
+bus-frequency. Asynchronous cycle termination requires only one cycle
+per transfer, synchronous cycle termination requires two cycles per
+transfer, and the advanced synchronous cycle termination requires
+(burst_length+1) cycles. The percentages show the relative throughput
+for a burst length, where the advanced synchronous cycle termination
+is set to 100%.</p>
+<p>Advanced synchronous cycle termination appears to get the best from
+both the synchronous and asynchronous termination schemes. For single
+transfers it performs as well as the normal synchronous termination
+scheme, for large bursts it performs as well as the asynchronous
+termination scheme.</p>
+<p>NOTE that for a system that already needs wait states, the advanced
+synchronous scheme provides the same throughput as the asynchronous
+scheme.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>A given system, with an average burst length of 8, is intended to run
+at over 150MHz.  It is shown that moving from asynchronous termination
+to synchronous termination would improve timing by 1.5ns. Thus
+allowing a 193MHz clock frequency, instead of the 150MHz.</p></td>
+</tr>
+<tr class="row-even"><td><p>The asynchronous termination scheme has a theoretical throughput of
+150Mcycles per sec.</p>
+<p>For the given average burst length of 8, the advanced synchronous
+termination scheme has a 12% lower theoretical throughput than the
+asynchronous termination scheme. However the increased operating
+frequency allows it to perform more cycles per second. The theoretical
+throughput for the advanced synchronous scheme is 193M / 1.12 =
+172Mcycles per sec.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>System layout requires that all block have registered outputs. The
+average burst length used in the system is 4.</p></td>
+</tr>
+<tr class="row-even"><td><p>Moving to the advanced synchronous termination scheme improves
+performance by 60 %.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="wishbone-registered-feedback">
+<h2>WISHBONE Registered Feedback<a class="headerlink" href="#wishbone-registered-feedback" title="Permalink to this headline">¶</a></h2>
+<p>WISHBONE Registered Feedback bus cycles use the Cycle Type Identifier
+[CTI_O()], [CTI_I()] Address Tags to implement the advanced synchronous
+cycle termination scheme. Both MASTER and SLAVE interfaces must
+support [CTI_O()], [CTI_I()] in order to provide the improved
+bandwidth. Additional information about the type of burst is provided
+by the Burst Type Extension [BTE_O()], [BTE_I()] Address
+Tags. Because WISHBONE Registered Feedback uses Tag signals to
+implement the advanced synchronous cycle termination, it is inherently
+fully compatible with WISHBONE Classic. If only one of the
+interfaces (i.e. either MASTER or SLAVE) supports WISHBONE Registered
+Feedback bus cycles, and hence the other supports WISHBONE Classic bus
+cycles, the cycle terminates as though it were a WISHBONE Classic bus
+cycle. This eases the integration of WISHBONE Classic and WISHBONE
+Registered Feedback IP cores.</p>
+<dl class="simple">
+<dt><strong>PERMISSION 4.00</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed to support WISHBONE
+Registered Feedback bus cycles.</p>
+</dd>
+<dt><strong>RECOMMENDATION 4.00</strong></dt><dd><p>Interfaces compatible with WISHBONE Registered Feedback bus cycles
+support both WISHBONE Classic and WISHBONE Registered Feedback bus
+cycles. It is recommended to design new IP cores to support WISHBONE
+Registered Feedback bus cycles, so as to ensure maximum throughput in
+all systems.</p>
+</dd>
+<dt><strong>RULE 4.00</strong></dt><dd><p>All WISHBONE Registered Feedback compatible cores MUST support
+WISHBONE Classic bus cycles.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="signal-description">
+<h2>Signal Description<a class="headerlink" href="#signal-description" title="Permalink to this headline">¶</a></h2>
+<p>CTI_IO()</p>
+<p>The Cycle Type Idenfier [CTI_IO()] Address Tag provides additional information about the current cycle.
+The MASTER sends this information to the SLAVE.
+The SLAVE can use this information to prepare the response for the next cycle.
+<a class="reference internal" href="#cti"><span class="std std-numref">Table 4</span></a> Type Identifiers</p>
+<span id="cti"></span><table class="docutils align-default" id="id6">
+<caption><span class="caption-number">Table 4 </span><span class="caption-text">Cycle Type Identifiers</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>CTI_IO(2:0)</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p>‘000’</p></td>
+<td><p>Classic cycle.</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘001’</p></td>
+<td><p>Constant address burst cycle</p></td>
+</tr>
+<tr class="row-even"><td><p>‘010’</p></td>
+<td><p>Incrementing burst cycle</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘011’</p></td>
+<td><p><em>Reserved</em></p></td>
+</tr>
+<tr class="row-even"><td><p>‘100’</p></td>
+<td><p><em>Reserved</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>‘101</p></td>
+<td><p><em>Reserved</em></p></td>
+</tr>
+<tr class="row-even"><td><p>‘110’</p></td>
+<td><p><em>Reserved</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>‘111’</p></td>
+<td><p>End-of-Burst</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt><strong>PERMISSION 4.05</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed to support the [CTI_I()]
+and [CTI_O()] signals. Also MASTER and SLAVE interfaces MAY be
+designed to support a limited number of burst types.</p>
+</dd>
+<dt><strong>RULE 4.05</strong></dt><dd><p>MASTER and SLAVE interfaces that do support the [CTI_I()] and
+[CTI_O()] signals MUST at least support the Classic cycle
+[CTI_IO()=’000’] and the End-of-Cycle [CTI_IO()=’111’].</p>
+</dd>
+<dt><strong>RULE 4.10</strong></dt><dd><p>MASTER and SLAVE interfaces that are designed to support a limited
+number of burst types MUST complete the unsupported cycles as though
+they were WISHBONE Classic cycle, i.e.  [CTI_IO()= ‘000’].</p>
+</dd>
+<dt><strong>PERMISSION 4.10</strong></dt><dd><p>For description languages that allow default values for input ports
+(like VHDL), [CTI_I()] MAY be assigned a default value of ‘000’.</p>
+</dd>
+<dt><strong>PERMISSION 4.15</strong></dt><dd><p>In addition to the WISHBONE Classic rules for generating cycle
+termination signals [ACK_O], [RTY_O], and [ERR_O], a SLAVE MAY assert
+a termination cycle without checking the [STB_I] signal.</p>
+</dd>
+<dt><strong>OBSERVATION 4.00</strong></dt><dd><p>To avoid the inherent wait state in synchronous termination schemes,
+the SLAVE must generate the response as soon as possible (i.e. the
+next cycle). It can use the [CTI_I()] signals to determine the
+response for the next cycle. But it cannot determine the state of
+[STB_I] for the next cycle, therefore it must generate the response
+independent of [STB_I].</p>
+</dd>
+<dt><strong>PERMISSION 4.20</strong></dt><dd><p>[ACK_O], [RTY_O], and [ERR_O] MAY be asserted while [STB_O] is
+negated.</p>
+</dd>
+<dt><strong>RULE 4.15</strong></dt><dd><p>A cycle terminates when both the cycle termination signal and [STB_I],
+[STB_O] is asserted.  Even if [ACK_O], [ACK_I] is asserted, the other
+signals are only valid when [STB_O], [STB_I] is also asserted.</p>
+</dd>
+<dt>BTE_IO()</dt><dd><p>The Burst Type Extension [BTE_O()] Address Tag is send by the MASTER
+to the SLAVE to provides additional information about the current
+burst. Currently this information is only relevant for incrementing
+bursts, but future burst types may use these signals.</p>
+</dd>
+</dl>
+<span id="bte"></span><table class="docutils align-default" id="id7">
+<caption><span class="caption-number">Table 5 </span><span class="caption-text">Type Extension for Incrementing and Decrementing bursts</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>BTE_IO(1:0)</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p>‘00’</p></td>
+<td><p>Linear burst</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘01’</p></td>
+<td><p>4-beat wrap burst</p></td>
+</tr>
+<tr class="row-even"><td><p>‘10’</p></td>
+<td><p>8-beat wrap burst</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘11’</p></td>
+<td><p>16-beat wrap burst</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt><strong>RULE 4.20</strong></dt><dd><p>MASTER and SLAVE interfaces that support incrementing burst cycles
+MUST support the [BTE_O()] and [BTE_I()] signals.</p>
+</dd>
+<dt><strong>PERMISSION 4.25</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed to support a limited
+number of burst extensions.</p>
+</dd>
+<dt><strong>RULE 4.25</strong></dt><dd><p>MASTER and SLAVE interfaces that are designed to support a limited
+number of burst extensions MUST complete the unsupported cycles as
+though they were WISHBONE Classic cycle, i.e. [CTI_IO()= 000’].</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="bus-cycles">
+<h2>Bus Cycles<a class="headerlink" href="#bus-cycles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="classic-cycle">
+<h3>Classic Cycle<a class="headerlink" href="#classic-cycle" title="Permalink to this headline">¶</a></h3>
+<p>A Classic Cycle indicates that the current cycle is a WISHBONE Classic
+cycle. The SLAVE terminates the cycle as described in chapter 3. There
+is no information about what the MASTER will do the next cycle.</p>
+<dl class="simple">
+<dt><strong>PERMISSION 4.30</strong></dt><dd><p>A MASTER MAY signal Classic Cycle indefinitely.</p>
+</dd>
+<dt><strong>OBSERVATION 4.05</strong></dt><dd><p>A MASTER that signals Classic Cycle indefinitely is a pure WISHBONE
+Classic MASTER.  The Cycle Type Identifier [CTI_O()] signals have no
+effect; all SLAVE interfaces already support WISHBONE Classic
+cycles. They might as well not be present on the interface at all. In
+fact, routing them on chip may use up valuable resources. However they
+might be useful for arbitration logic, or to keep the buses from/to
+interfaces coherent.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="#classicread"><span class="std std-numref">Figure 27</span></a> shows a Classic read cycle. A total of two transfers are
+shown. The cycle is terminated after the second transfer. The
+protocol for this cycle works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents [ADR_O()].</p>
+<p>MASTER presents Classic Cycle on [CTI_O()].</p>
+<p>MASTER negates [WE_O] to indicate a READ cycle.</p>
+<p>MASTER presents select [SEL_O()] to indicate where it expects data.</p>
+<p>MASTER asserts [CYC_O] to indicate cycle start.</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs.</p>
+<p>SLAVE recognizes Classic Cycle and prepares response.</p>
+<p>SLAVE prepares to send data.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>SLAVE asserts [ACK_I]</p>
+<p>SLAVE presents data on [DAT_I()].</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>SLAVE does not expect another transfer.</p>
+<p>MASTER prepares to latch data on [DAT_I()].</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>SLAVE negates [ACK_I].</p>
+<p>MASTER latches data on [DAT_I()]</p>
+<p>MASTER presents new address on [ADR_O()]</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>SLAVE decodes inputs.</p>
+<p>SLAVE recognizes Classic Cycle and prepares response.</p>
+<p>SLAVE prepares to send data.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 3:</dt><dd><p>SLAVE asserts [ACK_I]</p>
+<p>SLAVE presents data on [DAT_I()].</p>
+</dd>
+<dt>SETUP, EDGE 4:</dt><dd><p>SLAVE does not expect another transfer.</p>
+<p>MASTER prepares to latch data on [DAT_I()].</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 4:</dt><dd><p>SLAVE negates [ACK_I].</p>
+<p>MASTER latches data on [DAT_I()]</p>
+<p>MASTER negates [CYC_O] and [STB_O] ending the cycle</p>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Does SEL_O really stay constant between accesses?</p>
+</div>
+<div class="figure align-default" id="id8">
+<span id="classicread"></span><img alt="_images/wavedrom-874dd7df-af13-4e97-a6dd-af4bc8c3b021.svg" src="_images/wavedrom-874dd7df-af13-4e97-a6dd-af4bc8c3b021.svg" /><p class="caption"><span class="caption-number">Figure 27 </span><span class="caption-text">Classic Cycle</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="end-of-burst">
+<h3>End-Of-Burst<a class="headerlink" href="#end-of-burst" title="Permalink to this headline">¶</a></h3>
+<p>End-Of-Burst indicates that the current cycle is the last of the
+current burst. The MASTER signals the slave that the burst ends
+after this transfer.</p>
+<dl class="simple">
+<dt><strong>RULE 4.30</strong></dt><dd><p>A MASTER MUST set End-Of-Burst to signal the end of the current burst.</p>
+</dd>
+<dt><strong>PERMISSION 4.35</strong></dt><dd><p>The MASTER MAY start a new cycle after the assertion of End-Of-Burst.</p>
+</dd>
+<dt><strong>PERMISSION 4.40</strong></dt><dd><p>A MASTER MAY use End-Of-Burst to indicate a single access.</p>
+</dd>
+<dt><strong>OBSERVATION 4.05</strong></dt><dd><p>A single access is in fact a burst with a burst length of one.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="#endofburst"><span class="std std-numref">Figure 28</span></a> demonstrates the usage of End-Of-Burst. A total
+of three transfers are shown. The first transfer is part of a WISHBONE
+Registered Feedback read burst. Transfer two is the last transfer of
+that burst. The burst is ended when the MASTER sets [CTI_O()] to
+End-Of-Burst (‘111’). The cycle is terminated after the third
+transfer, a single write transfer. The protocol for this cycle works
+as follows:</p>
+<dl>
+<dt>SETUP EDGE 0:</dt><dd><p>WISHBONE Registered Feedback burst read cycle is in progress.</p>
+<p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>MASTER prepares to end current burst</p>
+<p>SLAVE expects another cycle and prepares response</p>
+</dd>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER latches data on [DAT_I()]</p>
+<p>MASTER presents new [ADR_O()]</p>
+<p>MASTER presents End-Of-Burst on [CTI_O()]</p>
+<p>SLAVE presents new data on [DAT_I()]</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it is ready to send
+new data</p>
+</dd>
+<dt>SETUP EDGE 1:</dt><dd><p>SLAVE decodes inputs.</p>
+<p>SLAVE recognizes End-Of-Burst and prepares to terminate burst</p>
+<p>SLAVE prepares to send last data.</p>
+<p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>MASTER prepares to start a new cycle</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>MASTER latches data on [DAT_I()]</p>
+<p>MASTER starts new cycle by presenting End-Of-Burst on [CTI_O()]</p>
+<p>MASTER presents new address on [ADR_O()]</p>
+<p>MASTER presents data on [DAT_O()]</p>
+<p>MASTER asserts [WE_O] to indicate a WRITE cycle</p>
+<p>SLAVE negates [ACK_I]</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>SLAVE decodes inputs</p>
+<p>SLAVE recognizes End-Of-Burst and prepares for a single transfer.</p>
+<p>SLAVE prepares response.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data
+phase.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>SLAVE asserts [ACK_I].</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>SLAVE prepares to latch data on [DAT_O()]</p>
+<p>SLAVE prepares to end cycle.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data
+phase.</p>
+</dd>
+<dt>CLOCK EDGE 3:</dt><dd><p>SLAVE latches data on [DAT_O()]</p>
+<p>SLAVE negates [ACK_I]</p>
+<p>MASTER negates [CYC_O] and [STB_O] ending the cycle.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id9">
+<span id="endofburst"></span><img alt="_images/wavedrom-570bd941-ced0-4f43-b23f-7add3e54a762.svg" src="_images/wavedrom-570bd941-ced0-4f43-b23f-7add3e54a762.svg" /><p class="caption"><span class="caption-number">Figure 28 </span><span class="caption-text">End-of-Burst</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="constant-address-burst-cycle">
+<h3>Constant Address Burst Cycle<a class="headerlink" href="#constant-address-burst-cycle" title="Permalink to this headline">¶</a></h3>
+<p>A constant address burst is defined as a single cycle with multiple
+accesses to the same address.  Example: A MASTER reading a stream from
+a FIFO.</p>
+<dl class="simple">
+<dt><strong>RULE 4.35</strong></dt><dd><p>A MASTER signaling a constant address burst MUST initiate another
+cycle, the next cycle MUST be the same operation (either read or
+write), the select lines [SEL_O()] MUST have the same value, and that
+the address array [ADR_O()] MUST have the same value.</p>
+</dd>
+<dt><strong>PERMISSION 4.40</strong></dt><dd><p>When the MASTER signals a constant address burst, the SLAVE MAY assert
+the termination signal for the next cycle as soon as the current cycle
+terminates.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="#constantaddress"><span class="std std-numref">Figure 29</span></a> shows a CONSTANT ADDRESS BURST write
+cycle. After the initial setup cycle, the Constant Address Burst cycle
+is capable of a data transfer on every clock cycle. However, this
+example also shows how the MASTER and the SLAVE interfaces can both
+throttle the bus transfer rate by inserting wait states. A total of
+four transfers are shown. After the first transfer the MASTER inserts
+a wait state. After the second transfer the SLAVE inserts a wait
+state. The cycle is terminated after the fourth transfer. The protocol
+for this transfer works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents [ADR_O()].</p>
+<p>MASTER presents Constant Address Burst on [CTI_O()].</p>
+<p>MASTER asserts [WE_O] to indicate a WRITE cycle.</p>
+<p>MASTER presents select [SEL_O()] to indicate where it sends data.</p>
+<p>MASTER asserts [CYC_O] to indicate cycle start.</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs.</p>
+<p>SLAVE recognizes Constant Address Burst and prepares response.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>SLAVE asserts [ACK_I]</p>
+<p>SETUP, EDGE 2: SLAVE expects another transfer and prepares response
+for new transfer.</p>
+<p>SLAVE prepares to latch data on [DAT_O()].</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>SLAVE latches data on [DAT_O()].</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it’s ready to latch
+new data.</p>
+<p>MASTER inserts wait states by negating [STB_O].</p>
+</dd>
+</dl>
+<p>NOTE: any number of wait states can be inserted here.</p>
+<dl>
+<dt>SETUP, EDGE 3:</dt><dd><p>MASTER is ready to transfer data again.</p>
+</dd>
+<dt>CLOCK, EDGE 3:</dt><dd><p>MASTER presents [SEL_O].</p>
+<p>MASTER presents new [DAT_O()].</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 4:</dt><dd><p>SLAVE prepares to latch data on [DAT_O()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data
+phase.</p>
+</dd>
+<dt>CLOCK, EDGE 4:</dt><dd><p>SLAVE latches data on [DAT_O()].</p>
+<p>SLAVE inserts wait states by negating [ACK_I].</p>
+<p>MASTER presents new [DAT_O()].</p>
+</dd>
+</dl>
+<p>NOTE: any number of wait states can be inserted here.</p>
+<dl>
+<dt>SETUP, EDGE 5:</dt><dd><p>SLAVE is ready to transfer data again.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>MASTER prepares to signal last transfer.</p>
+</dd>
+<dt>CLOCK, EDGE 5:</dt><dd><p>SLAVE asserts [ACK_I].</p>
+</dd>
+<dt>SETUP, EDGE 6:</dt><dd><p>SLAVE prepares to latch data on [DAT_O()].</p>
+<p>SLAVE expects another transfer and prepares response for new transfer.</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK, EDGE 6:</dt><dd><p>SLAVE latches data on [DAT_O()].</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it’s ready to latch
+new data.</p>
+<p>MASTER presents new [DAT_O()].</p>
+<p>MASTER presents End-Of-Burst on [CTI_O()].</p>
+</dd>
+<dt>SETUP, EDGE 7:</dt><dd><p>SLAVE prepares to latch last data of burst on [DAT_O()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current cycle.</p>
+</dd>
+<dt>CLOCK, EDGE 7:</dt><dd><p>SLAVE latches data on [DAT_O()].</p>
+<p>SLAVE ends burst by negating [ACK_I].</p>
+<p>MASTER negates [CYC_O] and [STB_O] ending the burst cycle.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id10">
+<span id="constantaddress"></span><img alt="_images/wavedrom-321f2382-52ef-4fcb-bc0f-3af5491a94fa.svg" src="_images/wavedrom-321f2382-52ef-4fcb-bc0f-3af5491a94fa.svg" /><p class="caption"><span class="caption-number">Figure 29 </span><span class="caption-text">Constant address burst</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="incrementing-burst-cycle">
+<h3>Incrementing Burst Cycle<a class="headerlink" href="#incrementing-burst-cycle" title="Permalink to this headline">¶</a></h3>
+<p>An incrementing burst is defined as multiple accesses to consecutive
+addresses. Each transfer the address is incremented. The increment is
+dependent on the data array [DAT_O()], [DAT_I()] size; for an 8bit
+data array the increment is 1, for a 16bit data array the increment is
+2, for a 32bit data array the increment is 4, etc.</p>
+<p>Increments can be linear or wrapped. Linear increments means the next
+address is one increment more than the current address. Wrapped
+increments means that the address increments one, but that the
+addresses’ LSBs are modulo the wrap size.</p>
+<span id="wrap-size"></span><table class="docutils align-default" id="id11">
+<caption><span class="caption-number">Table 6 </span><span class="caption-text">Wrap Size address increments</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Starting
+address’ LSBs</p></td>
+<td><p>Linear</p></td>
+<td><p>Wrap-4</p></td>
+<td><p>Wrap-8</p></td>
+</tr>
+<tr class="row-even"><td><p>000</p></td>
+<td><p>0-1-2-3-4-5-6-7</p></td>
+<td><p>0-1-2-3-4-5-6-7</p></td>
+<td><p>0-1-2-3-4-5-6-7</p></td>
+</tr>
+<tr class="row-odd"><td><p>001</p></td>
+<td><p>1-2-3-4-5-6-7-8</p></td>
+<td><p>1-2-3-0-5-6-7-4</p></td>
+<td><p>1-2-3-4-5-6-7-0</p></td>
+</tr>
+<tr class="row-even"><td><p>010</p></td>
+<td><p>2-3-4-5-6-7-8-9</p></td>
+<td><p>2-3-0-1-6-7-4-5</p></td>
+<td><p>2-3-4-5-6-7-0-1</p></td>
+</tr>
+<tr class="row-odd"><td><p>011</p></td>
+<td><p>3-4-5-6-7-8-9-A</p></td>
+<td><p>3-0-1-2-7-4-5-6</p></td>
+<td><p>3-4-5-6-7-0-1-2</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>4-5-6-7-8-9-A-B</p></td>
+<td><p>4-5-6-7-8-9-A-B</p></td>
+<td><p>4-5-6-7-0-1-2-3</p></td>
+</tr>
+<tr class="row-odd"><td><p>101</p></td>
+<td><p>5-6-7-8-9-A-B-C</p></td>
+<td><p>5-6-7-4-9-A-B-8</p></td>
+<td><p>5-6-7-0-1-2-3-4</p></td>
+</tr>
+<tr class="row-even"><td><p>110</p></td>
+<td><p>6-7-8-9-A-B-C-D</p></td>
+<td><p>6-7-4-5-A-B-8-9</p></td>
+<td><p>6-7-0-1-2-3-4-5</p></td>
+</tr>
+<tr class="row-odd"><td><p>111</p></td>
+<td><p>7-8-9-A-B-C-D-E</p></td>
+<td><p>7-4-5-6-B-8-9-A</p></td>
+<td><p>7-0-1-2-3-4-5-6</p></td>
+</tr>
+</tbody>
+</table>
+<p>Example: Processor cache line read</p>
+<dl class="simple">
+<dt><strong>RULE 4.40</strong></dt><dd><p>A MASTER signaling an incrementing burst MUST initiate another cycle,
+the next cycle MUST be the same operation (either read or write), the
+select lines [SEL_O()] MUST have the same value, the address array
+[ADR_O()] MUST be incremented, and the wrap size MUST be set by the
+burst type extension [BTE_O()] signals.</p>
+</dd>
+<dt><strong>PERMISSION 4.45</strong></dt><dd><p>When the MASTER signals an incrementing burst, the SLAVE MAY assert
+the termination signal for the next cycle as soon as the current
+cycle terminates.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="#burst"><span class="std std-numref">Figure 30</span></a> shows a 4-beat wrapped INCREMENTING BURST read
+cycle. A total of four transfers are shown. The protocol for this
+cycle works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents [ADR_O()]</p>
+<p>MASTER presents Incrementing Burst on [CTI_O()]</p>
+<p>MASTER present 4-beat wrap on [BTE_O()]</p>
+<p>MASTER negates [WE_O] to indicate a READ cycle</p>
+<p>MASTER presents select [SEL_O()] to indicate where it expects data</p>
+<p>MASTER asserts [CYC_O] to indicate cycle start</p>
+<p>MASTER asserts [STB_O]</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs.</p>
+<p>SLAVE recognizes Incrementing Burst and prepares response.</p>
+<p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>SLAVE asserts [ACK_I]</p>
+<p>SLAVE present data on [DAT_I()]</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>SLAVE expects another transfer and prepares response.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>MASTER latches data on [DAT_I()]</p>
+<p>MASTER presents new address on [ADR_O()]</p>
+<p>SLAVE presents new data on [DAT_I()]</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it’s ready to send new data.</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>SLAVE expects another transfer and prepares response.</p>
+</dd>
+<dt>CLOCK, EDGE 3:</dt><dd><p>MASTER latches data on [DAT_I()].</p>
+<p>MASTER presents new address on [ADR_O()]</p>
+<p>SLAVE presents new data on [DAT_I()].</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it’s ready to send new data.</p>
+</dd>
+<dt>SETUP, EDGE 4:</dt><dd><p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>SLAVE expects another transfer and prepares response.</p>
+</dd>
+<dt>CLOCK, EDGE 4:</dt><dd><p>MASTER latches data on [DAT_I()].</p>
+<p>MASTER presents new address on [ADR_O()]</p>
+<p>MASTER presents End-Of-Burst on [CTI_O()].</p>
+<p>SLAVE presents new data on [DAT_I()].</p>
+<p>SLAVE keeps [ACK_I] asserted to indicate that it’s ready to send new data.</p>
+</dd>
+<dt>SETUP, EDGE 5:</dt><dd><p>MASTER prepares to latch data on [DAT_I()]</p>
+<p>MASTER monitors [ACK_I] and prepares to terminate current data phase.</p>
+<p>SLAVE recognizes End-Of-Burst and prepares to terminate burst.</p>
+</dd>
+<dt>CLOCK, EDGE 5:</dt><dd><p>MASTER latches data on [DAT_I()].</p>
+<p>MASTER negates [CYC_O] and [STB_O] ending burst cycle</p>
+<p>SLAVE ends burst by negates [ACK_I]</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id12">
+<span id="burst"></span><img alt="_images/wavedrom-5d970d78-327a-4221-92f1-6dd659ef38da.svg" src="_images/wavedrom-5d970d78-327a-4221-92f1-6dd659ef38da.svg" /><p class="caption"><span class="caption-number">Figure 30 </span><span class="caption-text">4-beat wrapped incrementing burst for a 32bit data array</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_classic.html">WISHBONE Classic Bus Cycle</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">WISHBONE Registered Feedback Bus Cylces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction-synchronous-vs-asynchronous-cycle-termination">Introduction, Synchronous vs. Asynchronous cycle termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wishbone-registered-feedback">WISHBONE Registered Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#signal-description">Signal Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bus-cycles">Bus Cycles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05_timing.html">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="03_classic.html" title="previous chapter">WISHBONE Classic Bus Cycle</a></li>
+      <li>Next: <a href="05_timing.html" title="next chapter">Timing Specification</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, WISHBONE specification authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/04_registered.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

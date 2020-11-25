@@ -1,0 +1,952 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WISHBONE Classic Bus Cycle &#8212; WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores B3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="WISHBONE Registered Feedback Bus Cylces" href="04_registered.html" />
+    <link rel="prev" title="Interface Specification" href="02_interface.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wishbone-classic-bus-cycle">
+<h1>WISHBONE Classic Bus Cycle<a class="headerlink" href="#wishbone-classic-bus-cycle" title="Permalink to this headline">¶</a></h1>
+<p>WISHBONE Classic bus cycles are described in terms of their general
+operation, reset operation, handshaking protocol and the data
+organization during transfers.  Additional requirements for bus cycles
+(especially those relating to the common clock) can be found in the
+timing specifications in Chapter 5.</p>
+<div class="section" id="general-operation">
+<h2>General Operation<a class="headerlink" href="#general-operation" title="Permalink to this headline">¶</a></h2>
+<p>MASTER and SLAVE interfaces are interconnected with a set of signals
+that permit them to exchange data.  For descriptive purposes these
+signals are cumulatively known as a bus, and are contained within a
+functional module called the INTERCON.  Address, data and other
+information is impressed upon this bus in the form of bus cycles.</p>
+<div class="section" id="reset-operation">
+<h3>Reset Operation<a class="headerlink" href="#reset-operation" title="Permalink to this headline">¶</a></h3>
+<p>All hardware interfaces are initialized to a pre-defined state.  This
+is accomplished with the reset signal [RST_O] that can be asserted at
+any time.  It is also used for test simulation purposes by
+initializing all self-starting state machines and counters which may
+be used in the design.  The reset signal [RST_O] is driven by the
+SYSCON module.  It is connected to the [RST_I] signal on all MASTER
+and SLAVE interfaces.  <a class="reference internal" href="#resetcycle"><span class="std std-numref">Figure 9</span></a> shows the reset cycle.</p>
+<div class="figure align-default" id="id2">
+<span id="resetcycle"></span><img alt="_images/wavedrom-a623df24-90bc-40a5-a53f-6f895c09cb0a.svg" src="_images/wavedrom-a623df24-90bc-40a5-a53f-6f895c09cb0a.svg" /><p class="caption"><span class="caption-number">Figure 9 </span><span class="caption-text">Reset cycle.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>RULE 3.00</strong></dt><dd><p>All WISHBONE interfaces MUST initialize themselves at the rising
+[CLK_I] edge following the assertion of [RST_I].  They MUST stay
+in the initialized state until the rising [CLK_I] edge that
+follows the negation of [RST_I].</p>
+</dd>
+<dt><strong>RULE 3.05</strong></dt><dd><p>[RST_I] MUST be asserted for at least one complete clock cycle on
+all WISHBONE interfaces.</p>
+</dd>
+<dt><strong>PERMISSION 3.00</strong></dt><dd><p>[RST_I] MAY be asserted for more than one clock cycle, and MAY be
+asserted indefinitely.</p>
+</dd>
+<dt><strong>RULE 3.10</strong></dt><dd><p>All WISHBONE interfaces MUST be capable of reacting to [RST_I] at any time.</p>
+</dd>
+<dt><strong>RULE 3.15</strong></dt><dd><p>All self-starting state machines and counters in WISHBONE
+interfaces MUST initialize themselves at the rising [CLK_I] edge
+following the assertion of [RST_I].  They MUST stay in the
+initialized state until the rising [CLK_I] edge that follows the
+negation of [RST_I].</p>
+</dd>
+<dt><strong>OBSERVATION 3.00</strong></dt><dd><p>In general, self-starting state machines do not need to be
+initialized.  However, this may cause problems because some
+simulators may not be sophisticated enough to find an initial
+starting point for the state machine.  Furthermore, self-starting
+state machines can go through an indeterminate number of
+initialization cycles before finding their starting state, thereby
+making it difficult to predict their behavior at start-up time.
+The initialization rule prevents both problems by forcing all
+state machines to a pre-defined state in response to the assertion
+of [RST_I].</p>
+</dd>
+<dt><strong>RULE 3.20</strong></dt><dd><p>The following MASTER signals MUST be negated at the rising [CLK_I]
+edge following the assertion of [RST_I], and MUST stay in the
+negated state until the rising [CLK_I] edge that follows the
+negation of [RST_I]: [STB_O], [CYC_O].  The state of all other
+MASTER signals are undefined in response to a reset cycle.</p>
+</dd>
+<dt><strong>OBSERVATION 3.05</strong></dt><dd><p>On MASTER interfaces [STB_O] and [CYC_O] may be asserted beginning
+at the rising [CLK_I] edge following the negation of [RST_I].</p>
+</dd>
+<dt><strong>OBSERVATION 3.10</strong></dt><dd><p>SLAVE interfaces automatically negate [ACK_O], [ERR_O] and [RTY_O]
+when their [STB_I] is negated.</p>
+</dd>
+<dt><strong>RECOMENDATION 3.00</strong></dt><dd><p>Design SYSCON modules so that they assert [RST_O] during a
+power-up condition.  [RST_O] should remain asserted until all
+voltage levels and clock frequencies in the system are stabilized.
+When negating [RST_O], do so in a synchronous manner that conforms
+to this specification.</p>
+</dd>
+<dt><strong>OBSERVATION 3.15</strong></dt><dd><p>If a gated clock generator is used, and if the clock is stopped,
+then the WISHBONE interface is not capable of responding to its
+[RST_I] signal.</p>
+</dd>
+<dt><strong>SUGGESTION 3.00</strong></dt><dd><p>Some circuits require an asynchronous reset capability.  If an IP
+core or other SoC component requires an asynchronous reset, then
+define it as a non-WISHBONE signal.  This prevents confusion with
+the WISHBONE reset [RST_I] signal that uses a purely synchronous
+protocol, and needs to be applied to the WISHBONE interface only.</p>
+</dd>
+<dt><strong>OBSERVATION 3.20</strong></dt><dd><p>All WISHBONE interfaces respond to the reset signal.  However, the
+IP Core connected to a WISHBONE interface does not necessarily
+need to respond to the reset signal.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="transfer-cycle-initiation">
+<h3>Transfer Cycle initiation<a class="headerlink" href="#transfer-cycle-initiation" title="Permalink to this headline">¶</a></h3>
+<p>MASTER interfaces initiate a transfer cycle by asserting [CYC_O].
+When [CYC_O] is negated, all other MASTER signals are invalid.  SLAVE
+interfaces respond to other SLAVE signals only when [CYC_I] is
+asserted.  SYSCON signals and responses to SYSCON signals are not
+affected.</p>
+<dl class="simple">
+<dt><strong>RULE 3.25</strong></dt><dd><p>MASTER interfaces MUST assert [CYC_O] for the duration of SINGLE
+READ / WRITE, BLOCK and RMW cycles.  [CYC_O] MUST be asserted no
+later than the rising [CLK_I] edge that qualifies the assertion of
+[STB_O].  [CYC_O] MUST be negated no earlier than the rising
+[CLK_I] edge that qualifies the negation of [STB_O].</p>
+</dd>
+<dt><strong>PERMISSION 3.05</strong></dt><dd><p>MASTER interfaces MAY assert [CYC_O] indefinitely.</p>
+</dd>
+<dt><strong>RECOMMENDATION 3.05</strong></dt><dd><p>Arbitration logic often uses [CYC_I] to select between MASTER
+interfaces.  Keeping [CYC_O] asserted may lead to arbitration
+problems.  It is therefore recommended that [CYC_O] is not
+indefinitely asserted.</p>
+</dd>
+<dt><strong>RULE 3.30</strong></dt><dd><p>SLAVE interfaces MAY NOT respond to any SLAVE signals when [CYC_I]
+is negated.  However, SLAVE interfaces MUST always respond to
+SYSCON signals.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="handshaking-protocol">
+<h3>Handshaking Protocol<a class="headerlink" href="#handshaking-protocol" title="Permalink to this headline">¶</a></h3>
+<p>All bus cycles use a handshaking protocol between the MASTER and SLAVE
+interfaces. As shown in Figure <a class="reference internal" href="#handshake"><span class="std std-ref">hanshaking</span></a>, the
+MASTER asserts [STB_O] when it is ready to transfer data. [STB_O]
+remains asserted until the SLAVE asserts one of the cycle terminating
+signals [ACK_I], [ERR_I] or [RTY_I]. At every rising edge of [CLK_I]
+the terminating signal is sampled. If it is asserted, then [STB_O] is
+negated. This gives both MASTER and SLAVE interfaces the possibility
+to control the rate at which data is transferred.</p>
+<div class="figure align-default" id="id3">
+<span id="handshake"></span><img alt="_images/wavedrom-eb01594f-fe05-4546-82c9-0f9f5c796db0.svg" src="_images/wavedrom-eb01594f-fe05-4546-82c9-0f9f5c796db0.svg" /><p class="caption"><span class="caption-number">Figure 10 </span><span class="caption-text">Local bus handshaking protocol.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>PERMISSION 3.10</strong></dt><dd><p>If the SLAVE guarantees it can keep pace with all MASTER interfaces
+and if the [ERR_I] and [RTY_I] signals are not used, then the SLAVE’s
+[ACK_O] signal MAY be tied to the logical AND of the SLAVE’s [STB_I]
+and [CYC_I] inputs. The interface will function normally under these
+circumstances.</p>
+</dd>
+<dt><strong>OBSERVATION 3.25</strong></dt><dd><p>SLAVE interfaces assert a cycle termination signal in response to
+[STB_I]. However, [STB_I] is only valid when [CYC_I] is valid.</p>
+</dd>
+<dt><strong>RULE 3.35</strong></dt><dd><p>The cycle termination signals [ACK_O], [ERR_O], and [RTY_O] must
+be generated in response to the logical AND of [CYC_I] and [STB_I].</p>
+</dd>
+<dt><strong>PERMISSION 3.15</strong></dt><dd><p>Other signals, besides [CYC_I] and [STB_I], MAY be included in the
+generation of the cycle termination signals.</p>
+</dd>
+<dt><strong>OBSERVATION 3.30</strong></dt><dd><p>Internal SLAVE signals also determine what cycle termination signal is
+asserted and when it is asserted.</p>
+</dd>
+</dl>
+<p>Most of the examples in this specification describe the use of [ACK_I]
+to terminate a local bus cycle. However, the SLAVE can optionally
+terminate the cycle with an error [ERR_O], or request that the cycle
+be retried [RTY_O].</p>
+<p>All MASTER interfaces include the [ACK_I] terminator signal. Asserting
+this signal during a bus cycle causes it to terminate normally.</p>
+<p>Asserting the [ERR_I] signal during a bus cycle will terminate the
+cycle. It also serves to notify the MASTER that an error occurred
+during the cycle. This signal is generally used if an error was
+detected by SLAVE logic circuitry. For example, if the SLAVE is a
+parity-protected memory, then the [ERR_I] signal can be asserted if
+a parity fault is detected. This specification does not dictate what
+the eMASTER will do in response to [ERR_I].</p>
+<p>Asserting the optional [RTY_I] signal during a bus cycle will
+terminate the cycle. It also serves to notify the MASTER that the
+current cycle should be aborted, and retried at a later time. This
+signal is generally used for shared memory and bus bridges. In these
+cases SLAVE circuitry asserts [RTY_I] if the local resource is
+busy. This specification does not dictate when or how the MASTER will
+respond to [RTY_I].</p>
+<dl class="simple">
+<dt><strong>RULE 3.40</strong></dt><dd><p>As a minimum, the MASTER interface MUST include the following signals:
+[ACK_I], [CLK_I], [CYC_O], [RST_I], and [STB_O]. As a minimum, the
+SLAVE interface MUST include the following signals: [ACK_O],
+[CLK_I], [CYC_I], [STB_I], and [RST_I]. All other signals are optional.</p>
+</dd>
+<dt><strong>PERMISSION 3.20</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed to support the [ERR_I] and
+[ERR_O] signals. In these cases, the SLAVE asserts [ERR_O] to
+indicate that an error has occurred during the bus cycle. This
+specification does not dictate what the MASTER does in response to
+[ERR_I].</p>
+</dd>
+<dt><strong>PERMISSION 3.25</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed to support the [RTY_I] and
+[RTY_O] signals. In these cases, the SLAVE asserts [RTY_O] to
+indicate that the interface is busy, and that the bus cycle should be
+retried at a later time. This specification does not dictate what the
+MASTER will do in response to [RTY_I].</p>
+</dd>
+<dt><strong>RULE 3.45</strong></dt><dd><p>If a SLAVE supports the [ERR_O] or [RTY_O] signals, then the SLAVE
+MUST NOT assert more than one of the following signals at any time:
+[ACK_O], [ERR_O] or [RTY_O].  OBSERVATION 3.35 If the SLAVE supports
+the [ERR_O] or [RTY_O] signals, but the MASTER does not support these
+signals, deadlock may occur.</p>
+</dd>
+<dt><strong>RECOMMENDATION 3.10</strong></dt><dd><p>Design INTERCON modules to prevent deadlock conditions. One solution
+to this problem is to include a watchdog timer function that monitors
+the MASTER’s [STB_O] signal, and asserts [ERR_I] or [RTY_I] if the
+cycle exceeds some pre-defined time limit. INTERCON modules can also
+be designed to disconnect interfaces from the WISHBONE bus if they
+constantly generate bus errors and/or watchdog time-outs.</p>
+</dd>
+<dt><strong>RECOMMENDATION 3.15</strong></dt><dd><p>Design WISHBONE MASTER interfaces so that there are no intermediate
+logic gates between a registered flip-flop and the signal outputs on
+[STB_O] and [CYC_O]. Delay timing for [STB_O] and [CYC_O] are very
+often the most critical paths in the system. This prevents sloppy
+design practices from slowing down the interconnect because of added
+delays on these two signals.</p>
+</dd>
+<dt><strong>RULE 3.50</strong></dt><dd><p>SLAVE interfaces MUST be designed so that the [ACK_O], [ERR_O], and
+[RTY_O] signals are asserted and negated in response to the assertion
+and negation of [STB_I].</p>
+</dd>
+<dt><strong>PERMISSION 3.30</strong></dt><dd><p>The assertion of [ACK_O], [ERR_O], and [RTY_O] MAY be asynchronous to
+the [CLK_I] signal (i.e. there is a combinatorial logic path between
+[STB_I] and [ACK_O]).</p>
+</dd>
+<dt><strong>OBSERVATION 3.40</strong></dt><dd><p>The asynchronous assertion of [ACK_O], [ERR_O], and [RTY_O] assures
+that the interface can accomplish one data transfer per clock
+cycle. Furthermore, it simplifies the design of arbiters in
+multi-MASTER applications.</p>
+</dd>
+<dt><strong>OBSERVATION 3.45</strong></dt><dd><p>The asynchronous assertion of [ACK_O], [ERR_O], and [RTY_O] could
+proof impossible to implement. For example slave wait states are
+easiest implemented using a registered [ACK_O] signal.</p>
+</dd>
+<dt><strong>OBSERVATION 3.50</strong></dt><dd><p>In large high speed designs the asynchronous assertion of [ACK_O],
+[ERR_O], and [RTY_O] could lead to unacceptable delay times, caused by
+the loopback delay from the MASTER to the SLAVE and back to the
+MASTER. Using registered [ACK_O], [ERR_O], and [RTY_O] signals
+significantly reduces this loopback delay, at the cost of one
+additional wait state per transfer. See WISHBONE Registered Feedback
+Bus Cycles for methods of eliminating the wait state.</p>
+</dd>
+<dt><strong>PERMISSION 3.35</strong></dt><dd><p>Under certain circumstances SLAVE interfaces MAY be designed to hold
+[ACK_O] in the asserted state. This situation occurs on
+point-to-point interfaces where there is a single SLAVE on the
+interface, and that SLAVE always operates without wait states.</p>
+</dd>
+<dt><strong>RULE 3.55</strong></dt><dd><p>MASTER interfaces MUST be designed to operate normally when the SLAVE
+interface holds [ACK_I] in the asserted state.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="use-of-stb-o">
+<h3>Use of [STB_O]<a class="headerlink" href="#use-of-stb-o" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.60</strong></dt><dd><p>MASTER interfaces MUST qualify the following signals with [STB_O]:
+[ADR_O], [DAT_O()], [SEL_O()], [WE_O], and [TAGN_O].</p>
+</dd>
+<dt><strong>PERMISSION 3.40</strong></dt><dd><p>If a MASTER doesn’t generate wait states, then [STB_O] and [CYC_O] MAY
+be assigned the same signal.</p>
+</dd>
+<dt><strong>OBSERVATION 3.55</strong></dt><dd><p>[CYC_O] needs to be asserted during the entire transfer cycle. A
+MASTER that doesn’t generate wait states doesn’t negate [STB_O] during
+a transfer cycle, i.e. it is asserted the entire transfer
+cycle. Therefore it is allowed to use the same signal for [CYC_O] and
+[STB_O]. Both signals must be present on the interface though.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="use-of-ack-o-err-o-and-rty-o">
+<h3>Use of [ACK_O], [ERR_O] and [RTY_O]<a class="headerlink" href="#use-of-ack-o-err-o-and-rty-o" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.65</strong></dt><dd><p>SLAVE interfaces MUST qualify the following signals with [ACK_O],
+[ERR_O] or [RTY_O]: [DAT_O()].</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="use-of-tag-types">
+<h3>Use of TAG TYPES<a class="headerlink" href="#use-of-tag-types" title="Permalink to this headline">¶</a></h3>
+<p>The WISHBONE interface can be modified with user defined signals. This
+is done with a technique known as tagging. Tags are a well known
+concept in the microcomputer bus industry.  They allow user defined
+information to be associated with an address, a data word or a bus
+cycle. All tag signals must conform to set of guidelines known as TAG
+TYPEs. <a class="reference internal" href="#tagtypes"><span class="std std-numref">Table 1</span></a> lists all of the defined TAG TYPEs along
+with their associated data set and signal waveform. When a tag is
+added to an interface it is assigned a TAG TYPE from the table. This
+explicitly defines how the tag operates. This information must also be
+included in the WISHBONE DATASHEET.</p>
+<span id="tagtypes"></span><table class="docutils align-default" id="id4">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">TAG TYPEs</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 14%" />
+<col style="width: 24%" />
+<col style="width: 14%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Description</p></td>
+<td><p>TAG TYPE</p></td>
+<td><p>Associated with</p></td>
+<td><p>TAG TYPE</p></td>
+<td><p>Associated with</p></td>
+</tr>
+<tr class="row-even"><td><p>Address tag</p></td>
+<td><p>TGA_O()</p></td>
+<td><p>ADR_O()</p></td>
+<td><p>TGA_I()</p></td>
+<td><p>ADR_I()</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data tag, input</p></td>
+<td><p>TGD_I()</p></td>
+<td><p>DAT_I()</p></td>
+<td><p>TGD_I()</p></td>
+<td><p>DAT_I()</p></td>
+</tr>
+<tr class="row-even"><td><p>Data tag, output</p></td>
+<td><p>TGD_O()</p></td>
+<td><p>DAT_O()</p></td>
+<td><p>TGD_O()</p></td>
+<td><p>DAT_O()</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cycle tag</p></td>
+<td><p>TGC_O()</p></td>
+<td><p>Bus Cycle</p></td>
+<td><p>TGC_I()</p></td>
+<td><p>Bus Cycle</p></td>
+</tr>
+</tbody>
+</table>
+<p>For example, consider a MASTER interface where a parity protection bit
+named [PAR_O] is generated from an output data word on
+[DAT_O(15..0)]. It’s an ‘even’ parity bit, meaning that it’s asserted
+whenever there are an even number of ‘1’s in the data word. If this
+signal were added to the interface, then the following information (in
+the WISHBONE DATASHEET) would be sufficient to completely define the
+timing of [PAR_O]:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>SIGNAL NAME:</dt><dd><p>PAR_O</p>
+</dd>
+<dt>DESCRIPTION:</dt><dd><p>Even parity bit</p>
+</dd>
+<dt>MASTER TAG TYPE:</dt><dd><p>TGD_O()</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt><strong>RULE 3.70</strong></dt><dd><p>All user defined tags MUST be assigned a TAG TYPE. Furthermore, they
+MUST adhere to the timing specifications given in this document for
+the indicated TAG TYPE.</p>
+</dd>
+<dt><strong>PERMISSION 3.45</strong></dt><dd><p>While all TAG TYPES are specified as arrays (with parenthesis ‘()’),
+the actual tag MAY be a non-arrayed signal.</p>
+</dd>
+<dt><strong>RECOMMENDATION 3.15</strong></dt><dd><p>If a MASTER interface supports more than one defined bus cycle over
+a common set of signal lines, then include a cycle tag to identify
+each type of bus cycle. This allows INTERCON and SLAVE interface
+circuits to discriminate between these bus cycles (if
+needed). Define the signals as TAG TYPE: [TGC_O()], using signal
+names of [SGL_O], [BLK_O] and [RMW_O] when identifying SINGLE, BLOCK
+and RMW cycles respectively.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="single-read-write-cycles">
+<h2>SINGLE READ / WRITE Cycles<a class="headerlink" href="#single-read-write-cycles" title="Permalink to this headline">¶</a></h2>
+<p>The SINGLE READ / WRITE cycles perform one data transfer at a
+time. These are the basic cycles used to perform data transfers on the
+WISHBONE interconnect.  Note that the [CYC_O] signal isn’t shown here
+to keep the timing diagrams as simple as possible. It is assumed
+that [CYC_O] is continuously asserted.</p>
+<dl class="simple">
+<dt><strong>RULE 3.75</strong></dt><dd><p>All MASTER and SLAVE interfaces that support SINGLE READ or SINGLE
+WRITE cycles MUST conform to the timing requirements given in sections
+3.2.1 and 3.2.2.</p>
+</dd>
+<dt><strong>PERMISSION 3.50</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed so that they do not
+support the SINGLE READ or SINGLE WRITE cycles.</p>
+</dd>
+</dl>
+<div class="section" id="single-read-cycle">
+<h3>SINGLE READ Cycle<a class="headerlink" href="#single-read-cycle" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#singlereadcycle"><span class="std std-numref">Figure 11</span></a> shows a SINGLE READ cycle. The bus protocol works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents a valid address on [ADR_O()] and [TGA_O()].</p>
+<p>MASTER negates [WE_O] to indicate a READ cycle.</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it expects data.</p>
+<p>MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.</p>
+<p>MASTER asserts [STB_O] to indicate the start of the phase.</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>SLAVE asserts [ACK_I] in response to [STB_O] to indicate valid data.</p>
+<p>MASTER monitors [ACK_I], and prepares to latch data on [DAT_I()] and
+[TGD_I()].</p>
+<p>Note: SLAVE may insert wait states (-WSS-) before asserting [ACK_I],
+thereby allowing it to throttle the cycle speed. Any number of wait
+states may be added.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.</p>
+<p>SLAVE negates [ACK_I] in response to negated [STB_O].</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id5">
+<span id="singlereadcycle"></span><img alt="_images/wavedrom-435573bf-8277-4b8c-a0e2-158cfbf322f2.svg" src="_images/wavedrom-435573bf-8277-4b8c-a0e2-158cfbf322f2.svg" /><p class="caption"><span class="caption-number">Figure 11 </span><span class="caption-text">SINGLE READ cycle.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="single-write-cycle">
+<h3>SINGLE WRITE Cycle<a class="headerlink" href="#single-write-cycle" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#singlewritecycle"><span class="std std-numref">Figure 12</span></a> shows a SINGLE WRITE cycle. The bus protocol works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents a valid address on [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents valid data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER asserts [WE_O] to indicate a WRITE cycle.</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it sends data.</p>
+<p>MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.</p>
+<p>MASTER asserts [STB_O] to indicate the start of the phase.</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>SLAVE asserts [ACK_I] in response to [STB_O] to indicate latched data.</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate the cycle.</p>
+<p>Note: SLAVE may insert wait states (-WSS-) before asserting [ACK_I],
+thereby allowing it to throttle the cycle speed. Any number of wait
+states may be added.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER negates [STB_O] and [CYC_O] to indicate the end of the cycle.</p>
+<p>SLAVE negates [ACK_I[ in response to negated [STB_O].</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id6">
+<span id="singlewritecycle"></span><img alt="_images/wavedrom-15a4f75b-3010-418a-ab50-2389aae1b0c3.svg" src="_images/wavedrom-15a4f75b-3010-418a-ab50-2389aae1b0c3.svg" /><p class="caption"><span class="caption-number">Figure 12 </span><span class="caption-text">SINGLE WRITE cycle.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="block-read-write-cycles">
+<h2>BLOCK READ / WRITE Cycles<a class="headerlink" href="#block-read-write-cycles" title="Permalink to this headline">¶</a></h2>
+<p>The BLOCK transfer cycles perform multiple data transfers. They are
+very similar to single READ and WRITE cycles, but have a few special
+modifications to support multiple transfers.</p>
+<p>During BLOCK cycles, the interface basically performs SINGLE
+READ/WRITE cycles as described above. However, the BLOCK cycles are
+modified somewhat so that these individual cycles (called phases)
+are combined together to form a single BLOCK cycle. This function is
+most useful when multiple MASTERs are used on the interconnect. For
+example, if the SLAVE is a shared (dual port) memory, then an arbiter
+for that memory can determine when one MASTER is done with it so that
+another can gain access to the memory.</p>
+<p>As shown in <a class="reference internal" href="#cycduringblock"><span class="std std-numref">Figure 13</span></a>, the [CYC_O] signal is asserted
+for the duration of a BLOCK cycle.  This signal can be used to request
+permission to access a shared resource from a local arbiter. To hold
+the access until the end of the cycle the [LOCK_O] signal must be
+asserted, as is shown.  During each of the data transfer phases
+(within the block transfer), the normal handshaking protocol between
+[STB_O] and [ACK_I] is maintained.</p>
+<div class="figure align-default" id="id7">
+<span id="cycduringblock"></span><img alt="_images/wavedrom-2f161abc-5f45-41a8-83fa-17482dacb6a8.svg" src="_images/wavedrom-2f161abc-5f45-41a8-83fa-17482dacb6a8.svg" /><p class="caption"><span class="caption-number">Figure 13 </span><span class="caption-text">Use of [CYC_O] signal during BLOCK cycles.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>RULE 3.80</strong></dt><dd><p>All MASTER and SLAVE interfaces that support BLOCK cycles MUST conform
+to the timing requirements given in sections 3.3.1 and 3.3.2.</p>
+</dd>
+<dt><strong>PERMISSION 3.55</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed so that they do not
+support the BLOCK cycles.</p>
+</dd>
+</dl>
+<div class="section" id="block-read-cycle">
+<h3>BLOCK READ Cycle<a class="headerlink" href="#block-read-cycle" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#blockreadcycle"><span class="std std-numref">Figure 14</span></a> shows a BLOCK READ cycle. The BLOCK cycle is
+capable of a data transfer on every clock cycle. However, this example
+also shows how the MASTER and the SLAVE interfaces can both throttle
+the bus transfer rate by inserting wait states. A total of five
+transfers (phases) are shown. After the second transfer the MASTER
+inserts a wait state. After the fourth transfer the SLAVE inserts a
+wait state. The cycle is terminated after the fifth transfer. The
+protocol for this transfer works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents a valid address on [ADR_O()] and [TGA_O()].</p>
+<p>MASTER negates [WE_O] to indicate a READ cycle.</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it expects data.</p>
+<p>MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of the cycle.</p>
+<p>MASTER asserts [STB_O] to indicate the start of the first phase.</p>
+<p>Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+before, clock edge 1.</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs, and responding SLAVE asserts [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+[TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER presents new [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it expects
+data.</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and [TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER negates [STB_O] to introduce a wait state (-WSM-).</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>SLAVE negates [ACK_I] in response to [STB_O].</p>
+<p>Note: any number of wait states can be inserted by the MASTER.</p>
+</dd>
+<dt>CLOCK EDGE 3:</dt><dd><p>MASTER presents new [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it expects
+data.</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 4:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+[TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 4:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it expects
+data.</p>
+</dd>
+<dt>SETUP, EDGE 5:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+[TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 5:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>SLAVE negates [ACK_I] to introduce a wait state.</p>
+<p>Note: any number of wait states can be inserted by the SLAVE at this
+point.</p>
+</dd>
+<dt>SETUP, EDGE 6:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+[TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 6:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER terminates cycle by negating [STB_O] and [CYC_O].</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id8">
+<span id="blockreadcycle"></span><img alt="_images/wavedrom-867cbe79-3d57-403d-8d02-b3f46d483b6c.svg" src="_images/wavedrom-867cbe79-3d57-403d-8d02-b3f46d483b6c.svg" /><p class="caption"><span class="caption-number">Figure 14 </span><span class="caption-text">BLOCK READ cycle.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="block-write-cycle">
+<h3>BLOCK WRITE Cycle<a class="headerlink" href="#block-write-cycle" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#blockwritecycle"><span class="std std-numref">Figure 15</span></a> shows a BLOCK WRITE cycle. The BLOCK cycle
+is capable of a data transfer on every clock cycle. However, this
+example also shows how the MASTER and the SLAVE interfaces can both
+throttle the bus transfer rate by inserting wait states. A total of
+five transfers are shown. After the second transfer the MASTER inserts
+a wait state. After the fourth transfer the SLAVE inserts a wait
+state. The cycle is terminated after the fifth transfer. The protocol
+for this transfer works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER asserts [WE_O] to indicate a WRITE cycle.</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it sends data.</p>
+<p>MASTER asserts [CYC_O] and [TGC_O()] to indicate cycle start.</p>
+<p>MASTER asserts [STB_O].</p>
+<p>Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+before, clock edge 1.</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it sends
+data.</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate current data phase.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER negates [STB_O] to introduce a wait state (-WSM-).</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>SLAVE negates [ACK_I] in response to [STB_O].</p>
+<p>Note: any number of wait states can be inserted by the MASTER at this
+point.</p>
+</dd>
+<dt>CLOCK EDGE 3:</dt><dd><p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it sends data.</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 4:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate data phase.</p>
+</dd>
+<dt>CLOCK EDGE 4:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it sends
+data.</p>
+</dd>
+<dt>SETUP, EDGE 5:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate data phase.</p>
+</dd>
+<dt>CLOCK EDGE 5:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>SLAVE negates [ACK_I] to introduce a wait state.</p>
+<p>Note: any number of wait states can be inserted by the SLAVE at this point.</p>
+</dd>
+<dt>SETUP, EDGE 6:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate data phase.</p>
+</dd>
+<dt>CLOCK EDGE 6:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER terminates cycle by negating [STB_O] and [CYC_O].</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id9">
+<span id="blockwritecycle"></span><img alt="_images/wavedrom-5518c227-49f5-475e-9df4-017a0d2dd199.svg" src="_images/wavedrom-5518c227-49f5-475e-9df4-017a0d2dd199.svg" /><p class="caption"><span class="caption-number">Figure 15 </span><span class="caption-text">BLOCK WRITE cycle.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="rmw-cycle">
+<h2>RMW Cycle<a class="headerlink" href="#rmw-cycle" title="Permalink to this headline">¶</a></h2>
+<p>The RMW (read-modify-write) cycle is used for indivisible semaphore
+operations. During the first half of the cycle a single read data
+transfer is performed. During the second half of the cycle a write
+data transfer is performed. The [CYC_O] signal remains asserted during
+both halves of the cycle.</p>
+<dl class="simple">
+<dt><strong>RULE 3.85</strong></dt><dd><p>All MASTER and SLAVE interfaces that support RMW cycles MUST conform
+to the timing requirements given in section 3.4.</p>
+</dd>
+<dt><strong>PERMISSION 3.60</strong></dt><dd><p>MASTER and SLAVE interfaces MAY be designed so that they do not
+support the RMW cycles.</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="#rmwcycle"><span class="std std-numref">Figure 16</span></a> shows a read-modify-write (RMW) cycle. The RMW
+cycle is capable of a data transfer on every clock cycle. However,
+this example also shows how the MASTER and the SLAVE interfaces can
+both throttle the bus transfer rate by inserting wait states. Two
+transfers are shown. After the first (read) transfer, the MASTER
+inserts a wait state. During the second transfer the SLAVE inserts a
+wait state. The protocol for this transfer works as follows:</p>
+<dl>
+<dt>CLOCK EDGE 0:</dt><dd><p>MASTER presents [ADR_O()] and [TGA_O()].</p>
+<p>MASTER negates [WE_O] to indicate a READ cycle.</p>
+<p>MASTER presents bank select [SEL_O()] to indicate where it expects
+data.</p>
+<p>MASTER asserts [CYC_O] and [TGC_O()] to indicate the start of cycle.</p>
+<p>MASTER asserts [STB_O].</p>
+<p>Note: the MASTER asserts [CYC_O] and/or [TGC_O()] at, or anytime
+before, clock edge 1. The use of [TAGN_O] is optional.</p>
+</dd>
+<dt>SETUP, EDGE 1:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE presents valid data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER monitors [ACK_I], and prepares to latch [DAT_I()] and
+[TGD_I()].</p>
+</dd>
+<dt>CLOCK EDGE 1:</dt><dd><p>MASTER latches data on [DAT_I()] and [TGD_I()].</p>
+<p>MASTER negates [STB_O] to introduce a wait state (-WSM-).</p>
+</dd>
+<dt>SETUP, EDGE 2:</dt><dd><p>SLAVE negates [ACK_I] in response to [STB_O].</p>
+<p>MASTER asserts [WE_O] to indicate a WRITE cycle.</p>
+<p>Note: any number of wait states can be inserted by the MASTER at this
+point.</p>
+</dd>
+<dt>CLOCK EDGE 2:</dt><dd><p>MASTER presents WRITE data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER presents new bank select [SEL_O()] to indicate where it sends
+data.</p>
+<p>MASTER asserts [STB_O].</p>
+</dd>
+<dt>SETUP, EDGE 3:</dt><dd><p>SLAVE decodes inputs, and responds by asserting [ACK_I].</p>
+<p>SLAVE prepares to latch data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER monitors [ACK_I], and prepares to terminate data phase.</p>
+<p>Note: any number of wait states can be inserted by the SLAVE at this
+point.</p>
+</dd>
+<dt>CLOCK EDGE 3:</dt><dd><p>SLAVE latches data on [DAT_O()] and [TGD_O()].</p>
+<p>MASTER negates [STB_O] and [CYC_O] indicating the end of the cycle.</p>
+<p>SLAVE negates [ACK_I] in response to negated [STB_O].</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id10">
+<span id="rmwcycle"></span><img alt="_images/wavedrom-7ba5e494-8746-495d-adb7-db66d7431377.svg" src="_images/wavedrom-7ba5e494-8746-495d-adb7-db66d7431377.svg" /><p class="caption"><span class="caption-number">Figure 16 </span><span class="caption-text">RMW cycle.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="data-organization">
+<h2>Data Organization<a class="headerlink" href="#data-organization" title="Permalink to this headline">¶</a></h2>
+<p>Data organization refers to the ordering of data during
+transfers. There are two general types of ordering. These are called
+BIG ENDIAN and LITTLE ENDIAN. BIG ENDIAN refers to data ordering where
+the most significant portion of an operand is stored at the lower
+address. LITTLE ENDIAN refers to data ordering where the most
+significant portion of an operand is stored at the higher address. The
+WISHBONE architecture supports both methods of data ordering.</p>
+<div class="section" id="nomenclature">
+<h3>Nomenclature<a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h3>
+<p>A BYTE(N), WORD(N), DWORD(N) and QWORD(N) nomenclature is used to
+define data ordering. These terms are defined in
+<a class="reference internal" href="#id1"><span class="std std-numref">Table 2</span></a>. Figure <a class="reference internal" href="#operands"><span class="std std-numref">Figure 17</span></a> shows the operand
+locations for input and output data ports.</p>
+<span id="id1"></span><table class="docutils align-default" id="id11">
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">Data Transfer Nomenclature</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 17%" />
+<col style="width: 64%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Nomenclature</p></td>
+<td><p>Granularity</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p>BYTE(N)</p></td>
+<td><p>8-bit</p></td>
+<td><p>An 8-bit BYTE transfer at address ‘N’.</p></td>
+</tr>
+<tr class="row-odd"><td><p>WORD(N)</p></td>
+<td><p>16-bit</p></td>
+<td><p>A 16-bit WORD transfer at address ‘N’.</p></td>
+</tr>
+<tr class="row-even"><td><p>DWORD(N)</p></td>
+<td><p>32-bit</p></td>
+<td><p>A 32-bit Double WORD transfer at address ‘N’.</p></td>
+</tr>
+<tr class="row-odd"><td><p>QWORD(N)</p></td>
+<td><p>64-bit</p></td>
+<td><p>A 64-bit Quadruple WORD transfer at address ‘N’.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="figure align-default" id="id12">
+<span id="operands"></span><img alt="_images/operands.svg" src="_images/operands.svg" /><p class="caption"><span class="caption-number">Figure 17 </span><span class="caption-text">Operand locations for input and output data ports.</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+<p>The table also defines the granularity of the interface. This
+indicates the minimum unit of data transfer that is supported by the
+interface. For example, the smallest operand that can be passed
+through a port with 16-bit granularity is a 16-bit WORD. In this case,
+an 8-bit operand cannot be transferred.</p>
+<p><a class="reference internal" href="#bigendian"><span class="std std-numref">Figure 18</span></a> shows an example of how the 64-bit value of
+0x0123456789ABCDEF is transferred through BYTE, WORD, DWORD and QWORD
+ports using BIG ENDIAN data organization.  Through the 64-bit QWORD
+port the number is directly transferred with the most significant bit
+at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
+DAT_O(0). However, when the same operand is transferred through a
+32-bit DWORD port, it is split into two bus cycles. The two bus
+cycles are each 32-bits in length, with the most significant DWORD
+transferred at the lower address, and the least significant DWORD
+transferred at the upper address. A similar situation applies to the
+WORD and BYTE cases.</p>
+<div class="figure align-default" id="id13">
+<span id="bigendian"></span><img alt="_images/bigendian.svg" src="_images/bigendian.svg" /><p class="caption"><span class="caption-number">Figure 18 </span><span class="caption-text">Example showing a variety of BIG ENDIAN transfers over various port
+sizes.</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+</div>
+<p><a class="reference internal" href="#littleendian"><span class="std std-numref">Figure 19</span></a> shows an example of how the 64-bit value of
+0x0123456789ABC is transferred through BYTE, WORD, DWORD and QWORD
+ports using LITTLE ENDIAN data organization. Through the 64-bit QWORD
+port the number is directly transferred with the most significant bit
+at DAT_I(63) / DAT_O(63). The least significant bit is at DAT_I(0) /
+DAT_O(0).  However, when the same operand is transferred through a
+32-bit DWORD port, it is split into two bus cycles. The two bus cycles
+are each 32-bits in length, with the least significant DWORD
+transferred at the lower address, and the most significant DWORD
+transferred at the upper address. A similar situation applies to the
+WORD and BYTE cases.</p>
+<div class="figure align-default" id="id14">
+<span id="littleendian"></span><img alt="_images/littleendian.svg" src="_images/littleendian.svg" /><p class="caption"><span class="caption-number">Figure 19 </span><span class="caption-text">Example showing a variety of LITTLE ENDIAN transfers over various port
+sizes.</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>RULE 3.90</strong></dt><dd><p>Data organization MUST conform to the ordering indicated in
+<a class="reference internal" href="#operands"><span class="std std-numref">Figure 17</span></a>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="transfer-sequencing">
+<h3>Transfer Sequencing<a class="headerlink" href="#transfer-sequencing" title="Permalink to this headline">¶</a></h3>
+<p>The sequence in which data is transferred through a port is not
+regulated by this specification.  For example, a 64-bit operand
+through a 32-bit port will take two bus cycles. However, the
+specification does not require that the lower or upper DWORD be
+transferred first.</p>
+<dl class="simple">
+<dt><strong>RECOMMENDATION 3.20</strong></dt><dd><p>Design interfaces so that data is transferred sequentially from lower
+addresses to higher addresses.</p>
+</dd>
+<dt><strong>OBSERVATION 3.60</strong></dt><dd><p>The sequence in which an operand is transferred through a data port is
+not highly regulated by the specification. That is because different
+IP cores may produce the data in different ways. The sequence is
+therefore application-specific.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="data-organization-for-64-bit-ports">
+<h3>Data Organization for 64-bit Ports<a class="headerlink" href="#data-organization-for-64-bit-ports" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.95</strong></dt><dd><p>Data organization on 64-bit ports MUST conform to <a class="reference internal" href="#organization64"><span class="std std-numref">Figure 20</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id15">
+<span id="organization64"></span><img alt="_images/organization64.svg" src="_images/organization64.svg" /><p class="caption"><span class="caption-number">Figure 20 </span><span class="caption-text">Data organization for 64-bit ports.</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="data-organization-for-32-bit-ports">
+<h3>Data Organization for 32-bit Ports<a class="headerlink" href="#data-organization-for-32-bit-ports" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.100</strong></dt><dd><p>Data organization on 32-bit ports MUST conform to <a class="reference internal" href="#organization32"><span class="std std-numref">Figure 21</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id16">
+<span id="organization32"></span><img alt="_images/organization32.svg" src="_images/organization32.svg" /><p class="caption"><span class="caption-number">Figure 21 </span><span class="caption-text">Data organization for 32-bit ports.</span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="data-organization-for-16-bit-ports">
+<h3>Data Organization for 16-bit Ports<a class="headerlink" href="#data-organization-for-16-bit-ports" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.105</strong></dt><dd><p>Data organization on 16-bit ports MUST conform to <a class="reference internal" href="#organization16"><span class="std std-numref">Figure 22</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id17">
+<span id="organization16"></span><img alt="_images/organization16.svg" src="_images/organization16.svg" /><p class="caption"><span class="caption-number">Figure 22 </span><span class="caption-text">Data organization for 16-bit ports.</span><a class="headerlink" href="#id17" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="data-organization-for-8-bit-ports">
+<h3>Data Organization for 8-bit Ports<a class="headerlink" href="#data-organization-for-8-bit-ports" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><strong>RULE 3.1010</strong></dt><dd><p>Data organization on 8-bit ports MUST conform to <a class="reference internal" href="#organization8"><span class="std std-numref">Figure 23</span></a>.</p>
+</dd>
+</dl>
+<div class="figure align-default" id="id18">
+<span id="organization8"></span><img alt="_images/organization8.svg" src="_images/organization8.svg" /><p class="caption"><span class="caption-number">Figure 23 </span><span class="caption-text">Data organization for 8-bit ports.</span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>Cohen, Danny. On Holy Wars and a Plea for Peace. IEEE Computer
+Magazine, October 1981.  Pages 49-54. [Description of BIG ENDIAN and
+LITTLE ENDIAN.]</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">WISHBONE Classic Bus Cycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-operation">General Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-read-write-cycles">SINGLE READ / WRITE Cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#block-read-write-cycles">BLOCK READ / WRITE Cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rmw-cycle">RMW Cycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-organization">Data Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04_registered.html">WISHBONE Registered Feedback Bus Cylces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_timing.html">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="02_interface.html" title="previous chapter">Interface Specification</a></li>
+      <li>Next: <a href="04_registered.html" title="next chapter">WISHBONE Registered Feedback Bus Cylces</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, WISHBONE specification authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/03_classic.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

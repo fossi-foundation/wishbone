@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timing Specification &#8212; WISHBONE B3</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Cited Patent References" href="06_patents.html" />
+    <link rel="prev" title="WISHBONE Registered Feedback Bus Cylces" href="04_registered.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="timing-specification">
+<h1>Timing Specification<a class="headerlink" href="#timing-specification" title="Permalink to this headline">¶</a></h1>
+<p>The WISHBONE specification is designed to provide the end user with
+very simple timing constraints. Although the application specific
+circuit(s) will vary in this regard, the interface itself is designed
+to work without the need for detailed timing specifications. In all
+cases, the only timing information that is needed by the end user is
+the maximum clock frequency (for [CLK_I]) that is passed to a place &amp;
+route tool. The maximum clock frequency is dictated by the time delay
+between a positive clock edge on [CLK_I] to the setup on a stage
+further down the logical signal path. This delay is shown graphically
+in <a class="reference internal" href="#timing"><span class="std std-numref">Figure 31</span></a>, and is defined as Tpd,clk-su.</p>
+<div class="figure align-default" id="id1">
+<span id="timing"></span><img alt="_images/timing.svg" src="_images/timing.svg" /><p class="caption"><span class="caption-number">Figure 31 </span><span class="caption-text">Definition for Tpd,clk-su.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<dl class="simple">
+<dt><strong>RULE 5.00</strong></dt><dd><p>The clock input [CLK_I] to each IP core MUST coordinate all activities
+for the internal logic within the WISHBONE interface. All WISHBONE
+output signals are registered at the rising edge of [CLK_I]. All
+WISHBONE input signals MUST be stable before the rising edge of
+[CLK_I].</p>
+</dd>
+<dt><strong>PERMISSION 5.00</strong></dt><dd><p>The user’s place and route tool MAY be used to enforce RULE 5.00.</p>
+</dd>
+<dt><strong>OBSERVATION 5.00</strong></dt><dd><p>Most place and route tools can be easily configured to enforce RULE
+5.00. Generally, it only requires a single timing specification for
+Tpd,clk-su.</p>
+</dd>
+<dt><strong>RULE 5.05</strong></dt><dd><p>The WISHBONE interface MUST use synchronous, RTL design methodologies
+that, given nearly infinitely fast gate delays, will operate over a
+nearly infinite range of clock frequencies on [CLK_I].</p>
+</dd>
+<dt><strong>OBSERVATION 5.05</strong></dt><dd><p>Realistically, the WISHBONE interface will never be expected to
+operate over a nearly infinite frequency range. However this
+requirement eliminates the need for non-portable timing constraints
+(that may work only on certain target devices).</p>
+</dd>
+<dt><strong>OBSERVATION 5.10</strong></dt><dd><p>The WISHBONE interface logic assumes that a low-skew clock
+distribution scheme is used on the target device, and that the
+clock-skew shall be low enough to permit reliable operation over the
+environmental conditions.</p>
+</dd>
+<dt><strong>PERMISSION 5.05</strong></dt><dd><p>The IP core connected to a WISHBONE interface MAY include application
+specific timing requirements.</p>
+</dd>
+<dt><strong>RULE 5.10</strong></dt><dd><p>The clock input [CLK_I] MUST have a duty cycle that is no less than
+40%, and no greater than 60%.</p>
+</dd>
+<dt><strong>PERMISSION 5.10</strong></dt><dd><p>The SYSCON module MAY use a variable clock generator. In these cases
+the clock frequency can be changed by the SYSCON module so long as the
+clock edges remain clean and monotonic, and if the clock does not
+violate the duty cycle requirements.</p>
+</dd>
+<dt><strong>PERMISSION 5.15</strong></dt><dd><p>The SYSCON module MAY use a gated clock generator. In these cases the
+clock shall be stopped in the low logic state. When the gated clock is
+stopped and started the clock edges are required to remain clean and
+monotonic.</p>
+</dd>
+<dt><strong>SUGGESTION 5.00</strong></dt><dd><p>When using a gated clock generator, turn the clock off when the
+WISHBONE interconnection is not busy. One way of doing this is to
+create a MASTER interface whose sole purpose is to acquire the
+WISHBONE interconnection and turn the clock off. This assures that the
+WISHBONE interconnection is not busy when gating the clock off. When
+the clock signal is restored the MASTER then releases the WISHBONE
+interconnection.</p>
+</dd>
+<dt><strong>OBSERVATION 5.15</strong></dt><dd><p>This specification does not attempt to govern the
+design of gated or variable clock generators.</p>
+</dd>
+<dt><strong>SUGGESTION 5.10</strong></dt><dd><p>Design an IP core so that all of the circuits (including the WISHBONE
+interconnect) follow the aforementioned RULEs, as this will make the
+core portable across a wide range of target devices and technologies.</p>
+</dd>
+</dl>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_classic.html">WISHBONE Classic Bus Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_registered.html">WISHBONE Registered Feedback Bus Cylces</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="04_registered.html" title="previous chapter">WISHBONE Registered Feedback Bus Cylces</a></li>
+      <li>Next: <a href="06_patents.html" title="next chapter">Cited Patent References</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, WISHBONE specification authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/05_timing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

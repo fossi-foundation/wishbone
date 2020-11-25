@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores &#8212; WISHBONE B3</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="01_introduction.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wishbone-system-on-chip-soc-interconnection-architecture-for-portable-ip-cores">
+<h1>WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores<a class="headerlink" href="#wishbone-system-on-chip-soc-interconnection-architecture-for-portable-ip-cores" title="Permalink to this headline">¶</a></h1>
+<p><strong>Stewardship</strong></p>
+<p>This specification is maintained by Richard Herveille
+(<a class="reference external" href="mailto:rherveille&#37;&#52;&#48;opencores&#46;org">rherveille<span>&#64;</span>opencores<span>&#46;</span>org</a>) and hosted by the Free and Open Source
+Silicon Foundation.  Questions, comments and suggestions about this
+document are welcome and should be directed to the mailing list
+(<a class="reference external" href="https://lists.librecores.org/listinfo/discussion">https://lists.librecores.org/listinfo/discussion</a>) and the GitHub
+repository (<a class="reference external" href="https://github.com/fossi-foundation/wishbone">https://github.com/fossi-foundation/wishbone</a>).</p>
+<p>These specifications are intended to guarantee compatibility between compliant IP-cores and to improve cooperation among different users and suppliers.</p>
+<p><strong>Copyright &amp; Trademark Release / Royalty Release / Patent Notice</strong></p>
+<p>Notice is hereby given that this document is not copyrighted, and has been placed into the public domain.
+It may be freely copied and distributed by any means.</p>
+<p>The name ‘WISHBONE’ and the ‘WISHBONE COMPATIBLE’ rubber stamp logo are hereby placed into the public domain (within the scope of System-on-Chip design, System-on-Chip fabrication and related areas of commercial use).
+The WISHBONE logo may be freely used under the compatibility conditions stated elsewhere in this document.</p>
+<p>This specification may be used for the design and production of System-on-Chip (SoC) components without royalties or other financial obligations to FOSSi Foundation, OpenCores or any other party.</p>
+<p>The author(s) of this specification are not aware that the information contained herein, nor of products designed to the specification, cause infringement on the patent, copyright, trademark or trade secret rights of
+others. However, there is a possibility that such infringement may exist without their knowledge.
+The user of this document assumes all responsibility for determining if products designed to this specification infringe on the intellectual property rights of others.</p>
+<p><strong>Disclaimers</strong></p>
+<p>In no event shall OpenCores or any of the contributors be liable for any direct, indirect, incidental, consequential, exemplary, or special damages (including, but not limited to procurement of substitute goods or services; loss of use, data, or profits; or business interruption) resulting in any way from the use of this specification.
+By adopting this specification, the user assumes all responsibility for its use.</p>
+<p>This is a preliminary document, and is subject to change.</p>
+<p>Verilog® is a registered trademark of Cadence Design Systems, Inc.</p>
+<p><strong>Acknowledgements</strong></p>
+<p>Like any great technical project, the WISHBONE specification could not have been completed without the help of many people.
+The Steward wishes to thank the following for their ideas, suggestions and contributions:</p>
+<ul class="simple">
+<li><p>Ray Alderman</p></li>
+<li><p>Yair Amitay</p></li>
+<li><p>Danny Cohan</p></li>
+<li><p>Marc Delvaux</p></li>
+<li><p>Miha Dolenc</p></li>
+<li><p>Volker Hetzer</p></li>
+<li><p>Magnus Homann</p></li>
+<li><p>Brian Hurt</p></li>
+<li><p>Linus Kirk</p></li>
+<li><p>Damjan Lampret</p></li>
+<li><p>Wade D. Peterson <a class="footnote-reference brackets" href="#id2" id="id1">1</a></p></li>
+<li><p>Barry Rice</p></li>
+<li><p>John Rynearson</p></li>
+<li><p>Avi Shamli</p></li>
+<li><p>Rudolf Usselmann</p></li>
+</ul>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Wade D. Peterson from Silicore Corporation is the original author and steward. Without his dedication this specification would have never been where it is now.</p>
+</dd>
+</dl>
+<p><strong>Revision History</strong></p>
+<p>This specification is managed at the following repository: <a class="reference external" href="https://github.com/fossi-foundation/wishbone">https://github.com/fossi-foundation/wishbone</a></p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#wishbone-features">WISHBONE Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#wishbone-objectives">WISHBONE Objectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#specification-terminology">Specification Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#use-of-timing-diagrams">Use of Timing Diagrams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#signal-naming-conventions">Signal Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#wishbone-logo">WISHBONE Logo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#glossary-of-terms">Glossary of Terms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_introduction.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="02_interface.html#required-documentation-for-ip-cores">Required Documentation for IP Cores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_interface.html#wishbone-signal-description">WISHBONE Signal Description</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03_classic.html">WISHBONE Classic Bus Cycle</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#general-operation">General Operation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#single-read-write-cycles">SINGLE READ / WRITE Cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#block-read-write-cycles">BLOCK READ / WRITE Cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#rmw-cycle">RMW Cycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#data-organization">Data Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_classic.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04_registered.html">WISHBONE Registered Feedback Bus Cylces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="04_registered.html#introduction-synchronous-vs-asynchronous-cycle-termination">Introduction, Synchronous vs. Asynchronous cycle termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_registered.html#wishbone-registered-feedback">WISHBONE Registered Feedback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_registered.html#signal-description">Signal Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_registered.html#bus-cycles">Bus Cycles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05_timing.html">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#general-methods-relating-to-soc">General Methods Relating to SoC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#methods-relating-to-soc-testability">Methods Relating to SoC Testability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#methods-relating-to-variable-clock-frequency">Methods Relating to Variable Clock Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#methods-relating-to-selection-of-ip-cores">Methods Relating to Selection of IP Cores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#methods-relating-to-data-flow-architectures">Methods Relating to Data Flow Architectures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_patents.html#methods-relating-to-crossbar-switch-architectures">Methods Relating to Crossbar Switch Architectures</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">WISHBONE System-on-Chip (SoC) Interconnection Architecture for Portable IP Cores</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="01_introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_interface.html">Interface Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_classic.html">WISHBONE Classic Bus Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_registered.html">WISHBONE Registered Feedback Bus Cylces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_timing.html">Timing Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_patents.html">Cited Patent References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="01_introduction.html" title="next chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, WISHBONE specification authors.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
