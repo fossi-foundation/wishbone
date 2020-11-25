@@ -1,0 +1,27 @@
+name: pagebuild
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install packaged dependencies
+        run: sudo apt-get install python3 python3-venv python3-wheel latexmk texlive texlive-latex-extra texlive-fonts-extra
+
+      - name: Install Python dependencies
+        run: sudo pip3 install -r src/requirements.txt
+
+      - name: Build docs
+        run: ./build_website.sh
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
