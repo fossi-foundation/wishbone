@@ -57,7 +57,7 @@ be used in the design.  The reset signal [RST_O] is driven by the
 SYSCON module.  It is connected to the [RST_I] signal on all MASTER
 and SLAVE interfaces.  <a class="reference internal" href="#resetcycle"><span class="std std-numref">Figure 9</span></a> shows the reset cycle.</p>
 <div class="figure align-default" id="id2">
-<span id="resetcycle"></span><img alt="_images/wavedrom-ca8c6d84-8b9d-4d2a-a13d-19e6627c5969.svg" src="_images/wavedrom-ca8c6d84-8b9d-4d2a-a13d-19e6627c5969.svg" /><p class="caption"><span class="caption-number">Figure 9 </span><span class="caption-text">Reset cycle.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<span id="resetcycle"></span><img alt="_images/wavedrom-e237e7a8-a65f-465a-a042-f535e40adf44.svg" src="_images/wavedrom-e237e7a8-a65f-465a-a042-f535e40adf44.svg" /><p class="caption"><span class="caption-number">Figure 9 </span><span class="caption-text">Reset cycle.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="simple">
 <dt><strong>RULE 3.00</strong></dt><dd><p>All WISHBONE interfaces MUST initialize themselves at the rising
@@ -162,7 +162,7 @@ the terminating signal is sampled. If it is asserted, then [STB_O] is
 negated. This gives both MASTER and SLAVE interfaces the possibility
 to control the rate at which data is transferred.</p>
 <div class="figure align-default" id="id3">
-<span id="handshake"></span><img alt="_images/wavedrom-6813ca93-f49b-4b07-ab43-3fbb01c78f03.svg" src="_images/wavedrom-6813ca93-f49b-4b07-ab43-3fbb01c78f03.svg" /><p class="caption"><span class="caption-number">Figure 10 </span><span class="caption-text">Local bus handshaking protocol.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<span id="handshake"></span><img alt="_images/wavedrom-98ae3cf9-b0fd-4e2e-9fe2-92baa6c4a22a.svg" src="_images/wavedrom-98ae3cf9-b0fd-4e2e-9fe2-92baa6c4a22a.svg" /><p class="caption"><span class="caption-number">Figure 10 </span><span class="caption-text">Local bus handshaking protocol.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="simple">
 <dt><strong>PERMISSION 3.10</strong></dt><dd><p>If the SLAVE guarantees it can keep pace with all MASTER interfaces
@@ -433,7 +433,7 @@ states may be added.</p>
 </dd>
 </dl>
 <div class="figure align-default" id="id5">
-<span id="singlereadcycle"></span><img alt="_images/wavedrom-f2ac2c82-a8b8-4e31-9374-2459c714babe.svg" src="_images/wavedrom-f2ac2c82-a8b8-4e31-9374-2459c714babe.svg" /><p class="caption"><span class="caption-number">Figure 11 </span><span class="caption-text">SINGLE READ cycle.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<span id="singlereadcycle"></span><img alt="_images/wavedrom-7c1b1512-215e-48ec-987e-a6470538fe91.svg" src="_images/wavedrom-7c1b1512-215e-48ec-987e-a6470538fe91.svg" /><p class="caption"><span class="caption-number">Figure 11 </span><span class="caption-text">SINGLE READ cycle.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="single-write-cycle">
@@ -461,7 +461,7 @@ states may be added.</p>
 </dd>
 </dl>
 <div class="figure align-default" id="id6">
-<span id="singlewritecycle"></span><img alt="_images/wavedrom-a03798e4-bc7b-4b10-8ea7-88b74271ba0b.svg" src="_images/wavedrom-a03798e4-bc7b-4b10-8ea7-88b74271ba0b.svg" /><p class="caption"><span class="caption-number">Figure 12 </span><span class="caption-text">SINGLE WRITE cycle.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<span id="singlewritecycle"></span><img alt="_images/wavedrom-7d435344-aa34-4186-9535-9a0a2fe8d7d5.svg" src="_images/wavedrom-7d435344-aa34-4186-9535-9a0a2fe8d7d5.svg" /><p class="caption"><span class="caption-number">Figure 12 </span><span class="caption-text">SINGLE WRITE cycle.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -486,7 +486,7 @@ asserted, as is shown.  During each of the data transfer phases
 (within the block transfer), the normal handshaking protocol between
 [STB_O] and [ACK_I] is maintained.</p>
 <div class="figure align-default" id="id7">
-<span id="cycduringblock"></span><img alt="_images/wavedrom-e955e4ab-b219-4d42-aa14-21f64cceb0db.svg" src="_images/wavedrom-e955e4ab-b219-4d42-aa14-21f64cceb0db.svg" /><p class="caption"><span class="caption-number">Figure 13 </span><span class="caption-text">Use of [CYC_O] signal during BLOCK cycles.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<span id="cycduringblock"></span><img alt="_images/wavedrom-32129a4a-26f5-40db-8388-fa3280914614.svg" src="_images/wavedrom-32129a4a-26f5-40db-8388-fa3280914614.svg" /><p class="caption"><span class="caption-number">Figure 13 </span><span class="caption-text">Use of [CYC_O] signal during BLOCK cycles.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 <dl class="simple">
 <dt><strong>RULE 3.80</strong></dt><dd><p>All MASTER and SLAVE interfaces that support BLOCK cycles MUST conform
@@ -570,7 +570,7 @@ point.</p>
 </dd>
 </dl>
 <div class="figure align-default" id="id8">
-<span id="blockreadcycle"></span><img alt="_images/wavedrom-066b84bd-26fc-4393-b53e-2f11ce7c06c0.svg" src="_images/wavedrom-066b84bd-26fc-4393-b53e-2f11ce7c06c0.svg" /><p class="caption"><span class="caption-number">Figure 14 </span><span class="caption-text">BLOCK READ cycle.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<span id="blockreadcycle"></span><img alt="_images/wavedrom-38180a3d-f606-4452-9704-5c060a4ac52d.svg" src="_images/wavedrom-38180a3d-f606-4452-9704-5c060a4ac52d.svg" /><p class="caption"><span class="caption-number">Figure 14 </span><span class="caption-text">BLOCK READ cycle.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="block-write-cycle">
@@ -642,7 +642,7 @@ data.</p>
 </dd>
 </dl>
 <div class="figure align-default" id="id9">
-<span id="blockwritecycle"></span><img alt="_images/wavedrom-7b43e855-6fb6-426b-af12-a1e0578a7b17.svg" src="_images/wavedrom-7b43e855-6fb6-426b-af12-a1e0578a7b17.svg" /><p class="caption"><span class="caption-number">Figure 15 </span><span class="caption-text">BLOCK WRITE cycle.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+<span id="blockwritecycle"></span><img alt="_images/wavedrom-4e9cb764-a024-4f3d-b7a7-fea48e5d080c.svg" src="_images/wavedrom-4e9cb764-a024-4f3d-b7a7-fea48e5d080c.svg" /><p class="caption"><span class="caption-number">Figure 15 </span><span class="caption-text">BLOCK WRITE cycle.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -708,7 +708,7 @@ point.</p>
 </dd>
 </dl>
 <div class="figure align-default" id="id10">
-<span id="rmwcycle"></span><img alt="_images/wavedrom-60a7b20c-d2b9-4805-93f8-1f0983d92d10.svg" src="_images/wavedrom-60a7b20c-d2b9-4805-93f8-1f0983d92d10.svg" /><p class="caption"><span class="caption-number">Figure 16 </span><span class="caption-text">RMW cycle.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+<span id="rmwcycle"></span><img alt="_images/wavedrom-b45d9966-bc48-4d8e-9e21-b1da24172ddf.svg" src="_images/wavedrom-b45d9966-bc48-4d8e-9e21-b1da24172ddf.svg" /><p class="caption"><span class="caption-number">Figure 16 </span><span class="caption-text">RMW cycle.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="data-organization">
