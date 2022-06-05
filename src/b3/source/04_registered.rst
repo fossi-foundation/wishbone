@@ -1,4 +1,4 @@
-WISHBONE Registered Feedback Bus Cylces
+WISHBONE Registered Feedback Bus Cycles
 =======================================
 
 Introduction, Synchronous vs. Asynchronous cycle termination
