@@ -306,7 +306,7 @@ respond to [RTY_I].
 
 **RULE 3.55**
   MASTER interfaces MUST be designed to operate normally when the SLAVE
-  interface holds [ACK_I] in the asserted state.
+  interface holds [ACK_O] in the asserted state.
 
 Use of [STB_O]
 ``````````````
